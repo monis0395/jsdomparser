@@ -3,19 +3,19 @@ import { Node } from "./node";
 import { createTextNode } from "./node-contruction";
 
 export const appendChild = function (parentNode, newNode) {
-	const prev = parentNode.children[parentNode.children.length - 1];
+	const prev = parentNode.childNodes[parentNode.childNodes.length - 1];
 
 	if (prev) {
 		prev.next = newNode;
 		newNode.prev = prev;
 	}
 
-	parentNode.children.push(newNode);
+	parentNode.childNodes.push(newNode);
 	newNode.parent = parentNode;
 };
 
 export const insertBefore = function (parentNode, newNode, referenceNode) {
-	const insertionIdx = parentNode.children.indexOf(referenceNode);
+	const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
 	const prev = referenceNode.prev;
 
 	if (prev) {
@@ -26,7 +26,7 @@ export const insertBefore = function (parentNode, newNode, referenceNode) {
 	referenceNode.prev = newNode;
 	newNode.next = referenceNode;
 
-	parentNode.children.splice(insertionIdx, 0, newNode);
+	parentNode.childNodes.splice(insertionIdx, 0, newNode);
 	newNode.parent = parentNode;
 };
 
@@ -35,16 +35,16 @@ export const setTemplateContent = function (templateElement, contentElement) {
 };
 
 export const getTemplateContent = function (templateElement) {
-	return templateElement.children[0];
+	return templateElement.childNodes[0];
 };
 
 export const setDocumentType = function (document, name, publicId, systemId) {
 	const data = doctype.serializeContent(name, publicId, systemId);
 	let doctypeNode = null;
 
-	for (let i = 0; i < document.children.length; i++) {
-		if (document.children[i].type === 'directive' && document.children[i].name === '!doctype') {
-			doctypeNode = document.children[i];
+	for (let i = 0; i < document.childNodes.length; i++) {
+		if (document.childNodes[i].type === 'directive' && document.childNodes[i].name === '!doctype') {
+			doctypeNode = document.childNodes[i];
 			break;
 		}
 	}
@@ -79,7 +79,7 @@ export const getDocumentMode = function (document) {
 
 export const detachNode = function (node) {
 	if (node.parent) {
-		const idx = node.parent.children.indexOf(node);
+		const idx = node.parent.childNodes.indexOf(node);
 		const prev = node.prev;
 		const next = node.next;
 
@@ -94,13 +94,13 @@ export const detachNode = function (node) {
 			next.prev = prev;
 		}
 
-		node.parent.children.splice(idx, 1);
+		node.parent.childNodes.splice(idx, 1);
 		node.parent = null;
 	}
 };
 
 export const insertText = function (parentNode, text) {
-	const lastChild = parentNode.children[parentNode.children.length - 1];
+	const lastChild = parentNode.childNodes[parentNode.childNodes.length - 1];
 
 	if (lastChild && lastChild.type === 'text') {
 		lastChild.data += text;
@@ -110,7 +110,7 @@ export const insertText = function (parentNode, text) {
 };
 
 export const insertTextBefore = function (parentNode, text, referenceNode) {
-	const prevNode = parentNode.children[parentNode.children.indexOf(referenceNode) - 1];
+	const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
 	if (prevNode && prevNode.type === 'text') {
 		prevNode.data += text;

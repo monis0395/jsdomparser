@@ -1,9 +1,9 @@
 export const getFirstChild = function (node) {
-	return node.children[0];
+	return node.childNodes[0];
 };
 
 export const getChildNodes = function (node) {
-	return node.children;
+	return node.childNodes;
 };
 
 export const getParentNode = function (node) {

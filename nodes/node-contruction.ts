@@ -10,6 +10,7 @@ export const createDocument = function () {
 		parent: null,
 		prev: null,
 		next: null,
+		childNodes: [],
 		children: [],
 		'x-mode': DOCUMENT_MODE.NO_QUIRKS,
 	});
@@ -23,6 +24,7 @@ export const createDocumentFragment = function () {
 		parent: null,
 		prev: null,
 		next: null,
+		childNodes: [],
 		children: [],
 	});
 };
@@ -48,6 +50,7 @@ export const createElement = function (tagName, namespaceURI, attrs) {
 		attribs: attribs,
 		'x-attribsNamespace': attribsNamespace,
 		'x-attribsPrefix': attribsPrefix,
+		childNodes: [],
 		children: [],
 		parent: null,
 		prev: null,

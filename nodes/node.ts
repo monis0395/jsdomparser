@@ -1,29 +1,29 @@
-//Conversion tables for DOM Level1 structure emulation
-const nodeTypes = {
-	element: 1,
-	text: 3,
-	cdata: 4,
-	comment: 8,
-};
+import { ElementT, NodeT, NodeType } from "./contracts/type";
 
 const nodePropertyShorthands = {
 	tagName: 'name',
-	childNodes: 'children',
 	parentNode: 'parent',
 	previousSibling: 'prev',
 	nextSibling: 'next',
 	nodeValue: 'data',
 };
 
-//Node
-export class Node {
-	public childNodes: Node[];
-	public type;
+export class Node implements NodeT {
+	nodeType: NodeType;
+	tagName: string;
+	childNodes: NodeT[];
+	children: ElementT[];
+	parentNode: NodeT;
+	previousSibling: NodeT;
+	nextSibling: NodeT;
+	nodeValue: string;
 
 	constructor(props) {
 		for (const key of Object.keys(props)) {
 			this[key] = props[key];
 		}
+		this.childNodes = this.childNodes || [];
+		this.children = this.childNodes.filter((node) => node.nodeType === NodeType.ELEMENT_NODE) as ElementT[] || [];
 	}
 
 	get firstChild() {
@@ -32,8 +32,20 @@ export class Node {
 		return (children && children[0]) || null;
 	}
 
+	get firstElementChild() {
+		const children = this.children;
+
+		return (children && children[0]) || null;
+	}
+
 	get lastChild() {
 		const children = this.childNodes;
+
+		return (children && children[children.length - 1]) || null;
+	}
+
+	get lastElementChild() {
+		const children = this.children;
 
 		return (children && children[children.length - 1]) || null;
 	}
