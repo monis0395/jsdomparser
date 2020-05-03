@@ -8,5 +8,8 @@ describe('test parse', () => {
 		const document = parseDom(`<div>Hello</div>`);
 		expect(document).to.not.empty;
 		expect(document.nodeType).to.is.eq(NodeType.DOCUMENT_NODE);
+		expect(document.children).to.be.empty;
+		expect(document.childNodes).to.be.not.empty;
+		expect(document.childNodes.length).to.be.eq(1);
 	});
 });
