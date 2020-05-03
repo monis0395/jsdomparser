@@ -9,7 +9,7 @@ export const isCommentNode = function (node) {
 };
 
 export const isDocumentTypeNode = function (node) {
-	return node.type === 'directive' && node.name === '!doctype';
+	return node.nodeType === NodeType.DOCUMENT_TYPE_NODE;
 };
 
 export const isElementNode = function (node) {

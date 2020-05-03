@@ -1,6 +1,7 @@
 import doctype from "parse5/lib/common/doctype";
 import { Node } from "./node";
 import { createTextNode } from "./node-contruction";
+import { NodeType } from "./contracts/type";
 
 export const appendChild = function (parentNode, newNode) {
 	const prev = parentNode.childNodes[parentNode.childNodes.length - 1];
@@ -59,6 +60,7 @@ export const setDocumentType = function (document, name, publicId, systemId) {
 			document,
 			new Node({
 				type: 'directive',
+				nodeTye: NodeType.DOCUMENT_TYPE_NODE,
 				name: '!doctype',
 				data: data,
 				'x-name': name,
