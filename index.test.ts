@@ -5,7 +5,7 @@ import { NodeType } from "./nodes/contracts/type";
 
 describe('test parse', () => {
 	it('simple div', () => {
-		const document = parseDom(`<div>Hello</div>`);
+		const document = parseDom(`<div class="text">Hello</div>`);
 		expect(document).to.not.empty;
 		expect(document.nodeType).to.is.eq(NodeType.DOCUMENT_NODE);
 		expect(document.children).to.be.empty;
