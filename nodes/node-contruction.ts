@@ -29,7 +29,7 @@ export const createDocumentFragment = function () {
 	});
 };
 
-export const createElement = function (tagName, namespaceURI, attrs) {
+export const createElement = function (tagName: string, namespaceURI: string, attrs) {
 	const attribs = Object.create(null);
 	const attribsNamespace = Object.create(null);
 	const attribsPrefix = Object.create(null);
@@ -69,11 +69,11 @@ export const createCommentNode = function (data) {
 	});
 };
 
-export const createTextNode = function (value) {
+export const createTextNode = function (data) {
 	return new Node({
 		type: 'text',
 		nodeType: NodeType.TEXT_NODE,
-		data: value,
+		data: data,
 		parent: null,
 		prev: null,
 		next: null,

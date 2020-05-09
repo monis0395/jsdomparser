@@ -47,6 +47,14 @@ export class Node implements NodeT {
 	get tagName() {
 	    return this.localName.toUpperCase();
     }
+
+    get textContent() {
+	    return this.nodeValue;
+    }
+
+    set textContent(data: string) {
+	    this.nodeValue = data;
+    }
 }
 
 Object.keys(nodePropertyShorthands).forEach(key => {
