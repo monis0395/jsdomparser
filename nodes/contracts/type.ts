@@ -1,6 +1,6 @@
 export interface NodeT {
 	nodeType: NodeType;
-	tagName: string;
+    localName: string;
 	childNodes: NodeT[];
 	parentNode: NodeT | null;
 

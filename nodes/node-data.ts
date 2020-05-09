@@ -1,6 +1,6 @@
 
 export const getTagName = function (element) {
-	return element.name;
+	return element.localName;
 };
 
 export const getNamespaceURI = function (element) {
