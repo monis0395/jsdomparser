@@ -41,6 +41,7 @@ export const createElement = function (tagName: string, namespaceURI: string, at
 
     for (let i = 0; i < attrs.length; i++) {
         const { name, value } = attrs[i];
+        // right now optional params are missing for attributes
         attribs[name] = value;
     }
 
