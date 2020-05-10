@@ -21,24 +21,24 @@ export class Element extends Node implements ElementProps {
         return this.getAttribute("class");
     }
 
-    set className(classNames) {
+    set className(classNames: string) {
         this.setAttribute("class", classNames);
     }
 
-    getAttribute(name) {
+    getAttribute(name: string) {
         return this.attribs[name] || null;
     }
 
-    setAttribute(name, value) {
+    setAttribute(name: string, value: string) {
         this.attribs[name] = value;
         return value;
     }
 
-    appendChild(newNode) {
+    appendChild(newNode: Node) {
         appendChild(this, newNode);
     }
 
-    removeChild(node) {
+    removeChild(node: Node) {
         detachNode(node);
     }
 
@@ -62,12 +62,12 @@ export class Element extends Node implements ElementProps {
 }
 
 const elementAttributes = ["href", "id", "src", "srcset"];
-elementAttributes.forEach(name => {
+elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
         get: function () {
             return this.getAttribute(name);
         },
-        set: function (value) {
+        set: function (value: string) {
             return this.setAttribute(name, value);
         },
     });

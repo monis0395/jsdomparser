@@ -1,5 +1,5 @@
 import { Node } from "./node";
-import { DocumentTypeProps, NodeType } from "./contracts/type";
+import { DocumentTypeProps } from "./contracts/type";
 
 export class DocumentType extends Node implements DocumentTypeProps {
     name: string;
@@ -8,6 +8,5 @@ export class DocumentType extends Node implements DocumentTypeProps {
 
     constructor(props: DocumentTypeProps) {
         super(props);
-        this.nodeType = NodeType.DOCUMENT_TYPE_NODE
     }
 }

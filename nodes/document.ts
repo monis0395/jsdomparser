@@ -52,7 +52,7 @@ export class Document extends Node implements DocumentProps {
         return this._baseURI
     }
 
-    getElementsByTagName(tagName) {
+    getElementsByTagName(tagName: string) {
         // not implemented yet
         return [];
     }
