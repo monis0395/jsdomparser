@@ -1,6 +1,6 @@
 import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
-import { createTextNode } from "./node-contruction";
+import { Document } from "./document";
 
 export class Node implements NodeProps {
     type: string;
@@ -76,8 +76,8 @@ export class Node implements NodeProps {
         for (let i = this.childNodes.length; --i >= 0;) {
             this.childNodes[i].parentNode = null;
         }
-
-        const node = createTextNode(data);
+        const document = this.ownerDocument as Document;
+        const node = document.createTextNode(data);
         this.childNodes = [node];
         this.children = [];
         node.parentNode = this;

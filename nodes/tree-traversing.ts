@@ -11,5 +11,14 @@ export const getParentNode = function (node) {
 };
 
 export const getAttrList = function (element) {
-    return element.attribs;
+    const attrList = [];
+
+    for (const name in element.attribs) {
+        attrList.push({
+            name: name,
+            value: element.attribs[name],
+        });
+    }
+
+    return attrList;
 };
