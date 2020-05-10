@@ -2,6 +2,7 @@ import { createTextNode } from "./node-contruction";
 import { Node } from "./node";
 import { Element } from "./element";
 import { isElementNode, isTextNode } from "./node-types";
+import { Attribute } from "parse5";
 
 export const appendChild = function (parentNode: Node, newNode: Node | Element) {
     detachNode(newNode);
@@ -100,7 +101,7 @@ export const detachNode = function (node: Node) {
     node.parentNode = null;
 };
 
-export const insertText = function (parentNode, text) {
+export const insertText = function (parentNode: Node, text: string) {
     const lastChild = parentNode.lastChild;
 
     if (lastChild && isTextNode(lastChild)) {
@@ -110,7 +111,7 @@ export const insertText = function (parentNode, text) {
     }
 };
 
-export const insertTextBefore = function (parentNode, text, referenceNode) {
+export const insertTextBefore = function (parentNode: Node, text: string, referenceNode: Node) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
     if (prevNode && isTextNode(prevNode)) {
@@ -120,15 +121,21 @@ export const insertTextBefore = function (parentNode, text, referenceNode) {
     }
 };
 
-export const setTemplateContent = function (templateElement, contentElement) {
+export const setTemplateContent = function (templateElement: Element, contentElement: Node) {
     appendChild(templateElement, contentElement);
 };
 
-export const getTemplateContent = function (templateElement) {
+export const getTemplateContent = function (templateElement: Element) {
     return templateElement.childNodes[0];
 };
 
-export const adoptAttributes = function (recipient, attrs) {
+/**
+ * Copies attributes to the given element. Only attributes that are not yet present in the element are copied.
+ *
+ * @param recipient - Element to copy attributes into.
+ * @param attrs - Attributes to copy.
+ */
+export const adoptAttributes = function (recipient: Element, attrs: Attribute[]) {
     for (let i = 0; i < attrs.length; i++) {
         const { name, value } = attrs[i];
 

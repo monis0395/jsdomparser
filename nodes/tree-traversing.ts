@@ -1,17 +1,21 @@
-export const getFirstChild = function (node) {
+import { Node } from "./node";
+import { Element } from "./element";
+import { Attribute } from "parse5";
+
+export const getFirstChild = function (node: Node) {
     return node.firstChild;
 };
 
-export const getChildNodes = function (node) {
+export const getChildNodes = function (node: Node) {
     return node.childNodes;
 };
 
-export const getParentNode = function (node) {
+export const getParentNode = function (node: Node) {
     return node.parentNode;
 };
 
-export const getAttrList = function (element) {
-    const attrList = [];
+export const getAttrList = function (element: Element) {
+    const attrList: Attribute[] = [];
 
     for (const name in element.attribs) {
         attrList.push({
