@@ -33,11 +33,28 @@ export const appendChild = function (parentNode: Node, newNode: Node) {
 
 export const insertBefore = function (parentNode: Node, newNode: Node, referenceNode: Node) {
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
-    const previousSibling = referenceNode.previousSibling;
+    const prev = referenceNode.previousSibling;
+    const prevElement = referenceNode.previousElementSibling || null;
 
-    if (previousSibling) {
-        previousSibling.nextSibling = newNode;
-        newNode.previousSibling = previousSibling;
+    if (prev) {
+        prev.nextSibling = newNode;
+        newNode.previousSibling = prev;
+    }
+
+    if (newNode.nodeType === NodeType.ELEMENT_NODE) {
+        // @ts-ignore
+        const insertionIdx = parentNode.children.indexOf(referenceNode);
+        if (prevElement) {
+            prevElement.nextElementSibling = newNode;
+            newNode.previousElementSibling = prevElement;
+        }
+
+        referenceNode.previousElementSibling = newNode;
+        if (referenceNode.nodeType === NodeType.ELEMENT_NODE) {
+            newNode.nextElementSibling = referenceNode;
+        }
+        // @ts-ignore
+        parentNode.children.splice(insertionIdx, 0, newNode);
     }
 
     referenceNode.previousSibling = newNode;
