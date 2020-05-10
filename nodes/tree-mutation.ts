@@ -29,6 +29,7 @@ export const appendChild = function (parentNode: Node, newNode: Node | Element) 
 
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
+    newNode.setOwnerDocument(parentNode.ownerDocument);
 };
 
 export const insertBefore = function (parentNode: Node, newNode: Node, referenceNode: Node) {
@@ -61,6 +62,7 @@ export const insertBefore = function (parentNode: Node, newNode: Node, reference
 
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
+    newNode.setOwnerDocument(parentNode.ownerDocument);
 };
 
 export const setTemplateContent = function (templateElement, contentElement) {

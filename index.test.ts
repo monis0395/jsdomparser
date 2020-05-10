@@ -11,5 +11,8 @@ describe('test parse', () => {
 		expect(document.children).to.be.not.empty;
 		expect(document.childNodes).to.be.not.empty;
 		expect(document.childNodes.length).to.be.eq(1);
+        expect(document.firstElementChild.firstElementChild.localName).to.be.eq("head");
+        expect(document.firstElementChild.lastElementChild.localName).to.be.eq("body");
+        expect(document.firstElementChild.lastElementChild.ownerDocument).to.be.eq(document);
 	});
 });

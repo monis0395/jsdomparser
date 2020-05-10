@@ -1,7 +1,6 @@
 import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
 
-
 export class Node implements NodeProps {
     type: string;
     nodeType: NodeType;
@@ -14,6 +13,7 @@ export class Node implements NodeProps {
     previousElementSibling?: Node;
     nextElementSibling?: Node;
     nodeValue: string;
+    private _ownerDocument: Node;
 
     constructor(props: NodeProps) {
         for (const key of Object.keys(props)) {
@@ -51,5 +51,24 @@ export class Node implements NodeProps {
 
     set textContent(data: string) {
         this.nodeValue = data;
+    }
+
+    get ownerDocument() {
+        if (this._ownerDocument) {
+            return this._ownerDocument
+        }
+        if (this.nodeType === NodeType.DOCUMENT_NODE) {
+            this._ownerDocument = null;
+            return this._ownerDocument;
+        }
+        if (this.parentNode.nodeType === NodeType.DOCUMENT_NODE) {
+            this._ownerDocument = this.parentNode;
+            return this._ownerDocument;
+        }
+        return null;
+    }
+
+    setOwnerDocument(node: Node) {
+        this._ownerDocument = node;
     }
 }
