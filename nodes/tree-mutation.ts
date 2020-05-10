@@ -1,5 +1,5 @@
 import doctype from "parse5/lib/common/doctype";
-import { Node } from "./node";
+import { DocumentType } from "./documentType";
 import { createTextNode } from "./node-contruction";
 import { NodeType } from "./contracts/type";
 
@@ -40,7 +40,7 @@ export const getTemplateContent = function (templateElement) {
 };
 
 export const setDocumentType = function (document, name, publicId, systemId) {
-    const data = doctype.serializeContent(name, publicId, systemId);
+    const nodeValue = doctype.serializeContent(name, publicId, systemId);
     let doctypeNode = null;
 
     for (let i = 0; i < document.childNodes.length; i++) {
@@ -51,32 +51,35 @@ export const setDocumentType = function (document, name, publicId, systemId) {
     }
 
     if (doctypeNode) {
-        doctypeNode.nodeValue = data;
-        doctypeNode['x-name'] = name;
-        doctypeNode['x-publicId'] = publicId;
-        doctypeNode['x-systemId'] = systemId;
+        doctypeNode.nodeValue = nodeValue;
+        doctypeNode.name = name;
+        doctypeNode.publicId = publicId;
+        doctypeNode.systemId = systemId;
     } else {
         appendChild(
             document,
-            new Node({
+            new DocumentType({
                 type: 'directive',
-                nodeTye: NodeType.DOCUMENT_TYPE_NODE,
+                nodeType: NodeType.DOCUMENT_TYPE_NODE,
                 localName: '!doctype',
-                nodeValue: data,
-                'x-name': name,
-                'x-publicId': publicId,
-                'x-systemId': systemId,
+                parentNode: null,
+                previousSibling: null,
+                nextSibling: null,
+                nodeValue,
+                name,
+                publicId,
+                systemId,
             }),
         );
     }
 };
 
 export const setDocumentMode = function (document, mode) {
-    document['x-mode'] = mode;
+    document.mode = mode;
 };
 
 export const getDocumentMode = function (document) {
-    return document['x-mode'];
+    return document.mode;
 };
 
 export const detachNode = function (node) {

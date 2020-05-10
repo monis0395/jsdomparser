@@ -14,7 +14,7 @@ export const createDocument = function () {
         nextSibling: null,
         childNodes: [],
         children: [],
-        'x-mode': DOCUMENT_MODE.NO_QUIRKS,
+        mode: DOCUMENT_MODE.NO_QUIRKS,
     });
 };
 
@@ -23,11 +23,11 @@ export const createDocumentFragment = function () {
         type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
         localName: 'root',
+        childNodes: [],
+        children: [],
         parentNode: null,
         previousSibling: null,
         nextSibling: null,
-        childNodes: [],
-        children: [],
     });
 };
 

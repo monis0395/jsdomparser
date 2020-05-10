@@ -1,17 +1,33 @@
-export interface NodeT {
+import { GenericObjectType } from "../../types/types";
+
+export interface NodeProps {
+    type: string;
 	nodeType: NodeType;
-    localName: string;
-	childNodes: NodeT[];
-	parentNode: NodeT | null;
-
-	previousSibling: NodeT | null;
-	nextSibling: NodeT | null;
-
-	nodeValue: string;
+    localName?: string;
+	childNodes?: NodeProps[];
+	children?: NodeProps[];
+	parentNode: NodeProps | null;
+	previousSibling: NodeProps | null;
+	nextSibling: NodeProps | null;
+	nodeValue?: string;
 }
 
-export interface ElementT extends NodeT{
+export interface ElementProps extends NodeProps{
 	nodeType: NodeType.ELEMENT_NODE
+    namespace: string;
+    attribs: GenericObjectType<any>
+}
+
+export interface DocumentProps extends NodeProps{
+	nodeType: NodeType.DOCUMENT_NODE
+    mode: string
+}
+
+export interface DocumentTypeProps extends NodeProps{
+	nodeType: NodeType.DOCUMENT_TYPE_NODE
+    name: string
+    publicId: string
+    systemId: string
 }
 
 export enum NodeType {

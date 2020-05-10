@@ -1,4 +1,4 @@
-import { ElementT, NodeT, NodeType } from "./contracts/type";
+import { ElementProps, NodeProps, NodeType } from "./contracts/type";
 
 const nodePropertyShorthands = {
 	localName: 'name',
@@ -8,22 +8,23 @@ const nodePropertyShorthands = {
 	nodeValue: 'data',
 };
 
-export class Node implements NodeT {
+export class Node implements NodeProps {
+    type: string;
 	nodeType: NodeType;
     localName: string;
-	childNodes: NodeT[];
-	children: ElementT[];
-	parentNode: NodeT;
-	previousSibling: NodeT;
-	nextSibling: NodeT;
+	childNodes: NodeProps[];
+	children: ElementProps[];
+	parentNode: NodeProps;
+	previousSibling: NodeProps;
+	nextSibling: NodeProps;
 	nodeValue: string;
 
-	constructor(props) {
+	constructor(props: NodeProps) {
 		for (const key of Object.keys(props)) {
 			this[key] = props[key];
 		}
 		this.childNodes = this.childNodes || [];
-		this.children = this.childNodes.filter((node) => node.nodeType === NodeType.ELEMENT_NODE) as ElementT[] ;
+		this.children = this.childNodes.filter((node) => node.nodeType === NodeType.ELEMENT_NODE) as ElementProps[] ;
 	}
 
 	get firstChild() {

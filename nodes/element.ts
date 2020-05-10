@@ -1,5 +1,5 @@
 import { Node } from "./node";
-import { NodeT, NodeType } from "./contracts/type";
+import { ElementProps } from "./contracts/type";
 import { appendChild, detachNode } from "./tree-mutation";
 import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
@@ -7,10 +7,9 @@ import { GenericObjectType } from "../types/types";
 export class Element extends Node {
     attribs: GenericObjectType<any>;
 
-    constructor(props) {
+    constructor(props: ElementProps) {
         super(props);
         this.attribs = this.attribs || {};
-        this.nodeType = NodeType.ELEMENT_NODE;
     }
 
     get attributes() {
@@ -34,11 +33,11 @@ export class Element extends Node {
         this.setAttribute("class", classNames);
     }
 
-    appendChild(newNode: NodeT) {
+    appendChild(newNode) {
         appendChild(this, newNode);
     }
 
-    removeChild(node: NodeT) {
+    removeChild(node) {
         detachNode(node);
     }
 }

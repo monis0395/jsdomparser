@@ -1,12 +1,11 @@
 import { Node } from "./node";
-import { NodeType } from "./contracts/type";
+import { DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./node-contruction";
 
 export class Document extends Node {
 
-    constructor(props) {
+    constructor(props: DocumentProps) {
         super(props);
-        this.nodeType = NodeType.DOCUMENT_NODE;
     }
 
     get documentElement() {

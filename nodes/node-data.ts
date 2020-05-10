@@ -16,13 +16,13 @@ export const getCommentNodeContent = function (commentNode) {
 };
 
 export const getDocumentTypeNodeName = function (doctypeNode) {
-	return doctypeNode['x-name'];
+	return doctypeNode.name;
 };
 
 export const getDocumentTypeNodePublicId = function (doctypeNode) {
-	return doctypeNode['x-publicId'];
+	return doctypeNode.publicId;
 };
 
 export const getDocumentTypeNodeSystemId = function (doctypeNode) {
-	return doctypeNode['x-systemId'];
+	return doctypeNode.systemId;
 };
