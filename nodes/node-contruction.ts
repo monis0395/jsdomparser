@@ -31,20 +31,13 @@ export const createDocumentFragment = function () {
     });
 };
 
-export const createElement = function (tagName: string, namespaceURI: string, attrs) {
-    const attribs = Object.create(null);
-
-    for (let i = 0; i < attrs.length; i++) {
-        const { name, value } = attrs[i].name;
-        attribs[name] = value;
-    }
-
+export const createElement = function (tagName: string, namespaceURI: string, attribs) {
     return new Element({
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
         localName: tagName,
         namespace: namespaceURI,
-        attribs: attribs,
+        attribs,
         childNodes: [],
         children: [],
         parentNode: null,
