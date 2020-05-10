@@ -1,5 +1,5 @@
 export const getFirstChild = function (node) {
-	return node.childNodes[0];
+	return node.firstChild;
 };
 
 export const getChildNodes = function (node) {
@@ -7,20 +7,9 @@ export const getChildNodes = function (node) {
 };
 
 export const getParentNode = function (node) {
-	return node.parent;
+	return node.parentNode;
 };
 
 export const getAttrList = function (element) {
-	const attrList = [];
-
-	for (const name in element.attribs) {
-		attrList.push({
-			name: name,
-			value: element.attribs[name],
-			namespace: element['x-attribsNamespace'][name],
-			prefix: element['x-attribsPrefix'][name],
-		});
-	}
-
-	return attrList;
+	return element.attribs;
 };

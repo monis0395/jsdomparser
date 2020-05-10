@@ -43,14 +43,14 @@ export class Element extends Node {
     }
 }
 
-const elementAttributes = ["id", "src", "href"];
-elementAttributes.forEach(attributeName => {
-    Object.defineProperty(Element.prototype, attributeName, {
+const elementAttributes = ["href", "id", "src", "srcset"];
+elementAttributes.forEach(name => {
+    Object.defineProperty(Element.prototype, name, {
         get: function () {
-            return this.getAttribute(attributeName);
+            return this.getAttribute(name);
         },
-        set: function (val) {
-            return this.setAttribute(attributeName);
+        set: function (value) {
+            return this.setAttribute(name, value);
         },
     });
 });

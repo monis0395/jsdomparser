@@ -8,11 +8,11 @@ export const getNamespaceURI = function (element) {
 };
 
 export const getTextNodeContent = function (textNode) {
-	return textNode.data;
+	return textNode.nodeValue;
 };
 
 export const getCommentNodeContent = function (commentNode) {
-	return commentNode.data;
+	return commentNode.nodeValue;
 };
 
 export const getDocumentTypeNodeName = function (doctypeNode) {

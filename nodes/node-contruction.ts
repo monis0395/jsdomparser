@@ -8,10 +8,10 @@ export const createDocument = function () {
     return new Document({
         type: 'root',
         nodeType: NodeType.DOCUMENT_NODE,
-        name: 'root',
-        parent: null,
-        prev: null,
-        next: null,
+        localName: 'root',
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
         childNodes: [],
         children: [],
         'x-mode': DOCUMENT_MODE.NO_QUIRKS,
@@ -22,10 +22,10 @@ export const createDocumentFragment = function () {
     return new Node({
         type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
-        name: 'root',
-        parent: null,
-        prev: null,
-        next: null,
+        localName: 'root',
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
         childNodes: [],
         children: [],
     });
@@ -33,30 +33,23 @@ export const createDocumentFragment = function () {
 
 export const createElement = function (tagName: string, namespaceURI: string, attrs) {
     const attribs = Object.create(null);
-    const attribsNamespace = Object.create(null);
-    const attribsPrefix = Object.create(null);
 
     for (let i = 0; i < attrs.length; i++) {
-        const attrName = attrs[i].name;
-
-        attribs[attrName] = attrs[i].value;
-        attribsNamespace[attrName] = attrs[i].namespace;
-        attribsPrefix[attrName] = attrs[i].prefix;
+        const { name, value } = attrs[i].name;
+        attribs[name] = value;
     }
 
     return new Element({
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
-        name: tagName,
+        localName: tagName,
         namespace: namespaceURI,
         attribs: attribs,
-        'x-attribsNamespace': attribsNamespace,
-        'x-attribsPrefix': attribsPrefix,
         childNodes: [],
         children: [],
-        parent: null,
-        prev: null,
-        next: null,
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
     });
 };
 
@@ -64,10 +57,10 @@ export const createCommentNode = function (data) {
     return new Node({
         type: 'comment',
         nodeType: NodeType.COMMENT_NODE,
-        data: data,
-        parent: null,
-        prev: null,
-        next: null,
+        nodeValue: data,
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
     });
 };
 
@@ -75,9 +68,9 @@ export const createTextNode = function (data) {
     return new Node({
         type: 'text',
         nodeType: NodeType.TEXT_NODE,
-        data: data,
-        parent: null,
-        prev: null,
-        next: null,
+        nodeValue: data,
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
     });
 };
