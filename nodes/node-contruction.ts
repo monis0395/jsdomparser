@@ -49,7 +49,7 @@ export const createElement = function (tagName: string, namespaceURI: string, at
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
         localName: tagName,
-        namespace: namespaceURI,
+        namespaceURI,
         attribs,
         childNodes: [],
         children: [],

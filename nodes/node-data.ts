@@ -3,7 +3,7 @@ export const getTagName = function (element) {
 };
 
 export const getNamespaceURI = function (element) {
-    return element.namespace;
+    return element.namespaceURI;
 };
 
 export const getTextNodeContent = function (textNode) {
