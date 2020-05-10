@@ -29,6 +29,10 @@ export class Element extends Node implements ElementProps {
         return this.attribs[name] || null;
     }
 
+    hasAttribute(name: string) {
+        return !!(this.attribs[name] || null);
+    }
+
     setAttribute(name: string, value: string) {
         this.attribs[name] = value;
         return value;
