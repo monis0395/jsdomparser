@@ -78,7 +78,7 @@ export class Node implements NodeProps {
         }
 
         const node = createTextNode(data);
-        this.childNodes = [ node ];
+        this.childNodes = [node];
         this.children = [];
         node.parentNode = this;
     }
