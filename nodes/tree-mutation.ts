@@ -1,9 +1,10 @@
-import {serializeContent} from "parse5/lib/common/doctype";
+import { serializeContent } from "parse5/lib/common/doctype";
 import { DocumentType } from "./documentType";
 import { createTextNode } from "./node-contruction";
-import { NodeType } from "./contracts/type";
+import { DocumentProps, NodeType } from "./contracts/type";
+import { Node } from "./node";
 
-export const appendChild = function (parentNode, newNode) {
+export const appendChild = function (parentNode: Node, newNode: Node) {
     const lastChild = parentNode.lastChild;
 
     if (lastChild) {
@@ -15,7 +16,7 @@ export const appendChild = function (parentNode, newNode) {
     newNode.parentNode = parentNode;
 };
 
-export const insertBefore = function (parentNode, newNode, referenceNode) {
+export const insertBefore = function (parentNode: Node, newNode: Node, referenceNode: Node) {
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
     const previousSibling = referenceNode.previousSibling;
 
@@ -74,15 +75,15 @@ export const setDocumentType = function (document, name, publicId, systemId) {
     }
 };
 
-export const setDocumentMode = function (document, mode) {
+export const setDocumentMode = function (document: DocumentProps, mode: string) {
     document.mode = mode;
 };
 
-export const getDocumentMode = function (document) {
+export const getDocumentMode = function (document: DocumentProps) {
     return document.mode;
 };
 
-export const detachNode = function (node) {
+export const detachNode = function (node: Node) {
     if (!node.parentNode) {
         return;
     }
