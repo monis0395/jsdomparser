@@ -102,3 +102,7 @@ export class Node implements NodeProps {
         this._ownerDocument = node;
     }
 }
+
+for (const nodeType in NodeType) {
+    Node.prototype[nodeType] = NodeType[nodeType];
+}
