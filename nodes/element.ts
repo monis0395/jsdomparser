@@ -1,6 +1,6 @@
 import { Node } from "./node";
 import { ElementProps } from "./contracts/type";
-import { appendChild, detachNode } from "./tree-mutation";
+
 import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
@@ -29,6 +29,14 @@ export class Element extends Node implements ElementProps {
         this.setAttribute("class", classNames);
     }
 
+    get id() {
+        return this.getAttribute("id");
+    }
+
+    set id(id: string) {
+        this.setAttribute("id", id);
+    }
+
     getAttribute(name: string) {
         return this.attribs[name] || null;
     }
@@ -42,25 +50,17 @@ export class Element extends Node implements ElementProps {
         return value;
     }
 
-    appendChild(newNode: Node) {
-        appendChild(this, newNode);
-    }
-
-    removeChild(node: Node) {
-        detachNode(node);
-    }
-
-    get innerHtml() {
+    get innerHTML() {
         return serializeDom(this)
     }
 
-    set innerHtml(htmlString: string) {
+    set innerHTML(htmlString: string) {
         const document = parseDom(htmlString);
         const node = document.body;
-        while(this.childNodes.length) {
+        while (this.childNodes.length) {
             this.removeChild(this.childNodes[0])
         }
-        while(node.childNodes.length) {
+        while (node.childNodes.length) {
             this.appendChild(node.childNodes[0])
         }
     }
@@ -74,7 +74,7 @@ export class Element extends Node implements ElementProps {
     }
 }
 
-const elementAttributes = ["href", "id", "src", "srcset"];
+const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
         get: function () {

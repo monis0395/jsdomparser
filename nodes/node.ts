@@ -2,6 +2,7 @@ import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
 import { Document } from "./document";
 import { isDocument, isElementNode, isTextNode } from "./node-types";
+import { appendChild, detachNode, replaceChild } from "./tree-mutation";
 
 export class Node implements NodeProps {
     type: string;
@@ -100,6 +101,18 @@ export class Node implements NodeProps {
 
     setOwnerDocument(node: Document) {
         this._ownerDocument = node;
+    }
+
+    appendChild(newNode: Node) {
+        appendChild(this, newNode);
+    }
+
+    removeChild(node: Node) {
+        detachNode(node);
+    }
+
+    replaceChild(oldNode: Node, newNode: Node) {
+        replaceChild(this, oldNode, newNode);
     }
 }
 
