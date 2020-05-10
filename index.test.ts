@@ -36,6 +36,7 @@ describe('test parse', () => {
         expect(body.firstElementChild.textContent).to.be.eq("innerText");
         expect(body.firstElementChild.firstChild.textContent).to.be.eq("innerText");
         expect(body.firstElementChild.innerHtml).to.be.eq("innerText");
+        expect(body.innerHtml).to.be.eq(innerHtml);
     });
 
 	it('textContent', () => {
