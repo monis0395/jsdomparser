@@ -1,28 +1,27 @@
-
 export const getTagName = function (element) {
-	return element.localName;
+    return element.localName;
 };
 
 export const getNamespaceURI = function (element) {
-	return element.namespace;
+    return element.namespace;
 };
 
 export const getTextNodeContent = function (textNode) {
-	return textNode.nodeValue;
+    return textNode.nodeValue;
 };
 
 export const getCommentNodeContent = function (commentNode) {
-	return commentNode.nodeValue;
+    return commentNode.nodeValue;
 };
 
 export const getDocumentTypeNodeName = function (doctypeNode) {
-	return doctypeNode.name;
+    return doctypeNode.name;
 };
 
 export const getDocumentTypeNodePublicId = function (doctypeNode) {
-	return doctypeNode.publicId;
+    return doctypeNode.publicId;
 };
 
 export const getDocumentTypeNodeSystemId = function (doctypeNode) {
-	return doctypeNode.systemId;
+    return doctypeNode.systemId;
 };

@@ -16,6 +16,14 @@ export class Element extends Node {
         return getAttrList(this);
     }
 
+    get className() {
+        return this.getAttribute("class");
+    }
+
+    set className(classNames) {
+        this.setAttribute("class", classNames);
+    }
+
     getAttribute(name) {
         return this.attribs[name] || null;
     }
@@ -23,14 +31,6 @@ export class Element extends Node {
     setAttribute(name, value) {
         this.attribs[name] = value;
         return value;
-    }
-
-    get className() {
-        return this.getAttribute("class");
-    }
-
-    set className(classNames) {
-        this.setAttribute("class", classNames);
     }
 
     appendChild(newNode) {

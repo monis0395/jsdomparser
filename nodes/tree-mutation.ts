@@ -4,8 +4,9 @@ import { DocumentType } from "./documentType";
 import { createTextNode } from "./node-contruction";
 import { DocumentProps, NodeType } from "./contracts/type";
 import { Node } from "./node";
+import { Element } from "./element";
 
-export const appendChild = function (parentNode: Node, newNode: Node) {
+export const appendChild = function (parentNode: Node, newNode: Node | Element) {
     const lastChild = parentNode.lastChild;
 
     if (lastChild) {
@@ -16,8 +17,7 @@ export const appendChild = function (parentNode: Node, newNode: Node) {
     const lastElement = parentNode.lastElementChild;
     newNode.previousElementSibling = lastElement;
 
-    if (newNode.nodeType === NodeType.ELEMENT_NODE) {
-        // @ts-ignore
+    if (newNode instanceof Element) {
         parentNode.children.push(newNode);
         if (lastElement) {
             lastElement.nextElementSibling = newNode;
@@ -41,8 +41,7 @@ export const insertBefore = function (parentNode: Node, newNode: Node, reference
         newNode.previousSibling = prev;
     }
 
-    if (newNode.nodeType === NodeType.ELEMENT_NODE) {
-        // @ts-ignore
+    if (newNode instanceof Element && referenceNode instanceof Element) {
         const insertionIdx = parentNode.children.indexOf(referenceNode);
         if (prevElement) {
             prevElement.nextElementSibling = newNode;
@@ -133,7 +132,7 @@ export const detachNode = function (node: Node) {
         next.previousSibling = prev;
     }
 
-    if (node.nodeType === NodeType.ELEMENT_NODE) {
+    if (node instanceof Element) {
         if (prevElement) {
             prevElement.nextElementSibling = nextElement;
         }
