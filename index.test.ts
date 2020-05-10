@@ -42,11 +42,13 @@ describe('test parse', () => {
         const innerHtml = `<div>innerText</div>`;
         body.firstElementChild.innerHtml = innerHtml;
         expect(body.firstElementChild).to.not.empty;
-        expect(body.firstElementChild.className).to.be.eq(null);
+        // attributes should still remain
+        expect(body.firstElementChild.className).to.be.eq("text");
+        // text content should give proper value even for higher elements
         expect(body.firstElementChild.textContent).to.be.eq("innerText");
         expect(body.firstElementChild.firstChild.textContent).to.be.eq("innerText");
-        expect(body.firstElementChild.innerHtml).to.be.eq("innerText");
-        expect(body.innerHtml).to.be.eq(innerHtml);
+        expect(body.firstElementChild.innerHtml).to.be.eq(innerHtml);
+        expect(body.innerHtml).to.be.eq(`<div class="text">${innerHtml}</div>`);
     });
 
     it('textContent', () => {

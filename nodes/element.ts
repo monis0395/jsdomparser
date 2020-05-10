@@ -56,15 +56,12 @@ export class Element extends Node implements ElementProps {
 
     set innerHtml(htmlString: string) {
         const document = parseDom(htmlString);
-        const node = document.body.firstChild;
-        for (let i = this.childNodes.length; --i >= 0;) {
-            this.childNodes[i].parentNode = null;
+        const node = document.body;
+        while(this.childNodes.length) {
+            this.removeChild(this.childNodes[0])
         }
-        for (const key of Object.keys(node)) {
-            this[key] = node[key];
-        }
-        for (let i = this.childNodes.length; --i >= 0;) {
-            this.childNodes[i].parentNode = this;
+        while(node.childNodes.length) {
+            this.appendChild(node.childNodes[0])
         }
     }
 
