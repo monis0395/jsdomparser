@@ -4,6 +4,7 @@ import { appendChild, detachNode } from "./tree-mutation";
 import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
+import * as legacy from "./domutils/legacy";
 
 export class Element extends Node implements ElementProps {
     namespaceURI: string;
@@ -62,6 +63,14 @@ export class Element extends Node implements ElementProps {
         for (let i = this.childNodes.length; --i >= 0;) {
             this.childNodes[i].parentNode = this;
         }
+    }
+
+    getElementsByClassName(names: string) {
+        return legacy.getElementsByClassName(names, this)
+    }
+
+    getElementsByTagName(tagName: string) {
+        return legacy.getElementsByTagName(tagName, this, true)
     }
 }
 

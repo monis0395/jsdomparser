@@ -19,9 +19,12 @@ describe('test parse', () => {
     it('className', () => {
         const document = parseDom(`<div class="text">Hello</div>`);
         const body = document.body;
+        expect(document.getElementsByClassName("text").length).to.be.eq(1);
         expect(body.firstElementChild.className).to.be.eq("text");
         body.firstElementChild.className = "text-2";
         expect(body.firstElementChild.className).to.be.eq("text-2");
+        expect(document.getElementsByClassName("text-2").length).to.be.eq(1);
+        expect(body.getElementsByClassName("text-2").length).to.be.eq(1);
     });
 
     it('documentURI', () => {

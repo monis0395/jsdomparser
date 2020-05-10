@@ -2,6 +2,7 @@ import { Node } from "./node";
 import { DocumentMode, DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./node-contruction";
 import { URL } from "url";
+import * as legacy from "./domutils/legacy";
 
 export class Document extends Node implements DocumentProps {
     _documentURI: string;
@@ -17,11 +18,11 @@ export class Document extends Node implements DocumentProps {
     }
 
     get head() {
-        return this.documentElement.firstElementChild;
+        return this.getElementsByTagName("head")[0];
     }
 
     get body() {
-        return this.documentElement.lastElementChild;
+        return this.getElementsByTagName("body")[0];
     }
 
     createElement(lowerName: string) {
@@ -52,9 +53,20 @@ export class Document extends Node implements DocumentProps {
         return this._baseURI
     }
 
+    getElementById(id: string) {
+        return legacy.getElementById(id, this)
+    }
+
+    getElementsByName(name: string) {
+        return legacy.getElementsByName(name, this)
+    }
+
+    getElementsByClassName(names: string) {
+        return legacy.getElementsByClassName(names, this)
+    }
+
     getElementsByTagName(tagName: string) {
-        // not implemented yet
-        return [];
+        return legacy.getElementsByTagName(tagName, this, true)
     }
 
 }

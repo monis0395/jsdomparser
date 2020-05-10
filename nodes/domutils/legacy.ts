@@ -35,8 +35,6 @@ const Checks = {
     },
 };
 
-/* eslint-enable @typescript-eslint/camelcase */
-
 function getAttribCheck(
     attrib: string,
     value: undefined | string | ((value: string) => boolean),
@@ -89,6 +87,33 @@ export function getElementById(
         element,
         recurse,
     ) as Element | null;
+}
+
+export function getElementsByClassName(
+    names: string,
+    element: Node | Node[],
+    recurse = true,
+    limit = Infinity,
+): Element[] {
+    return filter(
+        getAttribCheck("class", (value) => value && value.includes(names)),
+        element,
+        recurse,
+        limit,
+    ) as Element[];
+}
+
+export function getElementsByName(
+    name: string,
+    element: Node | Node[],
+    recurse = true,
+    limit = Infinity,
+): Element[] {
+    return filter(getAttribCheck("name", name),
+        element,
+        recurse,
+        limit,
+    ) as Element[];
 }
 
 export function getElementsByTagName(
