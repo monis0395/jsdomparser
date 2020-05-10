@@ -5,13 +5,16 @@ import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
 import * as legacy from "./domutils/legacy";
+import { Style } from "./style";
 
 export class Element extends Node implements ElementProps {
     namespaceURI: string;
+    style: Style;
     attribs: GenericObjectType<any>;
 
     constructor(props: ElementProps) {
         super(props);
+        this.style = new Style(this);
     }
 
     get attributes() {
