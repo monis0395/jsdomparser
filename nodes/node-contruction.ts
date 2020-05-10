@@ -32,7 +32,14 @@ export const createDocumentFragment = function () {
     });
 };
 
-export const createElement = function (tagName: string, namespaceURI: string, attribs) {
+export const createElement = function (tagName: string, namespaceURI: string, attrs) {
+    const attribs = Object.create(null);
+
+    for (let i = 0; i < attrs.length; i++) {
+        const { name, value } = attrs[i];
+        attribs[name] = value;
+    }
+
     return new Element({
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,

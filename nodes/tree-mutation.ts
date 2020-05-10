@@ -177,10 +177,10 @@ export const insertTextBefore = function (parentNode, text, referenceNode) {
 
 export const adoptAttributes = function (recipient, attrs) {
     for (let i = 0; i < attrs.length; i++) {
-        const attrName = attrs[i].name;
+        const { name, value } = attrs[i];
 
-        if (typeof recipient.attribs[attrName] === 'undefined') {
-            recipient.attribs[attrName] = attrs[i].value;
+        if (typeof recipient.attribs[name] === 'undefined') {
+            recipient.attribs[name] = value;
         }
     }
 };

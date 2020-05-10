@@ -16,6 +16,14 @@ describe('test parse', () => {
         expect(document.body.firstElementChild.ownerDocument).to.be.eq(document);
 	});
 
+	it('className', () => {
+		const document = parseDom(`<div class="text">Hello</div>`);
+		const body = document.body;
+        expect(body.firstElementChild.className).to.be.eq("text");
+        body.firstElementChild.className = "text-2";
+        expect(body.firstElementChild.className).to.be.eq("text-2");
+    });
+
 	it('innerHtml', () => {
 		const document = parseDom(`<div class="text">Hello</div>`);
 		const body = document.body;
@@ -24,6 +32,7 @@ describe('test parse', () => {
         const innerHtml = `<div>innerText</div>`;
         body.firstElementChild.innerHtml = innerHtml;
         expect(body.firstElementChild).to.not.empty;
+        expect(body.firstElementChild.className).to.be.eq(null);
         expect(body.firstElementChild.textContent).to.be.eq("innerText");
         expect(body.firstElementChild.firstChild.textContent).to.be.eq("innerText");
         expect(body.firstElementChild.innerHtml).to.be.eq("innerText");
