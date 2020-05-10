@@ -1,4 +1,4 @@
-import doctype from "parse5/lib/common/doctype";
+import {serializeContent} from "parse5/lib/common/doctype";
 import { DocumentType } from "./documentType";
 import { createTextNode } from "./node-contruction";
 import { NodeType } from "./contracts/type";
@@ -40,7 +40,7 @@ export const getTemplateContent = function (templateElement) {
 };
 
 export const setDocumentType = function (document, name, publicId, systemId) {
-    const nodeValue = doctype.serializeContent(name, publicId, systemId);
+    const nodeValue = serializeContent(name, publicId, systemId);
     let doctypeNode = null;
 
     for (let i = 0; i < document.childNodes.length; i++) {
