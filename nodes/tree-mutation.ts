@@ -101,6 +101,57 @@ export const detachNode = function (node: Node) {
     node.parentNode = null;
 };
 
+export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: Node) {
+    const childIndex = parentNode.childNodes.indexOf(oldNode);
+    if (childIndex === -1) {
+        console.warn('replaceChild: node not found');
+    }
+    parentNode.childNodes[childIndex] = newNode;
+
+    const previousSibling = oldNode.previousSibling || null;
+    const nextSibling = oldNode.nextSibling || null;
+
+    newNode.previousSibling = previousSibling;
+    newNode.nextSibling = nextSibling;
+
+    if (previousSibling) {
+        previousSibling.nextSibling = newNode;
+    }
+    if (nextSibling) {
+        nextSibling.previousSibling = newNode;
+    }
+
+    const previousElementSibling = oldNode.previousElementSibling || null;
+    const nextElementSibling = oldNode.nextElementSibling || null;
+
+    newNode.previousElementSibling = previousElementSibling;
+    newNode.nextElementSibling = nextElementSibling;
+    if (isElementNode(newNode)) {
+        if (previousSibling) {
+            previousSibling.nextElementSibling = newNode;
+        }
+        if (nextSibling) {
+            nextSibling.previousElementSibling = newNode;
+        }
+        if (previousElementSibling) {
+            previousElementSibling.nextElementSibling = newNode;
+        }
+        if (nextSibling) {
+            nextSibling.previousElementSibling = newNode;
+        }
+        if (isElementNode(oldNode)){
+            const index = parentNode.children.indexOf(oldNode);
+            if (index !== -1) {
+                parentNode.children[index] = newNode;
+            }
+        } else {
+            parentNode.children[parentNode.children.length] = newNode;
+        }
+    }
+    newNode.parentNode = oldNode.parentNode;
+    newNode.setOwnerDocument(parentNode.ownerDocument);
+};
+
 export const insertText = function (parentNode: Node, text: string) {
     const lastChild = parentNode.lastChild;
 
