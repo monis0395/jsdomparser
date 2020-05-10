@@ -1,3 +1,4 @@
+// @ts-ignore
 import {parse} from "parse5"
 import * as parser from "./nodes/main"
 

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { DOCUMENT_MODE } from 'parse5/lib/common/html';
 import { NodeType } from "./contracts/type";
 import { Node } from "./node";

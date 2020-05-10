@@ -9,6 +9,8 @@ export interface NodeProps {
 	parentNode: NodeProps | null;
 	previousSibling: NodeProps | null;
 	nextSibling: NodeProps | null;
+    previousElementSibling?: NodeProps | null;
+	nextElementSibling?: NodeProps | null;
 	nodeValue?: string;
 }
 

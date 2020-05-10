@@ -1,3 +1,4 @@
+// @ts-ignore
 import { serializeContent } from "parse5/lib/common/doctype";
 import { DocumentType } from "./documentType";
 import { createTextNode } from "./node-contruction";
@@ -10,6 +11,20 @@ export const appendChild = function (parentNode: Node, newNode: Node) {
     if (lastChild) {
         lastChild.nextSibling = newNode;
         newNode.previousSibling = lastChild;
+    }
+
+    const lastElement = parentNode.lastElementChild;
+    newNode.previousElementSibling = lastElement;
+
+    if (newNode.nodeType === NodeType.ELEMENT_NODE) {
+        // @ts-ignore
+        parentNode.children.push(newNode);
+        if (lastElement) {
+            lastElement.nextElementSibling = newNode;
+        }
+        if (lastChild) {
+            lastChild.nextElementSibling = newNode;
+        }
     }
 
     parentNode.childNodes.push(newNode);
@@ -90,9 +105,8 @@ export const detachNode = function (node: Node) {
     const idx = node.parentNode.childNodes.indexOf(node);
     const prev = node.previousSibling;
     const next = node.nextSibling;
-
-    node.previousSibling = null;
-    node.nextSibling = null;
+    const prevElement = node.previousElementSibling || null;
+    const nextElement = node.nextElementSibling || null;
 
     if (prev) {
         prev.nextSibling = next;
@@ -101,6 +115,21 @@ export const detachNode = function (node: Node) {
     if (next) {
         next.previousSibling = prev;
     }
+
+    if (node.nodeType === NodeType.ELEMENT_NODE) {
+        if (prevElement) {
+            prevElement.nextElementSibling = nextElement;
+        }
+        if (nextElement) {
+            nextElement.previousElementSibling = prevElement;
+        }
+        node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
+    }
+
+    node.previousSibling = null;
+    node.nextSibling = null;
+    node.previousElementSibling = null;
+    node.nextElementSibling = null;
 
     node.parentNode.childNodes.splice(idx, 1);
     node.parentNode = null;

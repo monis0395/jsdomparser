@@ -17,6 +17,8 @@ export class Node implements NodeProps {
 	parentNode: NodeProps;
 	previousSibling: NodeProps;
 	nextSibling: NodeProps;
+    previousElementSibling?: NodeProps | null;
+    nextElementSibling?: NodeProps | null;
 	nodeValue: string;
 
 	constructor(props: NodeProps) {
