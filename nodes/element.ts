@@ -3,6 +3,7 @@ import { ElementProps } from "./contracts/type";
 import { appendChild, detachNode } from "./tree-mutation";
 import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
+import { parseDom, serializeDom } from "../index";
 
 export class Element extends Node {
     attribs: GenericObjectType<any>;
@@ -39,6 +40,24 @@ export class Element extends Node {
 
     removeChild(node) {
         detachNode(node);
+    }
+
+    get innerHtml() {
+        return serializeDom(this)
+    }
+
+    set innerHtml(htmlString: string) {
+        const document = parseDom(htmlString);
+        const node = document.body.firstChild;
+        for (let i = this.childNodes.length; --i >= 0;) {
+            this.childNodes[i].parentNode = null;
+        }
+        for (const key of Object.keys(node)) {
+            this[key] = node[key];
+        }
+        for (let i = this.childNodes.length; --i >= 0;) {
+            this.childNodes[i].parentNode = this;
+        }
     }
 }
 

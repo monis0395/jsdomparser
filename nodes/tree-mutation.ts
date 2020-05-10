@@ -7,6 +7,7 @@ import { Node } from "./node";
 import { Element } from "./element";
 
 export const appendChild = function (parentNode: Node, newNode: Node | Element) {
+    detachNode(newNode);
     const lastChild = parentNode.lastChild;
 
     if (lastChild) {
@@ -33,6 +34,7 @@ export const appendChild = function (parentNode: Node, newNode: Node | Element) 
 };
 
 export const insertBefore = function (parentNode: Node, newNode: Node, referenceNode: Node) {
+    detachNode(newNode);
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
     const prev = referenceNode.previousSibling;
     const prevElement = referenceNode.previousElementSibling || null;

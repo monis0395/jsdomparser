@@ -1,5 +1,6 @@
 import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
+import { createTextNode } from "./node-contruction";
 
 export class Node implements NodeProps {
     type: string;
@@ -46,11 +47,40 @@ export class Node implements NodeProps {
     }
 
     get textContent() {
-        return this.nodeValue;
+        if (this.nodeType === NodeType.TEXT_NODE) {
+            return this.nodeValue;
+        }
+
+        function getText(node) {
+            node.childNodes.forEach((child) => {
+                if (child.nodeType === NodeType.TEXT_NODE) {
+                    text.push(child.nodeValue);
+                } else {
+                    getText(child);
+                }
+            });
+        }
+
+        const text = [];
+        getText(this);
+        return text.join("");
     }
 
     set textContent(data: string) {
-        this.nodeValue = data;
+        if (this.nodeType === NodeType.TEXT_NODE) {
+            this.nodeValue = data;
+            return;
+        }
+
+        // clear parentNodes for existing children
+        for (let i = this.childNodes.length; --i >= 0;) {
+            this.childNodes[i].parentNode = null;
+        }
+
+        const node = createTextNode(data);
+        this.childNodes = [ node ];
+        this.children = [];
+        node.parentNode = this;
     }
 
     get ownerDocument() {

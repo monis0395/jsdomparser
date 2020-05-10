@@ -12,6 +12,14 @@ export class Document extends Node {
         return this.firstElementChild;
     }
 
+    get head() {
+        return this.firstElementChild.firstElementChild;
+    }
+
+    get body() {
+        return this.firstElementChild.lastElementChild;
+    }
+
     createElement(lowerName: string) {
         return createElement(lowerName, "", []);
     }
