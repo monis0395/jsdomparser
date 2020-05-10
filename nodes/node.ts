@@ -1,6 +1,7 @@
 import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
 import { Document } from "./document";
+import { isDocument, isElementNode, isTextNode } from "./node-types";
 
 export class Node implements NodeProps {
     type: string;
@@ -14,14 +15,14 @@ export class Node implements NodeProps {
     previousElementSibling?: Node;
     nextElementSibling?: Node;
     nodeValue: string;
-    private _ownerDocument: Node;
+    private _ownerDocument: Document;
 
     constructor(props: NodeProps) {
         for (const key of Object.keys(props)) {
             this[key] = props[key];
         }
         this.childNodes = this.childNodes || [];
-        this.children = this.childNodes.filter((node) => node.nodeType === NodeType.ELEMENT_NODE) as Element[];
+        this.children = this.childNodes.filter(isElementNode);
     }
 
     get firstChild() {
@@ -53,7 +54,7 @@ export class Node implements NodeProps {
 
         function getText(node) {
             node.childNodes.forEach((child) => {
-                if (child.nodeType === NodeType.TEXT_NODE) {
+                if (isTextNode(child)) {
                     text.push(child.nodeValue);
                 } else {
                     getText(child);
@@ -67,7 +68,7 @@ export class Node implements NodeProps {
     }
 
     set textContent(data: string) {
-        if (this.nodeType === NodeType.TEXT_NODE) {
+        if (isTextNode(this)) {
             this.nodeValue = data;
             return;
         }
@@ -76,29 +77,28 @@ export class Node implements NodeProps {
         for (let i = this.childNodes.length; --i >= 0;) {
             this.childNodes[i].parentNode = null;
         }
-        const document = this.ownerDocument as Document;
-        const node = document.createTextNode(data);
+        const node = this.ownerDocument.createTextNode(data);
         this.childNodes = [node];
         this.children = [];
         node.parentNode = this;
     }
 
-    get ownerDocument() {
+    get ownerDocument(): Document {
         if (this._ownerDocument) {
             return this._ownerDocument
         }
-        if (this.nodeType === NodeType.DOCUMENT_NODE) {
+        if (isDocument(this)) {
             this._ownerDocument = null;
             return this._ownerDocument;
         }
-        if (this.parentNode.nodeType === NodeType.DOCUMENT_NODE) {
+        if (isDocument(this.parentNode)) {
             this._ownerDocument = this.parentNode;
             return this._ownerDocument;
         }
         return null;
     }
 
-    setOwnerDocument(node: Node) {
+    setOwnerDocument(node: Document) {
         this._ownerDocument = node;
     }
 }

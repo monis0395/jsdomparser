@@ -10,7 +10,6 @@ export class Element extends Node {
 
     constructor(props: ElementProps) {
         super(props);
-        this.attribs = this.attribs || {};
     }
 
     get attributes() {

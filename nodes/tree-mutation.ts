@@ -1,10 +1,7 @@
-// @ts-ignore
-import { serializeContent } from "parse5/lib/common/doctype";
-import { DocumentType } from "./documentType";
 import { createTextNode } from "./node-contruction";
-import { DocumentProps, NodeType } from "./contracts/type";
 import { Node } from "./node";
 import { Element } from "./element";
+import { isElementNode, isTextNode } from "./node-types";
 
 export const appendChild = function (parentNode: Node, newNode: Node | Element) {
     detachNode(newNode);
@@ -18,7 +15,7 @@ export const appendChild = function (parentNode: Node, newNode: Node | Element) 
     const lastElement = parentNode.lastElementChild;
     newNode.previousElementSibling = lastElement;
 
-    if (newNode instanceof Element) {
+    if (isElementNode(newNode)) {
         parentNode.children.push(newNode);
         if (lastElement) {
             lastElement.nextElementSibling = newNode;
@@ -44,19 +41,18 @@ export const insertBefore = function (parentNode: Node, newNode: Node, reference
         newNode.previousSibling = prev;
     }
 
-    if (newNode instanceof Element && referenceNode instanceof Element) {
-        const insertionIdx = parentNode.children.indexOf(referenceNode);
+    if (isElementNode(newNode)) {
         if (prevElement) {
             prevElement.nextElementSibling = newNode;
             newNode.previousElementSibling = prevElement;
         }
-
         referenceNode.previousElementSibling = newNode;
-        if (referenceNode.nodeType === NodeType.ELEMENT_NODE) {
+
+        if (isElementNode(referenceNode)) {
             newNode.nextElementSibling = referenceNode;
+            const insertionIdx = parentNode.children.indexOf(referenceNode);
+            parentNode.children.splice(insertionIdx, 0, newNode);
         }
-        // @ts-ignore
-        parentNode.children.splice(insertionIdx, 0, newNode);
     }
 
     referenceNode.previousSibling = newNode;
@@ -65,57 +61,6 @@ export const insertBefore = function (parentNode: Node, newNode: Node, reference
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
-};
-
-export const setTemplateContent = function (templateElement, contentElement) {
-    appendChild(templateElement, contentElement);
-};
-
-export const getTemplateContent = function (templateElement) {
-    return templateElement.childNodes[0];
-};
-
-export const setDocumentType = function (document, name, publicId, systemId) {
-    const nodeValue = serializeContent(name, publicId, systemId);
-    let doctypeNode = null;
-
-    for (let i = 0; i < document.childNodes.length; i++) {
-        if (document.childNodes[i].type === 'directive' && document.childNodes[i].localName === '!doctype') {
-            doctypeNode = document.childNodes[i];
-            break;
-        }
-    }
-
-    if (doctypeNode) {
-        doctypeNode.nodeValue = nodeValue;
-        doctypeNode.name = name;
-        doctypeNode.publicId = publicId;
-        doctypeNode.systemId = systemId;
-    } else {
-        appendChild(
-            document,
-            new DocumentType({
-                type: 'directive',
-                nodeType: NodeType.DOCUMENT_TYPE_NODE,
-                localName: '!doctype',
-                parentNode: null,
-                previousSibling: null,
-                nextSibling: null,
-                nodeValue,
-                name,
-                publicId,
-                systemId,
-            }),
-        );
-    }
-};
-
-export const setDocumentMode = function (document: DocumentProps, mode: string) {
-    document.mode = mode;
-};
-
-export const getDocumentMode = function (document: DocumentProps) {
-    return document.mode;
 };
 
 export const detachNode = function (node: Node) {
@@ -136,7 +81,7 @@ export const detachNode = function (node: Node) {
         next.previousSibling = prev;
     }
 
-    if (node instanceof Element) {
+    if (isElementNode(node)) {
         if (prevElement) {
             prevElement.nextElementSibling = nextElement;
         }
@@ -158,7 +103,7 @@ export const detachNode = function (node: Node) {
 export const insertText = function (parentNode, text) {
     const lastChild = parentNode.lastChild;
 
-    if (lastChild && lastChild.type === 'text') {
+    if (lastChild && isTextNode(lastChild)) {
         lastChild.nodeValue += text;
     } else {
         appendChild(parentNode, createTextNode(text));
@@ -168,11 +113,19 @@ export const insertText = function (parentNode, text) {
 export const insertTextBefore = function (parentNode, text, referenceNode) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
-    if (prevNode && prevNode.type === 'text') {
+    if (prevNode && isTextNode(prevNode)) {
         prevNode.nodeValue += text;
     } else {
         insertBefore(parentNode, createTextNode(text), referenceNode);
     }
+};
+
+export const setTemplateContent = function (templateElement, contentElement) {
+    appendChild(templateElement, contentElement);
+};
+
+export const getTemplateContent = function (templateElement) {
+    return templateElement.childNodes[0];
 };
 
 export const adoptAttributes = function (recipient, attrs) {

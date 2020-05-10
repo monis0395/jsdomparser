@@ -25,3 +25,11 @@ export const getDocumentTypeNodePublicId = function (doctypeNode) {
 export const getDocumentTypeNodeSystemId = function (doctypeNode) {
     return doctypeNode.systemId;
 };
+
+export const setDocumentMode = function (document, mode) {
+    document.mode = mode;
+};
+
+export const getDocumentMode = function (document) {
+    return document.mode;
+};
