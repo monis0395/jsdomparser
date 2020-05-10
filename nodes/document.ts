@@ -16,11 +16,11 @@ export class Document extends Node {
     }
 
     get head() {
-        return this.firstElementChild.firstElementChild;
+        return this.documentElement.firstElementChild;
     }
 
     get body() {
-        return this.firstElementChild.lastElementChild;
+        return this.documentElement.lastElementChild;
     }
 
     createElement(lowerName: string) {
