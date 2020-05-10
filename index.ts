@@ -1,11 +1,11 @@
-// @ts-ignore
 import { parse, serialize } from "parse5"
 import * as parser from "./nodes/main"
 import { Node } from "./nodes/node";
 import { Options } from "./types/types";
+import { Document } from "./nodes/document";
 
 export function parseDom(rawHTML, options?: Options) {
-    const document = parse(rawHTML, { treeAdapter: parser });
+    const document = parse(rawHTML, { treeAdapter: parser }) as Document;
     if (options && options.url) {
         document._documentURI = options.url;
     }

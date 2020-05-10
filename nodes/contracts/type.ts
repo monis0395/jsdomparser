@@ -1,4 +1,5 @@
 import { GenericObjectType } from "../../types/types";
+import { DocumentMode } from "parse5";
 
 export interface NodeProps {
     type: string;
@@ -22,7 +23,7 @@ export interface ElementProps extends NodeProps {
 
 export interface DocumentProps extends NodeProps {
     nodeType: NodeType.DOCUMENT_NODE
-    mode: string
+    mode: DocumentMode
 }
 
 export interface DocumentTypeProps extends NodeProps {
