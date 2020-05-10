@@ -5,7 +5,8 @@ import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
 
-export class Element extends Node {
+export class Element extends Node implements ElementProps {
+    namespaceURI: string;
     attribs: GenericObjectType<any>;
 
     constructor(props: ElementProps) {

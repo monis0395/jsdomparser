@@ -1,14 +1,13 @@
 // @ts-ignore
 import { serializeContent } from "parse5/lib/common/doctype";
-// @ts-ignore
-import { DOCUMENT_MODE } from 'parse5/lib/common/html';
-import { NodeType } from "./contracts/type";
+import { DocumentMode, NodeType } from "./contracts/type";
 import { Node } from "./node";
 import { Document } from "./document";
 import { Element } from "./element";
 import { isDocumentTypeNode } from "./node-types";
 import { DocumentType } from "./documentType";
 import { appendChild } from "./tree-mutation";
+import { Attribute } from "parse5";
 
 export const createDocument = function () {
     return new Document({
@@ -20,7 +19,7 @@ export const createDocument = function () {
         nextSibling: null,
         childNodes: [],
         children: [],
-        mode: DOCUMENT_MODE.NO_QUIRKS,
+        mode: DocumentMode.NO_QUIRKS,
     });
 };
 
@@ -37,7 +36,7 @@ export const createDocumentFragment = function () {
     });
 };
 
-export const createElement = function (tagName: string, namespaceURI: string, attrs) {
+export const createElement = function (tagName: string, namespaceURI: string, attrs: Attribute[]) {
     const attribs = Object.create(null);
 
     for (let i = 0; i < attrs.length; i++) {
@@ -59,13 +58,14 @@ export const createElement = function (tagName: string, namespaceURI: string, at
     });
 };
 
-export const setDocumentType = function (document, name, publicId, systemId) {
+export const setDocumentType = function (document: Document, name: string, publicId: string, systemId: string) {
     const nodeValue = serializeContent(name, publicId, systemId);
-    let doctypeNode = null;
+    let doctypeNode: DocumentType = null;
 
     for (let i = 0; i < document.childNodes.length; i++) {
-        if (isDocumentTypeNode(document.childNodes[i])) {
-            doctypeNode = document.childNodes[i];
+        const node = document.childNodes[i];
+        if (isDocumentTypeNode(node)) {
+            doctypeNode = node;
             break;
         }
     }
@@ -94,7 +94,7 @@ export const setDocumentType = function (document, name, publicId, systemId) {
     }
 };
 
-export const createCommentNode = function (data) {
+export const createCommentNode = function (data: string) {
     return new Node({
         type: 'comment',
         nodeType: NodeType.COMMENT_NODE,
@@ -105,7 +105,7 @@ export const createCommentNode = function (data) {
     });
 };
 
-export const createTextNode = function (data) {
+export const createTextNode = function (data: string) {
     return new Node({
         type: 'text',
         nodeType: NodeType.TEXT_NODE,

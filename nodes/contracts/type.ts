@@ -1,5 +1,4 @@
 import { GenericObjectType } from "../../types/types";
-import { DocumentMode } from "parse5";
 
 export interface NodeProps {
     type: string;
@@ -16,18 +15,15 @@ export interface NodeProps {
 }
 
 export interface ElementProps extends NodeProps {
-    nodeType: NodeType.ELEMENT_NODE
     namespaceURI: string;
     attribs: GenericObjectType<any>
 }
 
 export interface DocumentProps extends NodeProps {
-    nodeType: NodeType.DOCUMENT_NODE
     mode: DocumentMode
 }
 
 export interface DocumentTypeProps extends NodeProps {
-    nodeType: NodeType.DOCUMENT_TYPE_NODE
     name: string
     publicId: string
     systemId: string
@@ -40,4 +36,10 @@ export enum NodeType {
     DOCUMENT_NODE = 9,
     DOCUMENT_TYPE_NODE = 10,
     DOCUMENT_FRAGMENT_NODE = 11,
+}
+
+export enum DocumentMode {
+    NO_QUIRKS = 'no-quirks',
+    QUIRKS = 'quirks',
+    LIMITED_QUIRKS = 'limited-quirks'
 }

@@ -1,11 +1,12 @@
 import { Node } from "./node";
-import { DocumentProps } from "./contracts/type";
+import { DocumentMode, DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./node-contruction";
 import { URL } from "url";
 
-export class Document extends Node {
+export class Document extends Node implements DocumentProps {
     _documentURI: string;
     _baseURI: string;
+    mode: DocumentMode;
 
     constructor(props: DocumentProps) {
         super(props);
