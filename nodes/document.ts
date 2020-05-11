@@ -54,19 +54,19 @@ export class Document extends Node implements DocumentProps {
     }
 
     getElementById(id: string) {
-        return legacy.getElementById(id, this)
+        return legacy.getElementById(id, this.childNodes)
     }
 
     getElementsByName(name: string) {
-        return legacy.getElementsByName(name, this)
+        return legacy.getElementsByName(name, this.childNodes)
     }
 
     getElementsByClassName(names: string) {
-        return legacy.getElementsByClassName(names, this)
+        return legacy.getElementsByClassName(names, this.childNodes)
     }
 
     getElementsByTagName(tagName: string) {
-        return legacy.getElementsByTagName(tagName, this, true)
+        return legacy.getElementsByTagName(tagName, this.childNodes, true)
     }
 
 }

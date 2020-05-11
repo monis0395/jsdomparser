@@ -3,6 +3,8 @@ import { Element } from "./element";
 import { Document } from "./document";
 import { isDocument, isElementNode, isTextNode } from "./node-types";
 import { appendChild, detachNode, replaceChild } from "./tree-mutation";
+// @ts-ignore
+import { unescape} from 'html-escaper';
 
 export class Node implements NodeProps {
     type: string;
@@ -56,7 +58,7 @@ export class Node implements NodeProps {
         function getText(node) {
             node.childNodes.forEach((child) => {
                 if (isTextNode(child)) {
-                    text.push(child.nodeValue);
+                    text.push(unescape(child.nodeValue));
                 } else {
                     getText(child);
                 }
@@ -108,11 +110,11 @@ export class Node implements NodeProps {
     }
 
     removeChild(node: Node) {
-        detachNode(node);
+        return detachNode(node);
     }
 
-    replaceChild(oldNode: Node, newNode: Node) {
-        replaceChild(this, oldNode, newNode);
+    replaceChild(newNode: Node, oldNode: Node) {
+        return replaceChild(this, oldNode, newNode);
     }
 }
 

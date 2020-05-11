@@ -4,7 +4,8 @@ import { Element } from "./element";
 import { isElementNode, isTextNode } from "./node-types";
 import { Attribute } from "parse5";
 
-export const appendChild = function (parentNode: Node, newNode: Node | Element) {
+
+export const appendChild = function (parentNode: Node, newNode: Node) {
     detachNode(newNode);
     const lastChild = parentNode.lastChild;
 
@@ -99,6 +100,7 @@ export const detachNode = function (node: Node) {
 
     node.parentNode.childNodes.splice(idx, 1);
     node.parentNode = null;
+    return node;
 };
 
 export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: Node) {
@@ -139,7 +141,7 @@ export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: 
         if (nextSibling) {
             nextSibling.previousElementSibling = newNode;
         }
-        if (isElementNode(oldNode)){
+        if (isElementNode(oldNode)) {
             const index = parentNode.children.indexOf(oldNode);
             if (index !== -1) {
                 parentNode.children[index] = newNode;
@@ -150,6 +152,7 @@ export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: 
     }
     newNode.parentNode = oldNode.parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
+    return oldNode;
 };
 
 export const insertText = function (parentNode: Node, text: string) {

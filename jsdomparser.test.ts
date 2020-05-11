@@ -19,7 +19,7 @@ describe("Test JSDOM functionality", function() {
   }
   it("should work for basic operations using the parent child hierarchy and innerHTML", function() {
     expect(baseDoc.childNodes.length).eql(1);
-    expect(baseDoc.getElementsByTagName("*").length).eql(10);
+    expect(baseDoc.getElementsByTagName("*").length).eql(11);// head was not counted
     var foo = baseDoc.getElementById("foo");
     expect(foo.parentNode.localName).eql("body");
     nodeExpect(baseDoc.body, foo.parentNode);

@@ -66,11 +66,11 @@ export class Element extends Node implements ElementProps {
     }
 
     getElementsByClassName(names: string) {
-        return legacy.getElementsByClassName(names, this)
+        return legacy.getElementsByClassName(names, this.childNodes)
     }
 
     getElementsByTagName(tagName: string) {
-        return legacy.getElementsByTagName(tagName, this, true)
+        return legacy.getElementsByTagName(tagName, this.childNodes, true)
     }
 }
 

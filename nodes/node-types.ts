@@ -16,9 +16,9 @@ export const isDocumentTypeNode = function (node: Node): node is DocumentType {
     return node.nodeType === NodeType.DOCUMENT_TYPE_NODE;
 };
 
-export const isElementNode = function (node: Node): node is Element {
+export function isElementNode(node: Node): node is Element {
     return node.nodeType === NodeType.ELEMENT_NODE;
-};
+}
 
 export const isDocument = function (node: Node): node is Document {
     return node.nodeType === NodeType.DOCUMENT_NODE;
