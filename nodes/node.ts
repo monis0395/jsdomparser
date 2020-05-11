@@ -4,7 +4,7 @@ import { Document } from "./document";
 import { isDocument, isElementNode, isTextNode } from "./node-types";
 import { appendChild, detachNode, replaceChild } from "./tree-mutation";
 // @ts-ignore
-import { unescape} from 'html-escaper';
+import { unescape } from 'html-escaper';
 
 export class Node implements NodeProps {
     type: string;
@@ -18,12 +18,14 @@ export class Node implements NodeProps {
     previousElementSibling?: Node;
     nextElementSibling?: Node;
     nodeValue: string;
+    private _tagName: string;
     private _ownerDocument: Document;
 
     constructor(props: NodeProps) {
         for (const key of Object.keys(props)) {
             this[key] = props[key];
         }
+        this.localName = (this.localName || "").toLowerCase();
         this.childNodes = this.childNodes || [];
         this.children = this.childNodes.filter(isElementNode);
     }
@@ -47,7 +49,11 @@ export class Node implements NodeProps {
     }
 
     get tagName() {
-        return this.localName.toUpperCase();
+        if (this._tagName) {
+            return this._tagName;
+        }
+        this._tagName = this.localName.toUpperCase();
+        return this._tagName;
     }
 
     get textContent() {
