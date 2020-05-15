@@ -14,6 +14,8 @@ describe("Test JSDOM functionality", function () {
         try {
             expect(actual).eql(expected);
         } catch (ex) {
+            debugger;
+            console.error(ex);
             throw ex.message;
         }
     }

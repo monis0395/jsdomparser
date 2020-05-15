@@ -4,6 +4,13 @@ import { Element } from "./element";
 import { isElementNode, isTextNode } from "./node-types";
 import { Attribute } from "parse5";
 
+function resetNode(node: Node) {
+    node.previousSibling = null;
+    node.nextSibling = null;
+    node.previousElementSibling = null;
+    node.nextElementSibling = null;
+    node.parentNode = null;
+}
 
 export const appendChild = function (parentNode: Node, newNode: Node) {
     detachNode(newNode);
@@ -93,13 +100,8 @@ export const detachNode = function (node: Node) {
         node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
     }
 
-    node.previousSibling = null;
-    node.nextSibling = null;
-    node.previousElementSibling = null;
-    node.nextElementSibling = null;
-
     node.parentNode.childNodes.splice(idx, 1);
-    node.parentNode = null;
+    resetNode(node);
     return node;
 };
 
@@ -108,6 +110,7 @@ export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: 
     if (childIndex === -1) {
         console.warn('replaceChild: node not found');
     }
+    detachNode(newNode);
     parentNode.childNodes[childIndex] = newNode;
 
     const previousSibling = oldNode.previousSibling || null;
@@ -138,20 +141,33 @@ export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: 
         if (previousElementSibling) {
             previousElementSibling.nextElementSibling = newNode;
         }
-        if (nextSibling) {
-            nextSibling.previousElementSibling = newNode;
+        if (nextElementSibling) {
+            nextElementSibling.previousElementSibling = newNode;
         }
         if (isElementNode(oldNode)) {
-            const index = parentNode.children.indexOf(oldNode);
-            if (index !== -1) {
-                parentNode.children[index] = newNode;
-            }
+            parentNode.children[parentNode.children.indexOf(oldNode)] = newNode;
         } else {
-            parentNode.children[parentNode.children.length] = newNode;
+            const insertionIdx = parentNode.children.indexOf(newNode.nextElementSibling);
+            if (insertionIdx !== -1) {
+                parentNode.children.splice(insertionIdx, 0, newNode);
+            } else {
+                parentNode.children.push(newNode);
+            }
         }
     }
+    if (!isElementNode(newNode) && isElementNode(oldNode)) {
+        if (previousElementSibling) {
+            previousElementSibling.nextElementSibling = nextElementSibling;
+        }
+        if (nextElementSibling) {
+            nextElementSibling.previousElementSibling = previousElementSibling;
+        }
+        oldNode.parentNode.children.splice(oldNode.parentNode.children.indexOf(oldNode), 1);
+    }
+
     newNode.parentNode = oldNode.parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
+    resetNode(oldNode);
     return oldNode;
 };
 

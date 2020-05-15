@@ -12,11 +12,11 @@ export class Node implements NodeProps {
     localName: string;
     childNodes: Node[];
     children: Element[];
-    parentNode: Node;
-    previousSibling: Node;
-    nextSibling: Node;
-    previousElementSibling?: Node;
-    nextElementSibling?: Node;
+    parentNode: Node = null;
+    previousSibling: Node = null;
+    nextSibling: Node = null;
+    previousElementSibling?: Element = null;
+    nextElementSibling?: Element = null;
     nodeValue: string;
     private _tagName: string;
     private _ownerDocument: Document;
@@ -125,5 +125,5 @@ export class Node implements NodeProps {
 }
 
 for (const nodeType in NodeType) {
-    Node.prototype[nodeType] = NodeType[nodeType];
+    Node[nodeType] =Node.prototype[nodeType] = NodeType[nodeType];
 }
