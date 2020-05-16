@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "HTML parser and serializer with DOM APIs",
   "author": "Monis Qadri monis0395@gmail.com https://github.com/monis0395",
-  "contributors": [],
+  "contributors": [
+    "https://github.com/monis0395/jsdomparser/graphs/contributors"
+  ],
   "homepage": "",
   "keywords": [
     "jsdomparser",

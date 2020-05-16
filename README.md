@@ -62,7 +62,7 @@ export interface Document {
     getElementsByTagName(tagName: string): Element[];
 }
 
-`export interface Element {
+export interface Element {
     attributes: Attribute[]
     style: Style;
     className: string;
