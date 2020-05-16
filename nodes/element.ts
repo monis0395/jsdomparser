@@ -1,6 +1,5 @@
 import { Node } from "./node";
 import { ElementProps } from "./contracts/type";
-
 import { getAttrList } from "./tree-traversing";
 import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
@@ -42,7 +41,7 @@ export class Element extends Node implements ElementProps {
     }
 
     hasAttribute(name: string) {
-        return !!(this.attribs[name] || null);
+        return this.getAttribute(name) !== null;
     }
 
     setAttribute(name: string, value: string) {

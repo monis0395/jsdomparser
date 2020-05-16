@@ -4,7 +4,7 @@ import { Node } from "./nodes/node";
 import { Options } from "./types/types";
 import { Document } from "./nodes/document";
 
-export function parseDom(rawHTML, options?: Options) {
+export function parseDom(rawHTML: string, options?: Options) {
     const document = parse(rawHTML, { treeAdapter: parser }) as Document;
     if (options && options.url) {
         document._documentURI = options.url;

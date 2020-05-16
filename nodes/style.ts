@@ -11,7 +11,7 @@ export class Style {
         this.node = node;
     }
 
-    public getStyle(styleName: string) {
+    public getStyle(styleName: string): string | undefined {
         const attr = this.node.getAttribute('style');
         if (!attr)
             return undefined;
