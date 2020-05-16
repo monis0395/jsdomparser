@@ -4,7 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register **/*.test.ts"
+    "test": "mocha -r ts-node/register **/*.test.ts",
+    "prebuild": "npm run test",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
