@@ -8,7 +8,7 @@ export function isTextNode(node: Node) {
     return node.nodeType === NodeType.TEXT_NODE;
 }
 
-export function isCommentNode(node: Node) {
+export function isCommentNode(node: Node): node is Node {
     return node.nodeType === NodeType.COMMENT_NODE;
 }
 

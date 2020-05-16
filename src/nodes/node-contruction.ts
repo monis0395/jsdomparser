@@ -8,6 +8,7 @@ import { isDocumentTypeNode } from "./node-types";
 import { DocumentType } from "./documentType";
 import { appendChild } from "./tree-mutation";
 import { Attribute } from "parse5";
+import { GenericObjectType } from "../types/types";
 
 export const createDocument = () => {
     return new Document({
@@ -36,12 +37,16 @@ export const createDocumentFragment = () => {
     });
 };
 
-export const createElement = (tagName: string, namespaceURI: string, attrs: Attribute[]) => {
-    const attribs = Object.create(null);
+export const createElement = (tagName: string, namespaceURI: string, attrs: Attribute[] | GenericObjectType<string>) => {
+    let attribs = Object.create(null);
 
-    for (const { name, value } of attrs) {
-        // right now optional params are missing for attributes
-        attribs[name] = value;
+    if (Array.isArray(attrs)) {
+        for (const { name, value } of attrs) {
+            // right now optional params are missing for attributes
+            attribs[name] = value;
+        }
+    } else {
+        attribs = attrs
     }
 
     return new Element({
@@ -77,20 +82,24 @@ export const setDocumentType = (document: Document, name: string, publicId: stri
     } else {
         appendChild(
             document,
-            new DocumentType({
-                type: 'directive',
-                nodeType: NodeType.DOCUMENT_TYPE_NODE,
-                localName: '!doctype',
-                parentNode: null,
-                previousSibling: null,
-                nextSibling: null,
-                nodeValue,
-                name,
-                publicId,
-                systemId,
-            }),
+            createDirectiveNode(name, nodeValue, publicId, systemId),
         );
     }
+};
+
+export const createDirectiveNode = (name: string, nodeValue: string, publicId?: string, systemId?: string) => {
+    return new DocumentType({
+        type: 'directive',
+        nodeType: NodeType.DOCUMENT_TYPE_NODE,
+        localName: '!doctype',
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
+        nodeValue,
+        name,
+        publicId,
+        systemId,
+    });
 };
 
 export const createCommentNode = (data: string) => {
