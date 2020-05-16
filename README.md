@@ -73,6 +73,7 @@ export interface Element {
     getAttribute(name: string): string | null
     hasAttribute(name: string): boolean
     setAttribute(name: string, value: string)
+    removeAttribute(name: string)
     innerHTML: string;
     getElementsByClassName(names: string): Element[];
     getElementsByTagName(tagName: string): Element[];

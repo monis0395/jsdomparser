@@ -49,6 +49,11 @@ export class Element extends Node implements ElementProps {
         return value;
     }
 
+    removeAttribute(name: string) {
+        delete this.attribs[name];
+    }
+
+
     get innerHTML() {
         return serializeDom(this)
     }
