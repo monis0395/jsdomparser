@@ -258,15 +258,15 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
         var _a;
         const result = [];
         const stack = nodes.filter(node_types_1.isElementNode);
-        let elem;
-        // tslint:disable-next-line:no-conditional-assignment
-        while ((elem = stack.shift())) {
+        let elem = stack.shift();
+        while (elem) {
             const children = (_a = elem.childNodes) === null || _a === void 0 ? void 0 : _a.filter(node_types_1.isElementNode);
             if (children && children.length > 0) {
                 stack.unshift(...children);
             }
             if (test(elem))
                 result.push(elem);
+            elem = stack.shift();
         }
         return result;
     }
@@ -577,7 +577,6 @@ define("nodes/style", ["require", "exports"], function (require, exports) {
         'zoom': 'zoom'
     };
     // For each item in styleMap, define a getter and setter on the style property.
-    // tslint:disable-next-line:forin
     for (const jsName in styleMap) {
         // @ts-ignore
         const cssName = styleMap[jsName];
@@ -961,7 +960,6 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
         }
     }
     exports.Node = Node;
-    // tslint:disable-next-line:forin
     for (const nodeType in type_2.NodeType) {
         // @ts-ignore
         Node[nodeType] = Node.prototype[nodeType] = type_2.NodeType[nodeType];

@@ -126,7 +126,6 @@ export class Node implements NodeProps {
     }
 }
 
-// tslint:disable-next-line:forin
 for (const nodeType in NodeType) {
     // @ts-ignore
     Node[nodeType] =Node.prototype[nodeType] = NodeType[nodeType];

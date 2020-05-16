@@ -238,7 +238,6 @@ const styleMap = {
 };
 
 // For each item in styleMap, define a getter and setter on the style property.
-// tslint:disable-next-line:forin
 for (const jsName in styleMap) {
     // @ts-ignore
     const cssName: string = styleMap[jsName] as string;

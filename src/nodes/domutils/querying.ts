@@ -127,14 +127,14 @@ export function findAll(
 ): Element[] {
     const result: Element[] = [];
     const stack = nodes.filter(isTag);
-    let elem;
-    // tslint:disable-next-line:no-conditional-assignment
-    while ((elem = stack.shift())) {
+    let elem = stack.shift();
+    while (elem) {
         const children = elem.childNodes?.filter(isTag);
         if (children && children.length > 0) {
             stack.unshift(...children);
         }
         if (test(elem)) result.push(elem);
+        elem = stack.shift()
     }
     return result;
 }

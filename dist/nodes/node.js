@@ -102,7 +102,6 @@ class Node {
     }
 }
 exports.Node = Node;
-// tslint:disable-next-line:forin
 for (const nodeType in type_1.NodeType) {
     // @ts-ignore
     Node[nodeType] = Node.prototype[nodeType] = type_1.NodeType[nodeType];
