@@ -1,10 +1,10 @@
 const path = require("path");
-const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
+// const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
 
 const config = {
     entry: "./index.ts",
     output: {
-        filename: "jsdomparser.js",
+        filename: "index.js",
         path: path.resolve(__dirname, "dist")
     },
     module: {
@@ -17,11 +17,8 @@ const config = {
     resolve: {
         extensions: [".tsx", ".ts", ".jsx", ".js"]
     },
-    optimization: {
-        minimize: true,
-    },
     mode: 'production',
-    plugins: [new BundleAnalyzerPlugin()],
+    // plugins: [new BundleAnalyzerPlugin()],
 };
 
 module.exports = config;
