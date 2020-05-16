@@ -1,7 +1,8 @@
-import { Node, parseDom } from "./index";
+import { NodeType } from "./nodes/contracts/type";
+import { Node } from "./nodes/node";
+import { parseDom } from "./index";
 import { expect } from 'chai';
 import 'mocha';
-import { NodeType } from "./nodes/contracts/type";
 
 const BASETESTCASE = '<html><body><p>Some text and <a class="someclass" href="#">a link</a></p>' +
     '<div id="foo">With a <script>With &lt; fancy " characters in it because' +
