@@ -6,10 +6,8 @@ JSDOM library can be used in webworkers but the size of the library is too large
 
 # APIs
 ```typescript
-export interface APIs {
-    parseDom(rawHTML: string, options?: Options): Document
-    serializeDom(node: Node);
-}
+export declare function parseDom(rawHTML: string, options?: Options): Document;
+export declare function serializeDom(node: Node): string;
 
 interface Options {
     url?: string;
