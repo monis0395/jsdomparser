@@ -1,16 +1,24 @@
 {
   "name": "jsdomparser",
   "version": "1.0.0",
-  "description": "",
+  "description": "HTML parser and serializer with DOM APIs",
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register **/*.test.ts",
     "prebuild": "npm run test",
     "build": "webpack"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "jsdomparser",
+    "jsdom",
+    "parser",
+    "dom-proxy",
+    "dom-api",
+    "dom",
+    "html5"
+  ],
+  "author": "monis0395",
+  "license": "MIT",
   "dependencies": {
     "@types/parse5": "^5.0.2",
     "html-escaper": "^3.0.0",
