@@ -4,38 +4,38 @@ import { DocumentType } from "./documentType";
 import { Document } from "./document";
 import { DocumentMode } from "./contracts/type";
 
-export const getTagName = function (element: Element) {
+export const getTagName = (element: Element) => {
     return element.localName;
 };
 
-export const getNamespaceURI = function (element: Element) {
+export const getNamespaceURI = (element: Element) => {
     return element.namespaceURI;
 };
 
-export const getTextNodeContent = function (textNode: Node) {
+export const getTextNodeContent = (textNode: Node) => {
     return textNode.nodeValue;
 };
 
-export const getCommentNodeContent = function (commentNode: Node) {
+export const getCommentNodeContent = (commentNode: Node) => {
     return commentNode.nodeValue;
 };
 
-export const getDocumentTypeNodeName = function (doctypeNode: DocumentType) {
+export const getDocumentTypeNodeName = (doctypeNode: DocumentType) => {
     return doctypeNode.name;
 };
 
-export const getDocumentTypeNodePublicId = function (doctypeNode: DocumentType) {
+export const getDocumentTypeNodePublicId = (doctypeNode: DocumentType) => {
     return doctypeNode.publicId;
 };
 
-export const getDocumentTypeNodeSystemId = function (doctypeNode: DocumentType) {
+export const getDocumentTypeNodeSystemId = (doctypeNode: DocumentType) => {
     return doctypeNode.systemId;
 };
 
-export const setDocumentMode = function (document: Document, mode: DocumentMode) {
+export const setDocumentMode = (document: Document, mode: DocumentMode) => {
     document.mode = mode;
 };
 
-export const getDocumentMode = function (document: Document) {
+export const getDocumentMode = (document: Document) => {
     return document.mode;
 };

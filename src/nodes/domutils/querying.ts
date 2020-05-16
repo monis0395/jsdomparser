@@ -128,6 +128,7 @@ export function findAll(
     const result: Element[] = [];
     const stack = nodes.filter(isTag);
     let elem;
+    // tslint:disable-next-line:no-conditional-assignment
     while ((elem = stack.shift())) {
         const children = elem.childNodes?.filter(isTag);
         if (children && children.length > 0) {

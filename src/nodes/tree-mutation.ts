@@ -12,7 +12,7 @@ function resetNode(node: Node) {
     node.parentNode = null;
 }
 
-export const appendChild = function (parentNode: Node, newNode: Node) {
+export function appendChild(parentNode: Node, newNode: Node) {
     detachNode(newNode);
     const lastChild = parentNode.lastChild;
 
@@ -37,9 +37,9 @@ export const appendChild = function (parentNode: Node, newNode: Node) {
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
-};
+}
 
-export const insertBefore = function (parentNode: Node, newNode: Node, referenceNode: Node) {
+export function insertBefore(parentNode: Node, newNode: Node, referenceNode: Node) {
     detachNode(newNode);
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
     const prev = referenceNode.previousSibling;
@@ -59,8 +59,8 @@ export const insertBefore = function (parentNode: Node, newNode: Node, reference
 
         if (isElementNode(referenceNode)) {
             newNode.nextElementSibling = referenceNode;
-            const insertionIdx = parentNode.children.indexOf(referenceNode);
-            parentNode.children.splice(insertionIdx, 0, newNode);
+            const index = parentNode.children.indexOf(referenceNode);
+            parentNode.children.splice(index, 0, newNode);
         }
     }
 
@@ -70,11 +70,11 @@ export const insertBefore = function (parentNode: Node, newNode: Node, reference
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
-};
+}
 
-export const detachNode = function (node: Node) {
+export function detachNode(node: Node): Node | null {
     if (!node.parentNode) {
-        return;
+        return null;
     }
     const idx = node.parentNode.childNodes.indexOf(node);
     const prev = node.previousSibling;
@@ -103,12 +103,12 @@ export const detachNode = function (node: Node) {
     node.parentNode.childNodes.splice(idx, 1);
     resetNode(node);
     return node;
-};
+}
 
-export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: Node) {
+export function replaceChild(parentNode: Node, oldNode: Node, newNode: Node): Node | null {
     const childIndex = parentNode.childNodes.indexOf(oldNode);
     if (childIndex === -1) {
-        console.warn('replaceChild: node not found');
+        throw new Error('replaceChild: node not found');
     }
     detachNode(newNode);
     parentNode.childNodes[childIndex] = newNode;
@@ -169,9 +169,9 @@ export const replaceChild = function (parentNode: Node, oldNode: Node, newNode: 
     newNode.setOwnerDocument(parentNode.ownerDocument);
     resetNode(oldNode);
     return oldNode;
-};
+}
 
-export const insertText = function (parentNode: Node, text: string) {
+export function insertText(parentNode: Node, text: string) {
     const lastChild = parentNode.lastChild;
 
     if (lastChild && isTextNode(lastChild)) {
@@ -179,9 +179,9 @@ export const insertText = function (parentNode: Node, text: string) {
     } else {
         appendChild(parentNode, createTextNode(text));
     }
-};
+}
 
-export const insertTextBefore = function (parentNode: Node, text: string, referenceNode: Node) {
+export function insertTextBefore(parentNode: Node, text: string, referenceNode: Node) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
     if (prevNode && isTextNode(prevNode)) {
@@ -189,15 +189,15 @@ export const insertTextBefore = function (parentNode: Node, text: string, refere
     } else {
         insertBefore(parentNode, createTextNode(text), referenceNode);
     }
-};
+}
 
-export const setTemplateContent = function (templateElement: Element, contentElement: Node) {
+export function setTemplateContent(templateElement: Element, contentElement: Node) {
     appendChild(templateElement, contentElement);
-};
+}
 
-export const getTemplateContent = function (templateElement: Element) {
+export function getTemplateContent(templateElement: Element) {
     return templateElement.childNodes[0];
-};
+}
 
 /**
  * Copies attributes to the given element. Only attributes that are not yet present in the element are copied.
@@ -205,12 +205,9 @@ export const getTemplateContent = function (templateElement: Element) {
  * @param recipient - Element to copy attributes into.
  * @param attrs - Attributes to copy.
  */
-export const adoptAttributes = function (recipient: Element, attrs: Attribute[]) {
-    for (let i = 0; i < attrs.length; i++) {
-        const { name, value } = attrs[i];
-
+export function adoptAttributes(recipient: Element, attrs: Attribute[]) {
+    for (const { name, value } of attrs)
         if (typeof recipient.attribs[name] === 'undefined') {
             recipient.attribs[name] = value;
         }
-    }
-};
+}

@@ -9,12 +9,15 @@ const BASETESTCASE = '<html><body><p>Some text and <a class="someclass" href="#"
 
 const baseDoc = parseDom(BASETESTCASE, { url: "http://fakehost/" });
 
+// tslint:disable:only-arrow-functions
+// tslint:disable:prefer-const
+// tslint:disable:no-var-keyword
 describe("Test JSDOM functionality", function () {
     function nodeExpect(actual, expected) {
         try {
             expect(actual).eql(expected);
         } catch (ex) {
-            debugger;
+            // tslint:disable-next-line:no-console
             console.error(ex);
             throw ex.message;
         }
@@ -121,6 +124,7 @@ describe("Test JSDOM functionality", function () {
         p.setAttribute("id", "my-replaced-kid");
         var childCount = parent.childNodes.length;
         var childElCount = parent.children.length;
+        // tslint:disable-next-line:prefer-for-of
         for (var i = 0; i < parent.childNodes.length; i++) {
             var replacedNode = parent.childNodes[i];
             var replacedAnElement = replacedNode.nodeType === NodeType.ELEMENT_NODE;

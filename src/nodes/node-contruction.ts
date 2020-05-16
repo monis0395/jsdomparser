@@ -9,7 +9,7 @@ import { DocumentType } from "./documentType";
 import { appendChild } from "./tree-mutation";
 import { Attribute } from "parse5";
 
-export const createDocument = function () {
+export const createDocument = () => {
     return new Document({
         type: 'root',
         nodeType: NodeType.DOCUMENT_NODE,
@@ -23,7 +23,7 @@ export const createDocument = function () {
     });
 };
 
-export const createDocumentFragment = function () {
+export const createDocumentFragment = () => {
     return new Node({
         type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
@@ -36,11 +36,10 @@ export const createDocumentFragment = function () {
     });
 };
 
-export const createElement = function (tagName: string, namespaceURI: string, attrs: Attribute[]) {
+export const createElement = (tagName: string, namespaceURI: string, attrs: Attribute[]) => {
     const attribs = Object.create(null);
 
-    for (let i = 0; i < attrs.length; i++) {
-        const { name, value } = attrs[i];
+    for (const { name, value } of attrs) {
         // right now optional params are missing for attributes
         attribs[name] = value;
     }
@@ -59,12 +58,11 @@ export const createElement = function (tagName: string, namespaceURI: string, at
     });
 };
 
-export const setDocumentType = function (document: Document, name: string, publicId: string, systemId: string) {
+export const setDocumentType = (document: Document, name: string, publicId: string, systemId: string) => {
     const nodeValue = serializeContent(name, publicId, systemId);
     let doctypeNode: DocumentType = null;
 
-    for (let i = 0; i < document.childNodes.length; i++) {
-        const node = document.childNodes[i];
+    for (const node of document.childNodes) {
         if (isDocumentTypeNode(node)) {
             doctypeNode = node;
             break;
@@ -95,7 +93,7 @@ export const setDocumentType = function (document: Document, name: string, publi
     }
 };
 
-export const createCommentNode = function (data: string) {
+export const createCommentNode = (data: string) => {
     return new Node({
         type: 'comment',
         nodeType: NodeType.COMMENT_NODE,
@@ -106,7 +104,7 @@ export const createCommentNode = function (data: string) {
     });
 };
 
-export const createTextNode = function (data: string) {
+export const createTextNode = (data: string) => {
     return new Node({
         type: 'text',
         nodeType: NodeType.TEXT_NODE,

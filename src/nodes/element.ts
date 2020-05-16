@@ -9,7 +9,7 @@ import { Style } from "./style";
 export class Element extends Node implements ElementProps {
     namespaceURI: string;
     style: Style;
-    attribs: GenericObjectType<any>;
+    attribs: GenericObjectType<string>;
 
     constructor(props: ElementProps) {
         super(props);
@@ -82,10 +82,10 @@ export class Element extends Node implements ElementProps {
 const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
-        get: function () {
+        get () {
             return this.getAttribute(name);
         },
-        set: function (value: string) {
+        set (value: string) {
             return this.setAttribute(name, value);
         },
     });

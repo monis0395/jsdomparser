@@ -16,7 +16,7 @@ export interface NodeProps {
 
 export interface ElementProps extends NodeProps {
     namespaceURI: string;
-    attribs: GenericObjectType<any>
+    attribs: GenericObjectType<string>
 }
 
 export interface DocumentProps extends NodeProps {

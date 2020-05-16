@@ -17,12 +17,14 @@ export class Node implements NodeProps {
     nextSibling: Node = null;
     previousElementSibling?: Element = null;
     nextElementSibling?: Element = null;
+    sourceCodeLocation?: string;
     nodeValue: string;
     private _tagName: string;
     private _ownerDocument: Document;
 
     constructor(props: NodeProps) {
         for (const key of Object.keys(props)) {
+            // @ts-ignore
             this[key] = props[key];
         }
         this.localName = (this.localName || "").toLowerCase();
@@ -61,7 +63,7 @@ export class Node implements NodeProps {
             return this.nodeValue;
         }
 
-        function getText(node) {
+        function getText(node: Node) {
             node.childNodes.forEach((child) => {
                 if (isTextNode(child)) {
                     text.push(unescape(child.nodeValue));
@@ -71,7 +73,7 @@ export class Node implements NodeProps {
             });
         }
 
-        const text = [];
+        const text: string[] = [];
         getText(this);
         return text.join("");
     }
@@ -124,6 +126,8 @@ export class Node implements NodeProps {
     }
 }
 
+// tslint:disable-next-line:forin
 for (const nodeType in NodeType) {
+    // @ts-ignore
     Node[nodeType] =Node.prototype[nodeType] = NodeType[nodeType];
 }
