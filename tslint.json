@@ -11,6 +11,8 @@
   "jsRules": {},
   "rules": {
     "no-any": true,
+    "forin": false,
+    "no-for-in": false,
     "interface-name": false,
     "ordered-imports": false,
     "member-ordering": true,

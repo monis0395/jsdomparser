@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import 'mocha';
 import { NodeType } from "./nodes/contracts/type";
 
-// tslint:disable:no-unused-expression
 describe('test parse', () => {
     it('simple div', () => {
         const document = parseDom(`<div class="text">Hello</div>`);
