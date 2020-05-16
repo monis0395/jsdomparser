@@ -14,15 +14,11 @@ export const getParentNode = function (node: Node) {
     return node.parentNode;
 };
 
-export const getAttrList = function (element: Element) {
-    const attrList: Attribute[] = [];
-
-    for (const name in element.attribs) {
-        attrList.push({
-            name: name,
+export const getAttrList = function (element: Element): Attribute[] {
+    return Object.keys(element.attribs).map((name) => {
+        return {
+            name,
             value: element.attribs[name],
-        });
-    }
-
-    return attrList;
+        }
+    });
 };
