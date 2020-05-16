@@ -60,6 +60,7 @@ export class Element extends Node implements ElementProps {
 
     set innerHTML(htmlString: string) {
         const document = parseDom(htmlString);
+        // todo: handle head also
         const node = document.body;
         while (this.childNodes.length) {
             this.removeChild(this.childNodes[0])

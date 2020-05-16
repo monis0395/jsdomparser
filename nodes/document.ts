@@ -2,6 +2,7 @@ import { Node } from "./node";
 import { DocumentMode, DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./node-contruction";
 import * as legacy from "./domutils/legacy";
+import { URL } from "url";
 
 export class Document extends Node implements DocumentProps {
     _documentURI: string;
@@ -25,11 +26,15 @@ export class Document extends Node implements DocumentProps {
     }
 
     createElement(lowerName: string) {
-        return createElement(lowerName, "", []);
+        const element = createElement(lowerName, "", []);
+        element.setOwnerDocument(this);
+        return element;
     }
 
     createTextNode(data: string) {
-        return createTextNode(data);
+        const textNode = createTextNode(data);
+        textNode.setOwnerDocument(this);
+        return textNode;
     }
 
     get documentURI() {
@@ -45,8 +50,6 @@ export class Document extends Node implements DocumentProps {
             const baseElements = this.getElementsByTagName('base');
             const href = baseElements[0].getAttribute('href');
             if (href) {
-                // todo: remove hack
-                // @ts-ignore
                 this._baseURI = (new URL(href, this._baseURI)).href;
             }
         } catch (ex) {/* Just fall back to documentURI */
