@@ -13,7 +13,7 @@ export const createDocument = function () {
     return new Document({
         type: 'root',
         nodeType: NodeType.DOCUMENT_NODE,
-        localName: 'root',
+        localName: '',
         parentNode: null,
         previousSibling: null,
         nextSibling: null,
@@ -27,7 +27,7 @@ export const createDocumentFragment = function () {
     return new Node({
         type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
-        localName: 'root',
+        localName: '',
         childNodes: [],
         children: [],
         parentNode: null,
