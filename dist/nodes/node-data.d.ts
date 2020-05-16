@@ -1,0 +1,14 @@
+import { Element } from "./element";
+import { Node } from "./node";
+import { DocumentType } from "./documentType";
+import { Document } from "./document";
+import { DocumentMode } from "./contracts/type";
+export declare const getTagName: (element: Element) => string;
+export declare const getNamespaceURI: (element: Element) => string;
+export declare const getTextNodeContent: (textNode: Node) => string;
+export declare const getCommentNodeContent: (commentNode: Node) => string;
+export declare const getDocumentTypeNodeName: (doctypeNode: DocumentType) => string;
+export declare const getDocumentTypeNodePublicId: (doctypeNode: DocumentType) => string;
+export declare const getDocumentTypeNodeSystemId: (doctypeNode: DocumentType) => string;
+export declare const setDocumentMode: (document: Document, mode: DocumentMode) => void;
+export declare const getDocumentMode: (document: Document) => DocumentMode;
