@@ -21,8 +21,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
-    "ts:cjs": "tsc -m commonjs",
-    "ts:umd": "tsc -t es5 -m amd -d false --outFile ./dist/main.js",
+    "ts:cjs": "tsc -t es6 -m commonjs",
+    "ts:umd": "tsc -t es6 -m amd -d false --outFile ./dist/main.js",
     "test": "mocha -r ts-node/register **/*.test.ts ",
     "prebuild": "npm run test",
     "build": "run-s clean ts:cjs ts:umd"

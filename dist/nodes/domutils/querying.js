@@ -103,6 +103,7 @@ function findAll(test, nodes) {
     const result = [];
     const stack = nodes.filter(node_types_1.isElementNode);
     let elem;
+    // tslint:disable-next-line:no-conditional-assignment
     while ((elem = stack.shift())) {
         const children = (_a = elem.childNodes) === null || _a === void 0 ? void 0 : _a.filter(node_types_1.isElementNode);
         if (children && children.length > 0) {

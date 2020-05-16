@@ -1,4 +1,4 @@
-import { parseDom } from "./index";
+import { Node, parseDom } from "./index";
 import { expect } from 'chai';
 import 'mocha';
 import { NodeType } from "./nodes/contracts/type";
@@ -8,12 +8,8 @@ const BASETESTCASE = '<html><body><p>Some text and <a class="someclass" href="#"
     '</script> that is fun.<span>And another node to make it harder</span></div><form><input type="text"/><input type="number"/>Here\'s a form</form></body></html>';
 
 const baseDoc = parseDom(BASETESTCASE, { url: "http://fakehost/" });
-
-// tslint:disable:only-arrow-functions
-// tslint:disable:prefer-const
-// tslint:disable:no-var-keyword
 describe("Test JSDOM functionality", function () {
-    function nodeExpect(actual, expected) {
+    function nodeExpect(actual: Node, expected: Node) {
         try {
             expect(actual).eql(expected);
         } catch (ex) {
@@ -313,7 +309,7 @@ describe("Recovery from self-closing tags that have close tags", function () {
 
 describe("baseURI parsing", function () {
     it("should handle various types of relative and absolute base URIs", function () {
-        function checkBase(base, expectedResult) {
+        function checkBase(base: string, expectedResult: string) {
             var html = "<html><head><base href='" + base + "'></base></head><body/></html>";
             var doc = parseDom(html, { url: "http://fakehost/some/dir/" });
             expect(doc.baseURI).eql(expectedResult);

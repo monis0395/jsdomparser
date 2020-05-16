@@ -10,8 +10,8 @@ function resetNode(node) {
     node.nextElementSibling = null;
     node.parentNode = null;
 }
-exports.appendChild = function (parentNode, newNode) {
-    exports.detachNode(newNode);
+function appendChild(parentNode, newNode) {
+    detachNode(newNode);
     const lastChild = parentNode.lastChild;
     if (lastChild) {
         lastChild.nextSibling = newNode;
@@ -31,9 +31,10 @@ exports.appendChild = function (parentNode, newNode) {
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
-};
-exports.insertBefore = function (parentNode, newNode, referenceNode) {
-    exports.detachNode(newNode);
+}
+exports.appendChild = appendChild;
+function insertBefore(parentNode, newNode, referenceNode) {
+    detachNode(newNode);
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
     const prev = referenceNode.previousSibling;
     const prevElement = referenceNode.previousElementSibling || null;
@@ -49,8 +50,8 @@ exports.insertBefore = function (parentNode, newNode, referenceNode) {
         referenceNode.previousElementSibling = newNode;
         if (node_types_1.isElementNode(referenceNode)) {
             newNode.nextElementSibling = referenceNode;
-            const insertionIdx = parentNode.children.indexOf(referenceNode);
-            parentNode.children.splice(insertionIdx, 0, newNode);
+            const index = parentNode.children.indexOf(referenceNode);
+            parentNode.children.splice(index, 0, newNode);
         }
     }
     referenceNode.previousSibling = newNode;
@@ -58,10 +59,11 @@ exports.insertBefore = function (parentNode, newNode, referenceNode) {
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
     newNode.setOwnerDocument(parentNode.ownerDocument);
-};
-exports.detachNode = function (node) {
+}
+exports.insertBefore = insertBefore;
+function detachNode(node) {
     if (!node.parentNode) {
-        return;
+        return null;
     }
     const idx = node.parentNode.childNodes.indexOf(node);
     const prev = node.previousSibling;
@@ -86,13 +88,14 @@ exports.detachNode = function (node) {
     node.parentNode.childNodes.splice(idx, 1);
     resetNode(node);
     return node;
-};
-exports.replaceChild = function (parentNode, oldNode, newNode) {
+}
+exports.detachNode = detachNode;
+function replaceChild(parentNode, oldNode, newNode) {
     const childIndex = parentNode.childNodes.indexOf(oldNode);
     if (childIndex === -1) {
-        console.warn('replaceChild: node not found');
+        throw new Error('replaceChild: node not found');
     }
-    exports.detachNode(newNode);
+    detachNode(newNode);
     parentNode.childNodes[childIndex] = newNode;
     const previousSibling = oldNode.previousSibling || null;
     const nextSibling = oldNode.nextSibling || null;
@@ -147,42 +150,46 @@ exports.replaceChild = function (parentNode, oldNode, newNode) {
     newNode.setOwnerDocument(parentNode.ownerDocument);
     resetNode(oldNode);
     return oldNode;
-};
-exports.insertText = function (parentNode, text) {
+}
+exports.replaceChild = replaceChild;
+function insertText(parentNode, text) {
     const lastChild = parentNode.lastChild;
     if (lastChild && node_types_1.isTextNode(lastChild)) {
         lastChild.nodeValue += text;
     }
     else {
-        exports.appendChild(parentNode, node_contruction_1.createTextNode(text));
+        appendChild(parentNode, node_contruction_1.createTextNode(text));
     }
-};
-exports.insertTextBefore = function (parentNode, text, referenceNode) {
+}
+exports.insertText = insertText;
+function insertTextBefore(parentNode, text, referenceNode) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
     if (prevNode && node_types_1.isTextNode(prevNode)) {
         prevNode.nodeValue += text;
     }
     else {
-        exports.insertBefore(parentNode, node_contruction_1.createTextNode(text), referenceNode);
+        insertBefore(parentNode, node_contruction_1.createTextNode(text), referenceNode);
     }
-};
-exports.setTemplateContent = function (templateElement, contentElement) {
-    exports.appendChild(templateElement, contentElement);
-};
-exports.getTemplateContent = function (templateElement) {
+}
+exports.insertTextBefore = insertTextBefore;
+function setTemplateContent(templateElement, contentElement) {
+    appendChild(templateElement, contentElement);
+}
+exports.setTemplateContent = setTemplateContent;
+function getTemplateContent(templateElement) {
     return templateElement.childNodes[0];
-};
+}
+exports.getTemplateContent = getTemplateContent;
 /**
  * Copies attributes to the given element. Only attributes that are not yet present in the element are copied.
  *
  * @param recipient - Element to copy attributes into.
  * @param attrs - Attributes to copy.
  */
-exports.adoptAttributes = function (recipient, attrs) {
-    for (let i = 0; i < attrs.length; i++) {
-        const { name, value } = attrs[i];
+function adoptAttributes(recipient, attrs) {
+    for (const { name, value } of attrs)
         if (typeof recipient.attribs[name] === 'undefined') {
             recipient.attribs[name] = value;
         }
-    }
-};
+}
+exports.adoptAttributes = adoptAttributes;

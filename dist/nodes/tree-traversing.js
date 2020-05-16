@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAttrList = exports.getParentNode = exports.getChildNodes = exports.getFirstChild = void 0;
-exports.getFirstChild = function (node) {
+exports.getFirstChild = (node) => {
     return node.firstChild;
 };
-exports.getChildNodes = function (node) {
+exports.getChildNodes = (node) => {
     return node.childNodes;
 };
-exports.getParentNode = function (node) {
+exports.getParentNode = (node) => {
     return node.parentNode;
 };
-exports.getAttrList = function (element) {
+exports.getAttrList = (element) => {
     return Object.keys(element.attribs).map((name) => {
         return {
             name,

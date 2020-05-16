@@ -14,6 +14,7 @@ class Node {
         this.previousElementSibling = null;
         this.nextElementSibling = null;
         for (const key of Object.keys(props)) {
+            // @ts-ignore
             this[key] = props[key];
         }
         this.localName = (this.localName || "").toLowerCase();
@@ -101,6 +102,8 @@ class Node {
     }
 }
 exports.Node = Node;
+// tslint:disable-next-line:forin
 for (const nodeType in type_1.NodeType) {
+    // @ts-ignore
     Node[nodeType] = Node.prototype[nodeType] = type_1.NodeType[nodeType];
 }

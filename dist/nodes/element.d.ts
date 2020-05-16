@@ -5,14 +5,14 @@ import { Style } from "./style";
 export declare class Element extends Node implements ElementProps {
     namespaceURI: string;
     style: Style;
-    attribs: GenericObjectType<any>;
+    attribs: GenericObjectType<string>;
     constructor(props: ElementProps);
     get attributes(): import("parse5").Attribute[];
     get className(): string;
     set className(classNames: string);
     get id(): string;
     set id(id: string);
-    getAttribute(name: string): any;
+    getAttribute(name: string): string;
     hasAttribute(name: string): boolean;
     setAttribute(name: string, value: string): string;
     removeAttribute(name: string): void;

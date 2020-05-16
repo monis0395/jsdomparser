@@ -64,10 +64,10 @@ exports.Element = Element;
 const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
-        get: function () {
+        get() {
             return this.getAttribute(name);
         },
-        set: function (value) {
+        set(value) {
             return this.setAttribute(name, value);
         },
     });

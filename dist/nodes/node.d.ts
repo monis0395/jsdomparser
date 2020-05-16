@@ -12,6 +12,7 @@ export declare class Node implements NodeProps {
     nextSibling: Node;
     previousElementSibling?: Element;
     nextElementSibling?: Element;
+    sourceCodeLocation?: string;
     nodeValue: string;
     private _tagName;
     private _ownerDocument;
@@ -26,6 +27,6 @@ export declare class Node implements NodeProps {
     get ownerDocument(): Document;
     setOwnerDocument(node: Document): void;
     appendChild(newNode: Node): void;
-    removeChild(node: Node): any;
-    replaceChild(newNode: Node, oldNode: Node): any;
+    removeChild(node: Node): Node;
+    replaceChild(newNode: Node, oldNode: Node): Node;
 }
