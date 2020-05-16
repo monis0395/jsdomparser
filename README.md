@@ -6,7 +6,7 @@ JSDOM library can be used in webworkers but the size of the library is too large
 
 # APIs
 ```typescript
-interface exports {
+export interface APIs {
     parseDom(rawHTML: string, options?: Options): Document
     serializeDom(node: Node);
 }
@@ -15,7 +15,7 @@ interface Options {
     url?: string;
 }
 
-enum NodeType {
+export enum NodeType {
     ELEMENT_NODE = 1,
     TEXT_NODE = 3,
     COMMENT_NODE = 8,
@@ -24,7 +24,7 @@ enum NodeType {
     DOCUMENT_FRAGMENT_NODE = 11,
 }
 
-interface Node {
+export interface Node {
     type: string;
     localName: string;
     nodeType: NodeType;
@@ -48,7 +48,7 @@ interface Node {
     replaceChild(newNode: Node, oldNode: Node): Node;
 }
 
-interface Document {
+export interface Document {
     documentElement: string;
     head: Element;
     body: Element;
@@ -62,7 +62,7 @@ interface Document {
     getElementsByTagName(tagName: string): Element[];
 }
 
-interface Element {
+`export interface Element {
     attributes: Attribute[]
     style: Style;
     className: string;
