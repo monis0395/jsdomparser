@@ -1,7 +1,6 @@
 import { Node } from "./node";
 import { DocumentMode, DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./node-contruction";
-import { URL } from "url";
 import * as legacy from "./domutils/legacy";
 
 export class Document extends Node implements DocumentProps {
@@ -46,6 +45,8 @@ export class Document extends Node implements DocumentProps {
             const baseElements = this.getElementsByTagName('base');
             const href = baseElements[0].getAttribute('href');
             if (href) {
+                // todo: remove hack
+                // @ts-ignore
                 this._baseURI = (new URL(href, this._baseURI)).href;
             }
         } catch (ex) {/* Just fall back to documentURI */

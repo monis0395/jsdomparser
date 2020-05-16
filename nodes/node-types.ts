@@ -20,6 +20,9 @@ export function isElementNode(node: Node): node is Element {
     return node.nodeType === NodeType.ELEMENT_NODE;
 }
 
-export const isDocument = function (node: Node): node is Document {
-    return node.nodeType === NodeType.DOCUMENT_NODE;
+export const isDocument = function (node: Node | null): node is Document {
+    if (node) {
+        return node.nodeType === NodeType.DOCUMENT_NODE;
+    }
+    return false;
 };
