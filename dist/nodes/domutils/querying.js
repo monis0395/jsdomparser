@@ -6,7 +6,7 @@ const node_types_1 = require("../node-types");
  * Search a node and its children for nodes passing a test function.
  *
  * @param test Function to test nodes on.
- * @param element Element to search. Will be included in the result set if it matches.
+ * @param node Element to search. Will be included in the result set if it matches.
  * @param recurse Also consider child nodes.
  * @param limit Maximum number of nodes to return.
  */

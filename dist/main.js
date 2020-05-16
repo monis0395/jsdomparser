@@ -59,14 +59,12 @@ define("nodes/tree-traversing", ["require", "exports"], function (require, expor
         return node.parentNode;
     };
     exports.getAttrList = function (element) {
-        var attrList = [];
-        for (var name in element.attribs) {
-            attrList.push({
+        return Object.keys(element.attribs).map(function (name) {
+            return {
                 name: name,
                 value: element.attribs[name],
-            });
-        }
-        return attrList;
+            };
+        });
     };
 });
 define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contruction", "nodes/domutils/legacy", "url"], function (require, exports, node_1, node_contruction_1, legacy, url_1) {
@@ -201,7 +199,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
      * Search a node and its children for nodes passing a test function.
      *
      * @param test Function to test nodes on.
-     * @param element Element to search. Will be included in the result set if it matches.
+     * @param node Element to search. Will be included in the result set if it matches.
      * @param recurse Also consider child nodes.
      * @param limit Maximum number of nodes to return.
      */

@@ -11,12 +11,10 @@ exports.getParentNode = function (node) {
     return node.parentNode;
 };
 exports.getAttrList = function (element) {
-    const attrList = [];
-    for (const name in element.attribs) {
-        attrList.push({
-            name: name,
+    return Object.keys(element.attribs).map((name) => {
+        return {
+            name,
             value: element.attribs[name],
-        });
-    }
-    return attrList;
+        };
+    });
 };
