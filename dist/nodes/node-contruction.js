@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTextNode = exports.createCommentNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
+exports.createTextNode = exports.createCommentNode = exports.createDirectiveNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
 // @ts-ignore
 const doctype_1 = require("parse5/lib/common/doctype");
 const type_1 = require("./contracts/type");
@@ -36,10 +36,15 @@ exports.createDocumentFragment = () => {
     });
 };
 exports.createElement = (tagName, namespaceURI, attrs) => {
-    const attribs = Object.create(null);
-    for (const { name, value } of attrs) {
-        // right now optional params are missing for attributes
-        attribs[name] = value;
+    let attribs = Object.create(null);
+    if (Array.isArray(attrs)) {
+        for (const { name, value } of attrs) {
+            // right now optional params are missing for attributes
+            attribs[name] = value;
+        }
+    }
+    else {
+        attribs = attrs;
     }
     return new element_1.Element({
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
@@ -70,19 +75,22 @@ exports.setDocumentType = (document, name, publicId, systemId) => {
         doctypeNode.systemId = systemId;
     }
     else {
-        tree_mutation_1.appendChild(document, new documentType_1.DocumentType({
-            type: 'directive',
-            nodeType: type_1.NodeType.DOCUMENT_TYPE_NODE,
-            localName: '!doctype',
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-            nodeValue,
-            name,
-            publicId,
-            systemId,
-        }));
+        tree_mutation_1.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
     }
+};
+exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
+    return new documentType_1.DocumentType({
+        type: 'directive',
+        nodeType: type_1.NodeType.DOCUMENT_TYPE_NODE,
+        localName: '!doctype',
+        parentNode: null,
+        previousSibling: null,
+        nextSibling: null,
+        nodeValue,
+        name,
+        publicId,
+        systemId,
+    });
 };
 exports.createCommentNode = (data) => {
     return new node_1.Node({
