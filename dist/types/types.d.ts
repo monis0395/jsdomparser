@@ -3,4 +3,9 @@ export interface GenericObjectType<T> {
 }
 export interface Options {
     url?: string;
+    parser?: Parsers;
+}
+export declare enum Parsers {
+    htmlparser2 = "htmlparser2",
+    parse5 = "parse5"
 }

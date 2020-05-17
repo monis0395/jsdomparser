@@ -44,8 +44,7 @@ class Element extends node_1.Node {
     }
     set innerHTML(htmlString) {
         const document = index_1.parseDom(htmlString);
-        // todo: handle head also
-        const node = document.body;
+        const node = document;
         while (this.childNodes.length) {
             this.removeChild(this.childNodes[0]);
         }

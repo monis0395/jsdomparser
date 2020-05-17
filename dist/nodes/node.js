@@ -4,8 +4,7 @@ exports.Node = void 0;
 const type_1 = require("./contracts/type");
 const node_types_1 = require("./node-types");
 const tree_mutation_1 = require("./tree-mutation");
-// @ts-ignore
-const html_escaper_1 = require("html-escaper");
+const entities_1 = require("entities");
 class Node {
     constructor(props) {
         this.parentNode = null;
@@ -49,7 +48,7 @@ class Node {
         function getText(node) {
             node.childNodes.forEach((child) => {
                 if (node_types_1.isTextNode(child)) {
-                    text.push(html_escaper_1.unescape(child.nodeValue));
+                    text.push(entities_1.decode(child.nodeValue));
                 }
                 else {
                     getText(child);

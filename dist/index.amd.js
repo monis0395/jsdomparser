@@ -11,6 +11,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 define("types/types", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Parsers = void 0;
+    var Parsers;
+    (function (Parsers) {
+        Parsers["htmlparser2"] = "htmlparser2";
+        Parsers["parse5"] = "parse5";
+    })(Parsers = exports.Parsers || (exports.Parsers = {}));
 });
 define("nodes/contracts/type", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -636,8 +642,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
         }
         set innerHTML(htmlString) {
             const document = index_1.parseDom(htmlString);
-            // todo: handle head also
-            const node = document.body;
+            const node = document;
             while (this.childNodes.length) {
                 this.removeChild(this.childNodes[0]);
             }
@@ -860,7 +865,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
     }
     exports.adoptAttributes = adoptAttributes;
 });
-define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-types", "nodes/tree-mutation", "html-escaper"], function (require, exports, type_2, node_types_4, tree_mutation_1, html_escaper_1) {
+define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-types", "nodes/tree-mutation", "entities"], function (require, exports, type_2, node_types_4, tree_mutation_1, entities_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Node = void 0;
@@ -907,7 +912,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             function getText(node) {
                 node.childNodes.forEach((child) => {
                     if (node_types_4.isTextNode(child)) {
-                        text.push(html_escaper_1.unescape(child.nodeValue));
+                        text.push(entities_1.decode(child.nodeValue));
                     }
                     else {
                         getText(child);
@@ -968,7 +973,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
 define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/doctype", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "nodes/node-types", "nodes/documentType", "nodes/tree-mutation"], function (require, exports, doctype_1, type_3, node_4, document_1, element_1, node_types_5, documentType_1, tree_mutation_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.createTextNode = exports.createCommentNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
+    exports.createTextNode = exports.createCommentNode = exports.createDirectiveNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
     exports.createDocument = () => {
         return new document_1.Document({
             type: 'root',
@@ -995,10 +1000,15 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
         });
     };
     exports.createElement = (tagName, namespaceURI, attrs) => {
-        const attribs = Object.create(null);
-        for (const { name, value } of attrs) {
-            // right now optional params are missing for attributes
-            attribs[name] = value;
+        let attribs = Object.create(null);
+        if (Array.isArray(attrs)) {
+            for (const { name, value } of attrs) {
+                // right now optional params are missing for attributes
+                attribs[name] = value;
+            }
+        }
+        else {
+            attribs = attrs;
         }
         return new element_1.Element({
             type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
@@ -1029,19 +1039,22 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             doctypeNode.systemId = systemId;
         }
         else {
-            tree_mutation_2.appendChild(document, new documentType_1.DocumentType({
-                type: 'directive',
-                nodeType: type_3.NodeType.DOCUMENT_TYPE_NODE,
-                localName: '!doctype',
-                parentNode: null,
-                previousSibling: null,
-                nextSibling: null,
-                nodeValue,
-                name,
-                publicId,
-                systemId,
-            }));
+            tree_mutation_2.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
         }
+    };
+    exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
+        return new documentType_1.DocumentType({
+            type: 'directive',
+            nodeType: type_3.NodeType.DOCUMENT_TYPE_NODE,
+            localName: '!doctype',
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+            nodeValue,
+            name,
+            publicId,
+            systemId,
+        });
     };
     exports.createCommentNode = (data) => {
         return new node_4.Node({
@@ -1110,7 +1123,7 @@ define("nodes/source-code-location", ["require", "exports"], function (require, 
         node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
     };
 });
-define("nodes/main", ["require", "exports", "nodes/node-contruction", "nodes/node-data", "nodes/node-types", "nodes/source-code-location", "nodes/tree-mutation", "nodes/tree-traversing"], function (require, exports, node_contruction_3, node_data_1, node_types_6, source_code_location_1, tree_mutation_3, tree_traversing_2) {
+define("adapters/parse5", ["require", "exports", "nodes/node-contruction", "nodes/node-data", "nodes/node-types", "nodes/source-code-location", "nodes/tree-mutation", "nodes/tree-traversing"], function (require, exports, node_contruction_3, node_data_1, node_types_6, source_code_location_1, tree_mutation_3, tree_traversing_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     __exportStar(node_contruction_3, exports);
@@ -1120,25 +1133,144 @@ define("nodes/main", ["require", "exports", "nodes/node-contruction", "nodes/nod
     __exportStar(tree_mutation_3, exports);
     __exportStar(tree_traversing_2, exports);
 });
-define("index", ["require", "exports", "parse5", "nodes/main", "nodes/node", "nodes/contracts/type", "nodes/document", "nodes/element", "nodes/style"], function (require, exports, parse5_1, parser, node_5, type_4, document_2, element_2, style_2) {
+define("adapters/htmlparser2", ["require", "exports", "nodes/node-contruction", "nodes/node-types", "entities"], function (require, exports, node_contruction_4, node_types_7, entities_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.serializeDom = exports.parseDom = exports.Node = void 0;
-    Object.defineProperty(exports, "Node", { enumerable: true, get: function () { return node_5.Node; } });
-    Object.defineProperty(exports, "NodeType", { enumerable: true, get: function () { return type_4.NodeType; } });
-    Object.defineProperty(exports, "Document", { enumerable: true, get: function () { return document_2.Document; } });
-    Object.defineProperty(exports, "Element", { enumerable: true, get: function () { return element_2.Element; } });
-    Object.defineProperty(exports, "Style", { enumerable: true, get: function () { return style_2.Style; } });
-    function parseDom(rawHTML, options) {
-        const document = parse5_1.parse(rawHTML, { treeAdapter: parser });
+    exports.JsDomHandler = void 0;
+    const reWhitespace = /\s+/g;
+    // Default options
+    const defaultOpts = {
+        normalizeWhitespace: false,
+    };
+    class JsDomHandler {
+        /**
+         * Initiate a new JsDomHandler.
+         *
+         * @param options Settings for the handler.
+         */
+        constructor(options) {
+            /** The constructed DOM */
+            this.dom = node_contruction_4.createDocument();
+            /** Indicated whether parsing has been completed. */
+            this._done = false;
+            /** Stack of open tags. */
+            this._tagStack = [];
+            /** A data node that is still being written to. */
+            this._lastNode = null;
+            this._options = options || defaultOpts;
+        }
+        // Resets the handler back to starting state
+        onreset() {
+            this.dom = node_contruction_4.createDocument();
+            this._done = false;
+            this._tagStack = [];
+            this._lastNode = null;
+        }
+        // Signals the handler that parsing is done
+        onend() {
+            if (this._done)
+                return;
+            this._done = true;
+            this.handleCallback(null);
+        }
+        onerror(error) {
+            this.handleCallback(error);
+        }
+        onclosetag() {
+            this._lastNode = null;
+            const elem = this._tagStack.pop();
+            if (!elem) {
+                return;
+            }
+        }
+        onopentag(name, attribs) {
+            const element = node_contruction_4.createElement(name, "", attribs);
+            this.addNode(element);
+            this._tagStack.push(element);
+        }
+        ontext(data) {
+            const normalize = this._options.normalizeWhitespace;
+            const { _lastNode } = this;
+            data = entities_2.decode(data);
+            if (_lastNode && node_types_7.isElementNode(_lastNode)) {
+                _lastNode.nodeValue += data;
+            }
+            else {
+                const node = node_contruction_4.createTextNode(data);
+                this.addNode(node);
+                this._lastNode = node;
+            }
+            if (normalize) {
+                _lastNode.nodeValue = _lastNode.nodeValue.replace(reWhitespace, " ");
+            }
+        }
+        oncomment(data) {
+            data = entities_2.decode(data);
+            if (this._lastNode && node_types_7.isCommentNode(this._lastNode)) {
+                this._lastNode.nodeValue += data;
+                return;
+            }
+            const node = node_contruction_4.createCommentNode(data);
+            this.addNode(node);
+            this._lastNode = node;
+        }
+        oncommentend() {
+            this._lastNode = null;
+        }
+        onprocessinginstruction(name, data) {
+            const node = node_contruction_4.createDirectiveNode(name, data);
+            this.addNode(node);
+        }
+        handleCallback(error) {
+            if (error) {
+                throw error;
+            }
+        }
+        addNode(node) {
+            const parent = this._tagStack[this._tagStack.length - 1] || this.dom;
+            parent.appendChild(node);
+            this._lastNode = null;
+        }
+    }
+    exports.JsDomHandler = JsDomHandler;
+});
+define("index", ["require", "exports", "htmlparser2", "parse5", "adapters/parse5", "types/types", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "adapters/htmlparser2"], function (require, exports, htmlparser2_1, parse5_1, jsDomTreeAdapter, types_1, type_4, node_5, document_2, element_2, htmlparser2_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.serializeDom = exports.htmlparser2 = exports.parse5 = exports.parseDom = exports.nodes = void 0;
+    exports.nodes = {
+        Node: node_5.Node, NodeType: type_4.NodeType, Document: document_2.Document, Element: element_2.Element,
+    };
+    function parseDom(rawHTML, options = {}) {
+        switch (options.parser) {
+            default:
+            case types_1.Parsers.htmlparser2:
+                return htmlparser2(rawHTML, options);
+            case types_1.Parsers.parse5:
+                return parse5(rawHTML, options);
+        }
+    }
+    exports.parseDom = parseDom;
+    function parse5(rawHTML, options) {
+        const document = parse5_1.parse(rawHTML, { treeAdapter: jsDomTreeAdapter });
         if (options && options.url) {
             document._documentURI = options.url;
         }
         return document;
     }
-    exports.parseDom = parseDom;
+    exports.parse5 = parse5;
+    function htmlparser2(data, options) {
+        const handler = new htmlparser2_2.JsDomHandler(void 0);
+        const document = handler.dom;
+        new htmlparser2_1.Parser(handler).end(data);
+        if (options && options.url) {
+            document._documentURI = options.url;
+        }
+        return document;
+    }
+    exports.htmlparser2 = htmlparser2;
     function serializeDom(node) {
-        return parse5_1.serialize(node, { treeAdapter: parser });
+        return parse5_1.serialize(node, { treeAdapter: jsDomTreeAdapter });
     }
     exports.serializeDom = serializeDom;
 });
