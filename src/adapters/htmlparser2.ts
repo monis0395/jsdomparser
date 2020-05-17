@@ -2,12 +2,11 @@ import { Node } from "../nodes/node";
 import { Element } from "../nodes/element";
 import { createCommentNode, createDirectiveNode, createDocument, createElement, createTextNode } from "../nodes/node-contruction";
 import { isCommentNode, isElementNode } from "../nodes/node-types";
-import { NodeType } from "../nodes/contracts/type";
 import { Document } from "../nodes/document";
 
 const reWhitespace = /\s+/g;
 
-export interface DomHandlerOptions {
+export interface JsDomHandlerOptions {
     /***
      * Indicates whether the whitespace in text nodes should be normalized
      * (= all whitespace should be replaced with single spaces). The default value is "false".
@@ -16,16 +15,16 @@ export interface DomHandlerOptions {
 }
 
 // Default options
-const defaultOpts: DomHandlerOptions = {
+const defaultOpts: JsDomHandlerOptions = {
     normalizeWhitespace: false,
 };
 
-export class DomHandler {
+export class JsDomHandler {
     /** The constructed DOM */
     public dom: Document = createDocument();
 
     /** Settings for the handler. */
-    private _options: DomHandlerOptions;
+    private _options: JsDomHandlerOptions;
 
     /** Indicated whether parsing has been completed. */
     private _done: boolean = false;
@@ -37,11 +36,11 @@ export class DomHandler {
     private _lastNode: Node | null = null;
 
     /**
-     * Initiate a new DomHandler.
+     * Initiate a new JsDomHandler.
      *
      * @param options Settings for the handler.
      */
-    public constructor(options?: DomHandlerOptions | null) {
+    public constructor(options?: JsDomHandlerOptions | null) {
         this._options = options || defaultOpts;
     }
 
@@ -84,18 +83,14 @@ export class DomHandler {
         const { _lastNode } = this;
 
         if (_lastNode && isElementNode(_lastNode)) {
-            if (normalize) {
-                _lastNode.nodeValue = (_lastNode.nodeValue + data).replace(reWhitespace, " ");
-            } else {
-                _lastNode.nodeValue += data;
-            }
+            _lastNode.nodeValue += data;
         } else {
-            if (normalize) {
-                data = data.replace(reWhitespace, " ");
-            }
             const node = createTextNode(data);
             this.addNode(node);
             this._lastNode = node;
+        }
+        if (normalize) {
+            _lastNode.nodeValue = _lastNode.nodeValue.replace(reWhitespace, " ");
         }
     }
 
@@ -114,25 +109,6 @@ export class DomHandler {
         this._lastNode = null;
     }
 
-    public oncdatastart(): void {
-        const text = createTextNode("");
-        const node = new Node({
-            type: 'cdata',
-            nodeType: NodeType.TEXT_NODE,
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-        });
-        node.appendChild(text);
-        this.addNode(node);
-
-        this._lastNode = text;
-    }
-
-    public oncdataend(): void {
-        this._lastNode = null;
-    }
-
     public onprocessinginstruction(name: string, data: string): void {
         const node = createDirectiveNode(name, data);
         this.addNode(node);
@@ -147,7 +123,6 @@ export class DomHandler {
     protected addNode(node: Node) {
         const parent = this._tagStack[this._tagStack.length - 1] || this.dom;
         parent.appendChild(node);
-
         this._lastNode = null;
     }
 }
