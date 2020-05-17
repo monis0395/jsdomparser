@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.serializeDom = exports.htmlparser2 = exports.parse5 = exports.parseDom = exports.nodes = void 0;
 const htmlparser2_1 = require("htmlparser2");
 const parse5_1 = require("parse5");
+const htmlparser2_2 = require("./adapters/htmlparser2");
 const jsDomTreeAdapter = require("./adapters/parse5");
 const types_1 = require("./types/types");
 const type_1 = require("./nodes/contracts/type");
 const node_1 = require("./nodes/node");
 const document_1 = require("./nodes/document");
 const element_1 = require("./nodes/element");
-const htmlparser2_2 = require("./adapters/htmlparser2");
 exports.nodes = {
     Node: node_1.Node, NodeType: type_1.NodeType, Document: document_1.Document, Element: element_1.Element,
 };

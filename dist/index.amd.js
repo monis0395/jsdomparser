@@ -60,11 +60,324 @@ define("nodes/tree-traversing", ["require", "exports"], function (require, expor
         });
     };
 });
-define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contruction", "nodes/domutils/legacy", "url"], function (require, exports, node_1, node_contruction_1, legacy, url_1) {
+define("nodes/documentType", ["require", "exports", "nodes/node"], function (require, exports, node_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DocumentType = void 0;
+    class DocumentType extends node_1.Node {
+        constructor(props) {
+            super(props);
+        }
+    }
+    exports.DocumentType = DocumentType;
+});
+define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "nodes/node-types"], function (require, exports, node_contruction_1, node_types_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.adoptAttributes = exports.getTemplateContent = exports.setTemplateContent = exports.insertTextBefore = exports.insertText = exports.replaceChild = exports.detachNode = exports.insertBefore = exports.appendChild = void 0;
+    function resetNode(node) {
+        node.previousSibling = null;
+        node.nextSibling = null;
+        node.previousElementSibling = null;
+        node.nextElementSibling = null;
+        node.parentNode = null;
+    }
+    function appendChild(parentNode, newNode) {
+        detachNode(newNode);
+        const lastChild = parentNode.lastChild;
+        if (lastChild) {
+            lastChild.nextSibling = newNode;
+            newNode.previousSibling = lastChild;
+        }
+        const lastElement = parentNode.lastElementChild;
+        newNode.previousElementSibling = lastElement;
+        if (node_types_1.isElementNode(newNode)) {
+            parentNode.children.push(newNode);
+            if (lastElement) {
+                lastElement.nextElementSibling = newNode;
+            }
+            if (lastChild) {
+                lastChild.nextElementSibling = newNode;
+            }
+        }
+        parentNode.childNodes.push(newNode);
+        newNode.parentNode = parentNode;
+        newNode.setOwnerDocument(parentNode.ownerDocument);
+    }
+    exports.appendChild = appendChild;
+    function insertBefore(parentNode, newNode, referenceNode) {
+        detachNode(newNode);
+        const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
+        const prev = referenceNode.previousSibling;
+        const prevElement = referenceNode.previousElementSibling || null;
+        if (prev) {
+            prev.nextSibling = newNode;
+            newNode.previousSibling = prev;
+        }
+        if (node_types_1.isElementNode(newNode)) {
+            if (prevElement) {
+                prevElement.nextElementSibling = newNode;
+                newNode.previousElementSibling = prevElement;
+            }
+            referenceNode.previousElementSibling = newNode;
+            if (node_types_1.isElementNode(referenceNode)) {
+                newNode.nextElementSibling = referenceNode;
+                const index = parentNode.children.indexOf(referenceNode);
+                parentNode.children.splice(index, 0, newNode);
+            }
+        }
+        referenceNode.previousSibling = newNode;
+        newNode.nextSibling = referenceNode;
+        parentNode.childNodes.splice(insertionIdx, 0, newNode);
+        newNode.parentNode = parentNode;
+        newNode.setOwnerDocument(parentNode.ownerDocument);
+    }
+    exports.insertBefore = insertBefore;
+    function detachNode(node) {
+        if (!node.parentNode) {
+            return null;
+        }
+        const idx = node.parentNode.childNodes.indexOf(node);
+        const prev = node.previousSibling;
+        const next = node.nextSibling;
+        const prevElement = node.previousElementSibling || null;
+        const nextElement = node.nextElementSibling || null;
+        if (prev) {
+            prev.nextSibling = next;
+        }
+        if (next) {
+            next.previousSibling = prev;
+        }
+        if (node_types_1.isElementNode(node)) {
+            if (prevElement) {
+                prevElement.nextElementSibling = nextElement;
+            }
+            if (nextElement) {
+                nextElement.previousElementSibling = prevElement;
+            }
+            node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
+        }
+        node.parentNode.childNodes.splice(idx, 1);
+        resetNode(node);
+        return node;
+    }
+    exports.detachNode = detachNode;
+    function replaceChild(parentNode, oldNode, newNode) {
+        const childIndex = parentNode.childNodes.indexOf(oldNode);
+        if (childIndex === -1) {
+            throw new Error('replaceChild: node not found');
+        }
+        detachNode(newNode);
+        parentNode.childNodes[childIndex] = newNode;
+        const previousSibling = oldNode.previousSibling || null;
+        const nextSibling = oldNode.nextSibling || null;
+        newNode.previousSibling = previousSibling;
+        newNode.nextSibling = nextSibling;
+        if (previousSibling) {
+            previousSibling.nextSibling = newNode;
+        }
+        if (nextSibling) {
+            nextSibling.previousSibling = newNode;
+        }
+        const previousElementSibling = oldNode.previousElementSibling || null;
+        const nextElementSibling = oldNode.nextElementSibling || null;
+        newNode.previousElementSibling = previousElementSibling;
+        newNode.nextElementSibling = nextElementSibling;
+        if (node_types_1.isElementNode(newNode)) {
+            if (previousSibling) {
+                previousSibling.nextElementSibling = newNode;
+            }
+            if (nextSibling) {
+                nextSibling.previousElementSibling = newNode;
+            }
+            if (previousElementSibling) {
+                previousElementSibling.nextElementSibling = newNode;
+            }
+            if (nextElementSibling) {
+                nextElementSibling.previousElementSibling = newNode;
+            }
+            if (node_types_1.isElementNode(oldNode)) {
+                parentNode.children[parentNode.children.indexOf(oldNode)] = newNode;
+            }
+            else {
+                const insertionIdx = parentNode.children.indexOf(newNode.nextElementSibling);
+                if (insertionIdx !== -1) {
+                    parentNode.children.splice(insertionIdx, 0, newNode);
+                }
+                else {
+                    parentNode.children.push(newNode);
+                }
+            }
+        }
+        if (!node_types_1.isElementNode(newNode) && node_types_1.isElementNode(oldNode)) {
+            if (previousElementSibling) {
+                previousElementSibling.nextElementSibling = nextElementSibling;
+            }
+            if (nextElementSibling) {
+                nextElementSibling.previousElementSibling = previousElementSibling;
+            }
+            oldNode.parentNode.children.splice(oldNode.parentNode.children.indexOf(oldNode), 1);
+        }
+        newNode.parentNode = oldNode.parentNode;
+        newNode.setOwnerDocument(parentNode.ownerDocument);
+        resetNode(oldNode);
+        return oldNode;
+    }
+    exports.replaceChild = replaceChild;
+    function insertText(parentNode, text) {
+        const lastChild = parentNode.lastChild;
+        if (lastChild && node_types_1.isTextNode(lastChild)) {
+            lastChild.nodeValue += text;
+        }
+        else {
+            appendChild(parentNode, node_contruction_1.createTextNode(text));
+        }
+    }
+    exports.insertText = insertText;
+    function insertTextBefore(parentNode, text, referenceNode) {
+        const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
+        if (prevNode && node_types_1.isTextNode(prevNode)) {
+            prevNode.nodeValue += text;
+        }
+        else {
+            insertBefore(parentNode, node_contruction_1.createTextNode(text), referenceNode);
+        }
+    }
+    exports.insertTextBefore = insertTextBefore;
+    function setTemplateContent(templateElement, contentElement) {
+        appendChild(templateElement, contentElement);
+    }
+    exports.setTemplateContent = setTemplateContent;
+    function getTemplateContent(templateElement) {
+        return templateElement.childNodes[0];
+    }
+    exports.getTemplateContent = getTemplateContent;
+    /**
+     * Copies attributes to the given element. Only attributes that are not yet present in the element are copied.
+     *
+     * @param recipient - Element to copy attributes into.
+     * @param attrs - Attributes to copy.
+     */
+    function adoptAttributes(recipient, attrs) {
+        for (const { name, value } of attrs)
+            if (typeof recipient.attribs[name] === 'undefined') {
+                recipient.attribs[name] = value;
+            }
+    }
+    exports.adoptAttributes = adoptAttributes;
+});
+define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/doctype", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "nodes/node-types", "nodes/documentType", "nodes/tree-mutation"], function (require, exports, doctype_1, type_1, node_2, document_1, element_1, node_types_2, documentType_1, tree_mutation_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.createTextNode = exports.createCommentNode = exports.createDirectiveNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
+    exports.createDocument = () => {
+        return new document_1.Document({
+            type: 'root',
+            nodeType: type_1.NodeType.DOCUMENT_NODE,
+            localName: '',
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+            childNodes: [],
+            children: [],
+            mode: type_1.DocumentMode.NO_QUIRKS,
+        });
+    };
+    exports.createDocumentFragment = () => {
+        return new node_2.Node({
+            type: 'root',
+            nodeType: type_1.NodeType.DOCUMENT_FRAGMENT_NODE,
+            localName: '',
+            childNodes: [],
+            children: [],
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+        });
+    };
+    exports.createElement = (tagName, namespaceURI, attrs) => {
+        let attribs = Object.create(null);
+        if (Array.isArray(attrs)) {
+            for (const { name, value } of attrs) {
+                // right now optional params are missing for attributes
+                attribs[name] = value;
+            }
+        }
+        else {
+            attribs = attrs;
+        }
+        return new element_1.Element({
+            type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
+            nodeType: type_1.NodeType.ELEMENT_NODE,
+            localName: tagName,
+            namespaceURI,
+            attribs,
+            childNodes: [],
+            children: [],
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+        });
+    };
+    exports.setDocumentType = (document, name, publicId, systemId) => {
+        const nodeValue = doctype_1.serializeContent(name, publicId, systemId);
+        let doctypeNode = null;
+        for (const node of document.childNodes) {
+            if (node_types_2.isDocumentTypeNode(node)) {
+                doctypeNode = node;
+                break;
+            }
+        }
+        if (doctypeNode) {
+            doctypeNode.nodeValue = nodeValue;
+            doctypeNode.name = name;
+            doctypeNode.publicId = publicId;
+            doctypeNode.systemId = systemId;
+        }
+        else {
+            tree_mutation_1.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
+        }
+    };
+    exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
+        return new documentType_1.DocumentType({
+            type: 'directive',
+            nodeType: type_1.NodeType.DOCUMENT_TYPE_NODE,
+            localName: '!doctype',
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+            nodeValue,
+            name,
+            publicId,
+            systemId,
+        });
+    };
+    exports.createCommentNode = (data) => {
+        return new node_2.Node({
+            type: 'comment',
+            nodeType: type_1.NodeType.COMMENT_NODE,
+            nodeValue: data,
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+        });
+    };
+    exports.createTextNode = (data) => {
+        return new node_2.Node({
+            type: 'text',
+            nodeType: type_1.NodeType.TEXT_NODE,
+            nodeValue: data,
+            parentNode: null,
+            previousSibling: null,
+            nextSibling: null,
+        });
+    };
+});
+define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contruction", "nodes/domutils/legacy", "url"], function (require, exports, node_3, node_contruction_2, legacy, url_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Document = void 0;
-    class Document extends node_1.Node {
+    class Document extends node_3.Node {
         constructor(props) {
             super(props);
         }
@@ -78,12 +391,12 @@ define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contru
             return this.getElementsByTagName("body")[0];
         }
         createElement(lowerName) {
-            const element = node_contruction_1.createElement(lowerName, "", []);
+            const element = node_contruction_2.createElement(lowerName, "", []);
             element.setOwnerDocument(this);
             return element;
         }
         createTextNode(data) {
-            const textNode = node_contruction_1.createTextNode(data);
+            const textNode = node_contruction_2.createTextNode(data);
             textNode.setOwnerDocument(this);
             return textNode;
         }
@@ -121,46 +434,35 @@ define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contru
     }
     exports.Document = Document;
 });
-define("nodes/documentType", ["require", "exports", "nodes/node"], function (require, exports, node_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.DocumentType = void 0;
-    class DocumentType extends node_2.Node {
-        constructor(props) {
-            super(props);
-        }
-    }
-    exports.DocumentType = DocumentType;
-});
-define("nodes/node-types", ["require", "exports", "nodes/contracts/type"], function (require, exports, type_1) {
+define("nodes/node-types", ["require", "exports", "nodes/contracts/type"], function (require, exports, type_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isDocument = exports.isElementNode = exports.isDocumentTypeNode = exports.isCommentNode = exports.isTextNode = void 0;
     function isTextNode(node) {
-        return node.nodeType === type_1.NodeType.TEXT_NODE;
+        return node.nodeType === type_2.NodeType.TEXT_NODE;
     }
     exports.isTextNode = isTextNode;
     function isCommentNode(node) {
-        return node.nodeType === type_1.NodeType.COMMENT_NODE;
+        return node.nodeType === type_2.NodeType.COMMENT_NODE;
     }
     exports.isCommentNode = isCommentNode;
     function isDocumentTypeNode(node) {
-        return node.nodeType === type_1.NodeType.DOCUMENT_TYPE_NODE;
+        return node.nodeType === type_2.NodeType.DOCUMENT_TYPE_NODE;
     }
     exports.isDocumentTypeNode = isDocumentTypeNode;
     function isElementNode(node) {
-        return node.nodeType === type_1.NodeType.ELEMENT_NODE;
+        return node.nodeType === type_2.NodeType.ELEMENT_NODE;
     }
     exports.isElementNode = isElementNode;
     function isDocument(node) {
         if (node) {
-            return node.nodeType === type_1.NodeType.DOCUMENT_NODE;
+            return node.nodeType === type_2.NodeType.DOCUMENT_NODE;
         }
         return false;
     }
     exports.isDocument = isDocument;
 });
-define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], function (require, exports, node_types_1) {
+define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], function (require, exports, node_types_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.findAll = exports.existsOne = exports.findOne = exports.findOneChild = exports.find = exports.filter = void 0;
@@ -226,7 +528,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
         let elem = null;
         for (let i = 0; i < nodes.length && !elem; i++) {
             const checked = nodes[i];
-            if (!node_types_1.isElementNode(checked)) {
+            if (!node_types_3.isElementNode(checked)) {
                 continue;
             }
             else if (test(checked)) {
@@ -246,7 +548,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
      * @param nodes Array of nodes to search.
      */
     function existsOne(test, nodes) {
-        return nodes.some((checked) => node_types_1.isElementNode(checked) &&
+        return nodes.some((checked) => node_types_3.isElementNode(checked) &&
             (test(checked) ||
                 (checked.childNodes.length > 0 &&
                     existsOne(test, checked.childNodes))));
@@ -263,10 +565,10 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
     function findAll(test, nodes) {
         var _a;
         const result = [];
-        const stack = nodes.filter(node_types_1.isElementNode);
+        const stack = nodes.filter(node_types_3.isElementNode);
         let elem = stack.shift();
         while (elem) {
-            const children = (_a = elem.childNodes) === null || _a === void 0 ? void 0 : _a.filter(node_types_1.isElementNode);
+            const children = (_a = elem.childNodes) === null || _a === void 0 ? void 0 : _a.filter(node_types_3.isElementNode);
             if (children && children.length > 0) {
                 stack.unshift(...children);
             }
@@ -278,7 +580,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
     }
     exports.findAll = findAll;
 });
-define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying", "nodes/node-types"], function (require, exports, querying_1, node_types_2) {
+define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying", "nodes/node-types"], function (require, exports, querying_1, node_types_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getElementsByTagName = exports.getElementsByName = exports.getElementsByClassName = exports.getElementById = exports.getElements = exports.testElement = void 0;
@@ -286,30 +588,30 @@ define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying"
     const Checks = {
         tag_name(name) {
             if (typeof name === "function") {
-                return (elem) => node_types_2.isElementNode(elem) && name(elem.localName);
+                return (elem) => node_types_4.isElementNode(elem) && name(elem.localName);
             }
             else if (name === "*") {
-                return node_types_2.isElementNode;
+                return node_types_4.isElementNode;
             }
             else {
-                return (elem) => node_types_2.isElementNode(elem) && elem.localName === name;
+                return (elem) => node_types_4.isElementNode(elem) && elem.localName === name;
             }
         },
         tag_contains(data) {
             if (typeof data === "function") {
-                return (elem) => node_types_2.isTextNode(elem) && data(elem.nodeValue);
+                return (elem) => node_types_4.isTextNode(elem) && data(elem.nodeValue);
             }
             else {
-                return (elem) => node_types_2.isTextNode(elem) && elem.nodeValue === data;
+                return (elem) => node_types_4.isTextNode(elem) && elem.nodeValue === data;
             }
         },
     };
     function getAttribCheck(attrib, value) {
         if (typeof value === "function") {
-            return (elem) => node_types_2.isElementNode(elem) && value(elem.attribs[attrib]);
+            return (elem) => node_types_4.isElementNode(elem) && value(elem.attribs[attrib]);
         }
         else {
-            return (elem) => node_types_2.isElementNode(elem) && elem.attribs[attrib] === value;
+            return (elem) => node_types_4.isElementNode(elem) && elem.attribs[attrib] === value;
         }
     }
     function combineFuncs(a, b) {
@@ -600,11 +902,11 @@ define("nodes/style", ["require", "exports"], function (require, exports) {
         });
     }
 });
-define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-traversing", "index", "nodes/domutils/legacy", "nodes/style"], function (require, exports, node_3, tree_traversing_1, index_1, legacy, style_1) {
+define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-traversing", "index", "nodes/domutils/legacy", "nodes/style"], function (require, exports, node_4, tree_traversing_1, index_1, legacy, style_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Element = void 0;
-    class Element extends node_3.Node {
+    class Element extends node_4.Node {
         constructor(props) {
             super(props);
             this.style = new style_1.Style(this);
@@ -670,202 +972,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
         });
     });
 });
-define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "nodes/node-types"], function (require, exports, node_contruction_2, node_types_3) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.adoptAttributes = exports.getTemplateContent = exports.setTemplateContent = exports.insertTextBefore = exports.insertText = exports.replaceChild = exports.detachNode = exports.insertBefore = exports.appendChild = void 0;
-    function resetNode(node) {
-        node.previousSibling = null;
-        node.nextSibling = null;
-        node.previousElementSibling = null;
-        node.nextElementSibling = null;
-        node.parentNode = null;
-    }
-    function appendChild(parentNode, newNode) {
-        detachNode(newNode);
-        const lastChild = parentNode.lastChild;
-        if (lastChild) {
-            lastChild.nextSibling = newNode;
-            newNode.previousSibling = lastChild;
-        }
-        const lastElement = parentNode.lastElementChild;
-        newNode.previousElementSibling = lastElement;
-        if (node_types_3.isElementNode(newNode)) {
-            parentNode.children.push(newNode);
-            if (lastElement) {
-                lastElement.nextElementSibling = newNode;
-            }
-            if (lastChild) {
-                lastChild.nextElementSibling = newNode;
-            }
-        }
-        parentNode.childNodes.push(newNode);
-        newNode.parentNode = parentNode;
-        newNode.setOwnerDocument(parentNode.ownerDocument);
-    }
-    exports.appendChild = appendChild;
-    function insertBefore(parentNode, newNode, referenceNode) {
-        detachNode(newNode);
-        const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
-        const prev = referenceNode.previousSibling;
-        const prevElement = referenceNode.previousElementSibling || null;
-        if (prev) {
-            prev.nextSibling = newNode;
-            newNode.previousSibling = prev;
-        }
-        if (node_types_3.isElementNode(newNode)) {
-            if (prevElement) {
-                prevElement.nextElementSibling = newNode;
-                newNode.previousElementSibling = prevElement;
-            }
-            referenceNode.previousElementSibling = newNode;
-            if (node_types_3.isElementNode(referenceNode)) {
-                newNode.nextElementSibling = referenceNode;
-                const index = parentNode.children.indexOf(referenceNode);
-                parentNode.children.splice(index, 0, newNode);
-            }
-        }
-        referenceNode.previousSibling = newNode;
-        newNode.nextSibling = referenceNode;
-        parentNode.childNodes.splice(insertionIdx, 0, newNode);
-        newNode.parentNode = parentNode;
-        newNode.setOwnerDocument(parentNode.ownerDocument);
-    }
-    exports.insertBefore = insertBefore;
-    function detachNode(node) {
-        if (!node.parentNode) {
-            return null;
-        }
-        const idx = node.parentNode.childNodes.indexOf(node);
-        const prev = node.previousSibling;
-        const next = node.nextSibling;
-        const prevElement = node.previousElementSibling || null;
-        const nextElement = node.nextElementSibling || null;
-        if (prev) {
-            prev.nextSibling = next;
-        }
-        if (next) {
-            next.previousSibling = prev;
-        }
-        if (node_types_3.isElementNode(node)) {
-            if (prevElement) {
-                prevElement.nextElementSibling = nextElement;
-            }
-            if (nextElement) {
-                nextElement.previousElementSibling = prevElement;
-            }
-            node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
-        }
-        node.parentNode.childNodes.splice(idx, 1);
-        resetNode(node);
-        return node;
-    }
-    exports.detachNode = detachNode;
-    function replaceChild(parentNode, oldNode, newNode) {
-        const childIndex = parentNode.childNodes.indexOf(oldNode);
-        if (childIndex === -1) {
-            throw new Error('replaceChild: node not found');
-        }
-        detachNode(newNode);
-        parentNode.childNodes[childIndex] = newNode;
-        const previousSibling = oldNode.previousSibling || null;
-        const nextSibling = oldNode.nextSibling || null;
-        newNode.previousSibling = previousSibling;
-        newNode.nextSibling = nextSibling;
-        if (previousSibling) {
-            previousSibling.nextSibling = newNode;
-        }
-        if (nextSibling) {
-            nextSibling.previousSibling = newNode;
-        }
-        const previousElementSibling = oldNode.previousElementSibling || null;
-        const nextElementSibling = oldNode.nextElementSibling || null;
-        newNode.previousElementSibling = previousElementSibling;
-        newNode.nextElementSibling = nextElementSibling;
-        if (node_types_3.isElementNode(newNode)) {
-            if (previousSibling) {
-                previousSibling.nextElementSibling = newNode;
-            }
-            if (nextSibling) {
-                nextSibling.previousElementSibling = newNode;
-            }
-            if (previousElementSibling) {
-                previousElementSibling.nextElementSibling = newNode;
-            }
-            if (nextElementSibling) {
-                nextElementSibling.previousElementSibling = newNode;
-            }
-            if (node_types_3.isElementNode(oldNode)) {
-                parentNode.children[parentNode.children.indexOf(oldNode)] = newNode;
-            }
-            else {
-                const insertionIdx = parentNode.children.indexOf(newNode.nextElementSibling);
-                if (insertionIdx !== -1) {
-                    parentNode.children.splice(insertionIdx, 0, newNode);
-                }
-                else {
-                    parentNode.children.push(newNode);
-                }
-            }
-        }
-        if (!node_types_3.isElementNode(newNode) && node_types_3.isElementNode(oldNode)) {
-            if (previousElementSibling) {
-                previousElementSibling.nextElementSibling = nextElementSibling;
-            }
-            if (nextElementSibling) {
-                nextElementSibling.previousElementSibling = previousElementSibling;
-            }
-            oldNode.parentNode.children.splice(oldNode.parentNode.children.indexOf(oldNode), 1);
-        }
-        newNode.parentNode = oldNode.parentNode;
-        newNode.setOwnerDocument(parentNode.ownerDocument);
-        resetNode(oldNode);
-        return oldNode;
-    }
-    exports.replaceChild = replaceChild;
-    function insertText(parentNode, text) {
-        const lastChild = parentNode.lastChild;
-        if (lastChild && node_types_3.isTextNode(lastChild)) {
-            lastChild.nodeValue += text;
-        }
-        else {
-            appendChild(parentNode, node_contruction_2.createTextNode(text));
-        }
-    }
-    exports.insertText = insertText;
-    function insertTextBefore(parentNode, text, referenceNode) {
-        const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
-        if (prevNode && node_types_3.isTextNode(prevNode)) {
-            prevNode.nodeValue += text;
-        }
-        else {
-            insertBefore(parentNode, node_contruction_2.createTextNode(text), referenceNode);
-        }
-    }
-    exports.insertTextBefore = insertTextBefore;
-    function setTemplateContent(templateElement, contentElement) {
-        appendChild(templateElement, contentElement);
-    }
-    exports.setTemplateContent = setTemplateContent;
-    function getTemplateContent(templateElement) {
-        return templateElement.childNodes[0];
-    }
-    exports.getTemplateContent = getTemplateContent;
-    /**
-     * Copies attributes to the given element. Only attributes that are not yet present in the element are copied.
-     *
-     * @param recipient - Element to copy attributes into.
-     * @param attrs - Attributes to copy.
-     */
-    function adoptAttributes(recipient, attrs) {
-        for (const { name, value } of attrs)
-            if (typeof recipient.attribs[name] === 'undefined') {
-                recipient.attribs[name] = value;
-            }
-    }
-    exports.adoptAttributes = adoptAttributes;
-});
-define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-types", "nodes/tree-mutation", "entities"], function (require, exports, type_2, node_types_4, tree_mutation_1, entities_1) {
+define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-types", "nodes/tree-mutation", "entities"], function (require, exports, type_3, node_types_5, tree_mutation_2, entities_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Node = void 0;
@@ -882,7 +989,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             }
             this.localName = (this.localName || "").toLowerCase();
             this.childNodes = this.childNodes || [];
-            this.children = this.childNodes.filter(node_types_4.isElementNode);
+            this.children = this.childNodes.filter(node_types_5.isElementNode);
         }
         get firstChild() {
             return this.childNodes[0] || null;
@@ -906,12 +1013,12 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             return this._tagName;
         }
         get textContent() {
-            if (this.nodeType === type_2.NodeType.TEXT_NODE) {
+            if (this.nodeType === type_3.NodeType.TEXT_NODE) {
                 return this.nodeValue;
             }
             function getText(node) {
                 node.childNodes.forEach((child) => {
-                    if (node_types_4.isTextNode(child)) {
+                    if (node_types_5.isTextNode(child)) {
                         text.push(entities_1.decode(child.nodeValue));
                     }
                     else {
@@ -924,7 +1031,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             return text.join("");
         }
         set textContent(data) {
-            if (node_types_4.isTextNode(this)) {
+            if (node_types_5.isTextNode(this)) {
                 this.nodeValue = data;
                 return;
             }
@@ -941,11 +1048,11 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             if (this._ownerDocument) {
                 return this._ownerDocument;
             }
-            if (node_types_4.isDocument(this)) {
+            if (node_types_5.isDocument(this)) {
                 this._ownerDocument = null;
                 return this._ownerDocument;
             }
-            if (node_types_4.isDocument(this.parentNode)) {
+            if (node_types_5.isDocument(this.parentNode)) {
                 this._ownerDocument = this.parentNode;
                 return this._ownerDocument;
             }
@@ -955,127 +1062,121 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             this._ownerDocument = node;
         }
         appendChild(newNode) {
-            tree_mutation_1.appendChild(this, newNode);
+            tree_mutation_2.appendChild(this, newNode);
         }
         removeChild(node) {
-            return tree_mutation_1.detachNode(node);
+            return tree_mutation_2.detachNode(node);
         }
         replaceChild(newNode, oldNode) {
-            return tree_mutation_1.replaceChild(this, oldNode, newNode);
+            return tree_mutation_2.replaceChild(this, oldNode, newNode);
         }
     }
     exports.Node = Node;
-    for (const nodeType in type_2.NodeType) {
+    for (const nodeType in type_3.NodeType) {
         // @ts-ignore
-        Node[nodeType] = Node.prototype[nodeType] = type_2.NodeType[nodeType];
+        Node[nodeType] = Node.prototype[nodeType] = type_3.NodeType[nodeType];
     }
 });
-define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/doctype", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "nodes/node-types", "nodes/documentType", "nodes/tree-mutation"], function (require, exports, doctype_1, type_3, node_4, document_1, element_1, node_types_5, documentType_1, tree_mutation_2) {
+define("adapters/htmlparser2", ["require", "exports", "nodes/node-contruction", "nodes/node-types", "entities"], function (require, exports, node_contruction_3, node_types_6, entities_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.createTextNode = exports.createCommentNode = exports.createDirectiveNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
-    exports.createDocument = () => {
-        return new document_1.Document({
-            type: 'root',
-            nodeType: type_3.NodeType.DOCUMENT_NODE,
-            localName: '',
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-            childNodes: [],
-            children: [],
-            mode: type_3.DocumentMode.NO_QUIRKS,
-        });
+    exports.JsDomHandler = void 0;
+    const reWhitespace = /\s+/g;
+    // Default options
+    const defaultOpts = {
+        normalizeWhitespace: false,
     };
-    exports.createDocumentFragment = () => {
-        return new node_4.Node({
-            type: 'root',
-            nodeType: type_3.NodeType.DOCUMENT_FRAGMENT_NODE,
-            localName: '',
-            childNodes: [],
-            children: [],
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-        });
-    };
-    exports.createElement = (tagName, namespaceURI, attrs) => {
-        let attribs = Object.create(null);
-        if (Array.isArray(attrs)) {
-            for (const { name, value } of attrs) {
-                // right now optional params are missing for attributes
-                attribs[name] = value;
+    class JsDomHandler {
+        /**
+         * Initiate a new JsDomHandler.
+         *
+         * @param options Settings for the handler.
+         */
+        constructor(options) {
+            /** The constructed DOM */
+            this.dom = node_contruction_3.createDocument();
+            /** Indicated whether parsing has been completed. */
+            this._done = false;
+            /** Stack of open tags. */
+            this._tagStack = [];
+            /** A data node that is still being written to. */
+            this._lastNode = null;
+            this._options = options || defaultOpts;
+        }
+        // Resets the handler back to starting state
+        onreset() {
+            this.dom = node_contruction_3.createDocument();
+            this._done = false;
+            this._tagStack = [];
+            this._lastNode = null;
+        }
+        // Signals the handler that parsing is done
+        onend() {
+            if (this._done)
+                return;
+            this._done = true;
+            this.handleCallback(null);
+        }
+        onerror(error) {
+            this.handleCallback(error);
+        }
+        onclosetag() {
+            this._lastNode = null;
+            const elem = this._tagStack.pop();
+            if (!elem) {
+                return;
             }
         }
-        else {
-            attribs = attrs;
+        onopentag(name, attribs) {
+            const element = node_contruction_3.createElement(name, "", attribs);
+            this.addNode(element);
+            this._tagStack.push(element);
         }
-        return new element_1.Element({
-            type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
-            nodeType: type_3.NodeType.ELEMENT_NODE,
-            localName: tagName,
-            namespaceURI,
-            attribs,
-            childNodes: [],
-            children: [],
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-        });
-    };
-    exports.setDocumentType = (document, name, publicId, systemId) => {
-        const nodeValue = doctype_1.serializeContent(name, publicId, systemId);
-        let doctypeNode = null;
-        for (const node of document.childNodes) {
-            if (node_types_5.isDocumentTypeNode(node)) {
-                doctypeNode = node;
-                break;
+        ontext(data) {
+            const normalize = this._options.normalizeWhitespace;
+            const { _lastNode } = this;
+            data = entities_2.decode(data);
+            if (_lastNode && node_types_6.isElementNode(_lastNode)) {
+                _lastNode.nodeValue += data;
+            }
+            else {
+                const node = node_contruction_3.createTextNode(data);
+                this.addNode(node);
+                this._lastNode = node;
+            }
+            if (normalize) {
+                _lastNode.nodeValue = _lastNode.nodeValue.replace(reWhitespace, " ");
             }
         }
-        if (doctypeNode) {
-            doctypeNode.nodeValue = nodeValue;
-            doctypeNode.name = name;
-            doctypeNode.publicId = publicId;
-            doctypeNode.systemId = systemId;
+        oncomment(data) {
+            data = entities_2.decode(data);
+            if (this._lastNode && node_types_6.isCommentNode(this._lastNode)) {
+                this._lastNode.nodeValue += data;
+                return;
+            }
+            const node = node_contruction_3.createCommentNode(data);
+            this.addNode(node);
+            this._lastNode = node;
         }
-        else {
-            tree_mutation_2.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
+        oncommentend() {
+            this._lastNode = null;
         }
-    };
-    exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
-        return new documentType_1.DocumentType({
-            type: 'directive',
-            nodeType: type_3.NodeType.DOCUMENT_TYPE_NODE,
-            localName: '!doctype',
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-            nodeValue,
-            name,
-            publicId,
-            systemId,
-        });
-    };
-    exports.createCommentNode = (data) => {
-        return new node_4.Node({
-            type: 'comment',
-            nodeType: type_3.NodeType.COMMENT_NODE,
-            nodeValue: data,
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-        });
-    };
-    exports.createTextNode = (data) => {
-        return new node_4.Node({
-            type: 'text',
-            nodeType: type_3.NodeType.TEXT_NODE,
-            nodeValue: data,
-            parentNode: null,
-            previousSibling: null,
-            nextSibling: null,
-        });
-    };
+        onprocessinginstruction(name, data) {
+            const node = node_contruction_3.createDirectiveNode(name, data);
+            this.addNode(node);
+        }
+        handleCallback(error) {
+            if (error) {
+                throw error;
+            }
+        }
+        addNode(node) {
+            const parent = this._tagStack[this._tagStack.length - 1] || this.dom;
+            parent.appendChild(node);
+            this._lastNode = null;
+        }
+    }
+    exports.JsDomHandler = JsDomHandler;
 });
 define("nodes/node-data", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -1123,118 +1224,17 @@ define("nodes/source-code-location", ["require", "exports"], function (require, 
         node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
     };
 });
-define("adapters/parse5", ["require", "exports", "nodes/node-contruction", "nodes/node-data", "nodes/node-types", "nodes/source-code-location", "nodes/tree-mutation", "nodes/tree-traversing"], function (require, exports, node_contruction_3, node_data_1, node_types_6, source_code_location_1, tree_mutation_3, tree_traversing_2) {
+define("adapters/parse5", ["require", "exports", "nodes/node-contruction", "nodes/node-data", "nodes/node-types", "nodes/source-code-location", "nodes/tree-mutation", "nodes/tree-traversing"], function (require, exports, node_contruction_4, node_data_1, node_types_7, source_code_location_1, tree_mutation_3, tree_traversing_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    __exportStar(node_contruction_3, exports);
+    __exportStar(node_contruction_4, exports);
     __exportStar(node_data_1, exports);
-    __exportStar(node_types_6, exports);
+    __exportStar(node_types_7, exports);
     __exportStar(source_code_location_1, exports);
     __exportStar(tree_mutation_3, exports);
     __exportStar(tree_traversing_2, exports);
 });
-define("adapters/htmlparser2", ["require", "exports", "nodes/node-contruction", "nodes/node-types", "entities"], function (require, exports, node_contruction_4, node_types_7, entities_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.JsDomHandler = void 0;
-    const reWhitespace = /\s+/g;
-    // Default options
-    const defaultOpts = {
-        normalizeWhitespace: false,
-    };
-    class JsDomHandler {
-        /**
-         * Initiate a new JsDomHandler.
-         *
-         * @param options Settings for the handler.
-         */
-        constructor(options) {
-            /** The constructed DOM */
-            this.dom = node_contruction_4.createDocument();
-            /** Indicated whether parsing has been completed. */
-            this._done = false;
-            /** Stack of open tags. */
-            this._tagStack = [];
-            /** A data node that is still being written to. */
-            this._lastNode = null;
-            this._options = options || defaultOpts;
-        }
-        // Resets the handler back to starting state
-        onreset() {
-            this.dom = node_contruction_4.createDocument();
-            this._done = false;
-            this._tagStack = [];
-            this._lastNode = null;
-        }
-        // Signals the handler that parsing is done
-        onend() {
-            if (this._done)
-                return;
-            this._done = true;
-            this.handleCallback(null);
-        }
-        onerror(error) {
-            this.handleCallback(error);
-        }
-        onclosetag() {
-            this._lastNode = null;
-            const elem = this._tagStack.pop();
-            if (!elem) {
-                return;
-            }
-        }
-        onopentag(name, attribs) {
-            const element = node_contruction_4.createElement(name, "", attribs);
-            this.addNode(element);
-            this._tagStack.push(element);
-        }
-        ontext(data) {
-            const normalize = this._options.normalizeWhitespace;
-            const { _lastNode } = this;
-            data = entities_2.decode(data);
-            if (_lastNode && node_types_7.isElementNode(_lastNode)) {
-                _lastNode.nodeValue += data;
-            }
-            else {
-                const node = node_contruction_4.createTextNode(data);
-                this.addNode(node);
-                this._lastNode = node;
-            }
-            if (normalize) {
-                _lastNode.nodeValue = _lastNode.nodeValue.replace(reWhitespace, " ");
-            }
-        }
-        oncomment(data) {
-            data = entities_2.decode(data);
-            if (this._lastNode && node_types_7.isCommentNode(this._lastNode)) {
-                this._lastNode.nodeValue += data;
-                return;
-            }
-            const node = node_contruction_4.createCommentNode(data);
-            this.addNode(node);
-            this._lastNode = node;
-        }
-        oncommentend() {
-            this._lastNode = null;
-        }
-        onprocessinginstruction(name, data) {
-            const node = node_contruction_4.createDirectiveNode(name, data);
-            this.addNode(node);
-        }
-        handleCallback(error) {
-            if (error) {
-                throw error;
-            }
-        }
-        addNode(node) {
-            const parent = this._tagStack[this._tagStack.length - 1] || this.dom;
-            parent.appendChild(node);
-            this._lastNode = null;
-        }
-    }
-    exports.JsDomHandler = JsDomHandler;
-});
-define("index", ["require", "exports", "htmlparser2", "parse5", "adapters/parse5", "types/types", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "adapters/htmlparser2"], function (require, exports, htmlparser2_1, parse5_1, jsDomTreeAdapter, types_1, type_4, node_5, document_2, element_2, htmlparser2_2) {
+define("index", ["require", "exports", "htmlparser2", "parse5", "adapters/htmlparser2", "adapters/parse5", "types/types", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element"], function (require, exports, htmlparser2_1, parse5_1, htmlparser2_2, jsDomTreeAdapter, types_1, type_4, node_5, document_2, element_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.serializeDom = exports.htmlparser2 = exports.parse5 = exports.parseDom = exports.nodes = void 0;

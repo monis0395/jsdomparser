@@ -12,7 +12,7 @@ describe('test parse', () => {
     beforeEach(() => {
         document = parseDom(`<div class="text">Hello</div>`, { parser: Parsers.parse5 });
         body = document.body;
-    })
+    });
     it('simple div', () => {
         expect(document).to.not.empty;
         expect(document.nodeType).to.is.eq(NodeType.DOCUMENT_NODE);

@@ -1,12 +1,12 @@
 import { Parser } from "htmlparser2";
 import { parse, serialize } from "parse5"
+import { JsDomHandler } from "./adapters/htmlparser2";
 import * as jsDomTreeAdapter from "./adapters/parse5"
 import { Options, Parsers } from "./types/types";
 import { NodeType } from "./nodes/contracts/type";
 import { Node } from "./nodes/node";
 import { Document } from "./nodes/document";
 import { Element } from "./nodes/element";
-import { JsDomHandler } from "./adapters/htmlparser2";
 
 export const nodes = {
     Node, NodeType, Document, Element,
