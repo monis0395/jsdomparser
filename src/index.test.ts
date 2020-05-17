@@ -2,10 +2,18 @@ import { parseDom } from "./index";
 import { expect } from 'chai';
 import 'mocha';
 import { NodeType } from "./nodes/contracts/type";
+import { Parsers } from "./types/types";
+import { Document } from "./nodes/document";
+import { Element } from "./nodes/element";
 
 describe('test parse', () => {
+    let document: Document;
+    let body: Element;
+    beforeEach(() => {
+        document = parseDom(`<div class="text">Hello</div>`, { parser: Parsers.parse5 });
+        body = document.body;
+    })
     it('simple div', () => {
-        const document = parseDom(`<div class="text">Hello</div>`);
         expect(document).to.not.empty;
         expect(document.nodeType).to.is.eq(NodeType.DOCUMENT_NODE);
         expect(document.children).to.be.not.empty;
@@ -17,8 +25,6 @@ describe('test parse', () => {
     });
 
     it('className', () => {
-        const document = parseDom(`<div class="text">Hello</div>`);
-        const body = document.body;
         expect(document.getElementsByClassName("text").length).to.be.eq(1);
         expect(body.firstElementChild.className).to.be.eq("text");
         body.firstElementChild.className = "text-2";
@@ -35,7 +41,6 @@ describe('test parse', () => {
     });
 
     it('innerHTML', () => {
-        const document = parseDom(`<div class="text">Hello</div>`);
         const body = document.body;
         expect(body.firstElementChild.firstChild.textContent).to.be.eq("Hello");
         expect(body.firstElementChild.innerHTML).to.be.eq("Hello");
@@ -52,7 +57,6 @@ describe('test parse', () => {
     });
 
     it('textContent', () => {
-        const document = parseDom(`<div class="text">Hello</div>`);
         const body = document.body;
         expect(body.firstElementChild.textContent).to.be.eq("Hello");
         expect(body.firstElementChild.firstChild.textContent).to.be.eq("Hello");

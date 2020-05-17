@@ -60,8 +60,7 @@ export class Element extends Node implements ElementProps {
 
     set innerHTML(htmlString: string) {
         const document = parseDom(htmlString);
-        // todo: handle head also
-        const node = document.body;
+        const node = document;
         while (this.childNodes.length) {
             this.removeChild(this.childNodes[0])
         }
@@ -82,10 +81,10 @@ export class Element extends Node implements ElementProps {
 const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
-        get () {
+        get() {
             return this.getAttribute(name);
         },
-        set (value: string) {
+        set(value: string) {
             return this.setAttribute(name, value);
         },
     });

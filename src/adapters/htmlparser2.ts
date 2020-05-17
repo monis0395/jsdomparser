@@ -3,6 +3,7 @@ import { Element } from "../nodes/element";
 import { createCommentNode, createDirectiveNode, createDocument, createElement, createTextNode } from "../nodes/node-contruction";
 import { isCommentNode, isElementNode } from "../nodes/node-types";
 import { Document } from "../nodes/document";
+import { decode } from 'entities';
 
 const reWhitespace = /\s+/g;
 
@@ -81,6 +82,7 @@ export class JsDomHandler {
         const normalize = this._options.normalizeWhitespace;
 
         const { _lastNode } = this;
+        data = decode(data);
 
         if (_lastNode && isElementNode(_lastNode)) {
             _lastNode.nodeValue += data;
@@ -95,6 +97,7 @@ export class JsDomHandler {
     }
 
     public oncomment(data: string): void {
+        data = decode(data);
         if (this._lastNode && isCommentNode(this._lastNode)) {
             this._lastNode.nodeValue += data;
             return;

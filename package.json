@@ -28,6 +28,7 @@
     "build": "run-s clean ts:cjs ts:umd"
   },
   "dependencies": {
+    "entities": "^2.0.2",
     "html-escaper": "^3.0.0",
     "htmlparser2": "^4.1.0",
     "parse5": "^6.0.0"
