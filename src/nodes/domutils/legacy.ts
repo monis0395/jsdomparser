@@ -96,7 +96,22 @@ export function getElementsByClassName(
     limit = Infinity,
 ): Element[] {
     return filter(
-        getAttribCheck("class", (value) => value && value.includes(names)),
+        getAttribCheck("class", (values) => {
+            if (values && names) {
+                const valuesArray = values.split(' '); // 10
+                const namesArray = names.split(' '); // 2
+                for (const name of namesArray) {
+                    if (!name){
+                        continue;
+                    }
+                    if (valuesArray.indexOf(name) === -1) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }),
         element,
         recurse,
         limit,
