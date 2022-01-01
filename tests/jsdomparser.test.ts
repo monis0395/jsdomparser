@@ -1,6 +1,6 @@
-import { NodeType } from "./nodes/contracts/type";
-import { Node } from "./nodes/node";
-import { parseDom } from "./index";
+import { NodeType } from "../src/nodes/contracts/type";
+import { Node } from "../src/nodes/node";
+import { parseDom } from "../src";
 import { expect } from 'chai';
 import 'mocha';
 

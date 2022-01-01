@@ -1,7 +1,7 @@
-import { parseDom } from "./index";
+import { parseDom } from "../src";
 import { expect } from 'chai';
 import 'mocha';
-import { NodeType } from "./nodes/contracts/type";
+import { NodeType } from "../src/nodes/contracts/type";
 
 describe('test parse', () => {
     it('simple div', () => {
