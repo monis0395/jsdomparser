@@ -10,8 +10,8 @@ export class Node implements NodeProps {
     type: string;
     nodeType: NodeType;
     localName: string = '';
+    children: Element[] = [];
     childNodes: Node[];
-    children: Element[];
     parentNode: Node = null;
     previousSibling: Node = null;
     nextSibling: Node = null;
