@@ -627,7 +627,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
             return tree_traversing_1.getAttrList(this);
         }
         get className() {
-            return this.getAttribute("class");
+            return this.getAttribute("class") || '';
         }
         set className(classNames) {
             this.setAttribute("class", classNames);

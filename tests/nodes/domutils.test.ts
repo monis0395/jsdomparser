@@ -35,5 +35,6 @@ describe('test parse', () => {
         assert.deepEqual(document.getElementsByClassName("aaa,bbb").length, 0)
         assert.deepEqual(document.getElementsByClassName("ddd").length, 0, "no substring matches")
         assert.deepEqual(document.getElementsByClassName("eee").length, 0, "no substring matches")
+        assert.deepEqual(document.getElementById("example").className, '', "className should always return empty string")
     });
 });
