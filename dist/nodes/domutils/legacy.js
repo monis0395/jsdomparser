@@ -62,7 +62,22 @@ function getElementById(id, element, recurse = true) {
 }
 exports.getElementById = getElementById;
 function getElementsByClassName(names, element, recurse = true, limit = Infinity) {
-    return querying_1.filter(getAttribCheck("class", (value) => value && value.includes(names)), element, recurse, limit);
+    return querying_1.filter(getAttribCheck("class", (values) => {
+        if (values && names) {
+            const valuesArray = values.split(' '); // 10
+            const namesArray = names.split(' '); // 2
+            for (const name of namesArray) {
+                if (!name) {
+                    continue;
+                }
+                if (valuesArray.indexOf(name) === -1) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }), element, recurse, limit);
 }
 exports.getElementsByClassName = getElementsByClassName;
 function getElementsByName(name, element, recurse = true, limit = Infinity) {

@@ -340,7 +340,22 @@ define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying"
     }
     exports.getElementById = getElementById;
     function getElementsByClassName(names, element, recurse = true, limit = Infinity) {
-        return querying_1.filter(getAttribCheck("class", (value) => value && value.includes(names)), element, recurse, limit);
+        return querying_1.filter(getAttribCheck("class", (values) => {
+            if (values && names) {
+                const valuesArray = values.split(' '); // 10
+                const namesArray = names.split(' '); // 2
+                for (const name of namesArray) {
+                    if (!name) {
+                        continue;
+                    }
+                    if (valuesArray.indexOf(name) === -1) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }), element, recurse, limit);
     }
     exports.getElementsByClassName = getElementsByClassName;
     function getElementsByName(name, element, recurse = true, limit = Infinity) {
@@ -636,6 +651,9 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
         removeAttribute(name) {
             delete this.attribs[name];
         }
+        get childElementCount() {
+            return this.children.length;
+        }
         get innerHTML() {
             return index_1.serializeDom(this);
         }
@@ -662,7 +680,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
     elementAttributes.forEach((name) => {
         Object.defineProperty(Element.prototype, name, {
             get() {
-                return this.getAttribute(name);
+                return this.getAttribute(name) || '';
             },
             set(value) {
                 return this.setAttribute(name, value);
@@ -871,6 +889,8 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
     exports.Node = void 0;
     class Node {
         constructor(props) {
+            this.localName = '';
+            this.children = [];
             this.parentNode = null;
             this.previousSibling = null;
             this.nextSibling = null;

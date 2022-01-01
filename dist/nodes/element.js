@@ -39,6 +39,9 @@ class Element extends node_1.Node {
     removeAttribute(name) {
         delete this.attribs[name];
     }
+    get childElementCount() {
+        return this.children.length;
+    }
     get innerHTML() {
         return index_1.serializeDom(this);
     }
@@ -65,7 +68,7 @@ const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
         get() {
-            return this.getAttribute(name);
+            return this.getAttribute(name) || '';
         },
         set(value) {
             return this.setAttribute(name, value);

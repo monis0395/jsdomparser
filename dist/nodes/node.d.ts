@@ -5,8 +5,8 @@ export declare class Node implements NodeProps {
     type: string;
     nodeType: NodeType;
     localName: string;
-    childNodes: Node[];
     children: Element[];
+    childNodes: Node[];
     parentNode: Node;
     previousSibling: Node;
     nextSibling: Node;

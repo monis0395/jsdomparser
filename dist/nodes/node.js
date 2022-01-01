@@ -8,6 +8,8 @@ const tree_mutation_1 = require("./tree-mutation");
 const html_escaper_1 = require("html-escaper");
 class Node {
     constructor(props) {
+        this.localName = '';
+        this.children = [];
         this.parentNode = null;
         this.previousSibling = null;
         this.nextSibling = null;

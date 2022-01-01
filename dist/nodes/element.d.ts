@@ -16,6 +16,7 @@ export declare class Element extends Node implements ElementProps {
     hasAttribute(name: string): boolean;
     setAttribute(name: string, value: string): string;
     removeAttribute(name: string): void;
+    get childElementCount(): number;
     get innerHTML(): string;
     set innerHTML(htmlString: string);
     getElementsByClassName(names: string): Element[];
