@@ -53,6 +53,9 @@ export class Element extends Node implements ElementProps {
         delete this.attribs[name];
     }
 
+    get childElementCount() {
+        return this.children.length;
+    }
 
     get innerHTML() {
         return serializeDom(this)
@@ -83,7 +86,7 @@ const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
         get () {
-            return this.getAttribute(name);
+            return this.getAttribute(name) || '';
         },
         set (value: string) {
             return this.setAttribute(name, value);

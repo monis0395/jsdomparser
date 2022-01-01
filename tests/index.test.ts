@@ -14,6 +14,9 @@ describe('test parse', () => {
         expect(document.head.localName).to.be.eq("head");
         expect(document.body.localName).to.be.eq("body");
         expect(document.body.firstElementChild.ownerDocument).to.be.eq(document);
+        expect(document.body.childNodes.length).to.be.eq(1);
+        expect(document.body.children.length).to.be.eq(1);
+        expect(document.body.childElementCount).to.be.eq(1);
     });
 
     it('className', () => {
