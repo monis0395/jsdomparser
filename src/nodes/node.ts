@@ -9,7 +9,7 @@ import { unescape } from 'html-escaper';
 export class Node implements NodeProps {
     type: string;
     nodeType: NodeType;
-    localName: string;
+    localName: string = '';
     childNodes: Node[];
     children: Element[];
     parentNode: Node = null;
