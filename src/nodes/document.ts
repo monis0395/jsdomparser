@@ -21,6 +21,25 @@ export class Document extends Node implements DocumentProps {
         return this.getElementsByTagName("head")[0];
     }
 
+    get title() {
+        const titleTag = this.getElementsByTagName("title")[0];
+        if (titleTag) {
+            return titleTag.textContent;
+        }
+        return '';
+    }
+
+    set title(newTitle: string) {
+        let titleTag = this.getElementsByTagName("title")[0];
+        if (!titleTag && this.head) {
+            titleTag = this.createElement('title');
+            this.head.appendChild(titleTag)
+        }
+        if (titleTag) {
+            titleTag.textContent = newTitle;
+        }
+    }
+
     get body() {
         return this.getElementsByTagName("body")[0];
     }
