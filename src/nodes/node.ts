@@ -113,16 +113,16 @@ export class Node implements NodeProps {
         this._ownerDocument = node;
     }
 
-    appendChild(newNode: Node) {
-        appendChild(this, newNode);
+    appendChild(newChild: Node) {
+        appendChild(this, newChild);
     }
 
-    removeChild(node: Node) {
-        return detachNode(node);
+    removeChild(oldChild: Node) {
+        return detachNode(oldChild);
     }
 
-    replaceChild(newNode: Node, oldNode: Node) {
-        return replaceChild(this, oldNode, newNode);
+    replaceChild(newChild: Node, oldChild: Node) {
+        return replaceChild(this, oldChild, newChild);
     }
 }
 
