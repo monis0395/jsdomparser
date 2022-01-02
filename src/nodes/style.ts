@@ -4,6 +4,7 @@
  */
 import { Element } from "./element";
 
+// todo: support cssText, priority eg: !important
 export class Style {
     private node: Element;
 
@@ -11,7 +12,7 @@ export class Style {
         this.node = node;
     }
 
-    public getStyle(styleName: string): string | undefined {
+    public getPropertyValue(styleName: string): string | undefined {
         const attr = this.node.getAttribute('style');
         if (!attr)
             return undefined;
@@ -26,7 +27,7 @@ export class Style {
         return undefined;
     }
 
-    setStyle(styleName: string, styleValue: string) {
+    setProperty(styleName: string, styleValue: string) {
         let value = this.node.getAttribute('style') || '';
         let index = 0;
         do {
@@ -46,7 +47,7 @@ export class Style {
 }
 
 // When a style is set in JS, map it to the corresponding CSS attribute
-const styleMap = {
+const styleMap: Record<string, string> = {
     'alignmentBaseline': 'alignment-baseline',
     'background': 'background',
     'backgroundAttachment': 'background-attachment',
@@ -238,19 +239,16 @@ const styleMap = {
 };
 
 // For each item in styleMap, define a getter and setter on the style property.
-for (const jsName in styleMap) {
-    // @ts-ignore
-    const cssName: string = styleMap[jsName] as string;
-    Object.defineProperty(Style, jsName, {
+Object.keys(styleMap).forEach((jsName) => {
+    const cssName = styleMap[jsName];
+    Object.defineProperty(Style.prototype, jsName, {
         get(): string | undefined {
-            const style = this as Style;
-            return style.getStyle(cssName);
+            return this.getPropertyValue(cssName);
         },
         set(value: string): void {
-            const style = this as Style;
-            style.setStyle(cssName, value);
+            this.setProperty(cssName, value);
         },
         enumerable: false,
         configurable: true
     });
-}
+})
