@@ -29,7 +29,7 @@ export class Element extends Node implements ElementProps {
     }
 
     get id() {
-        return this.getAttribute("id");
+        return this.getAttribute("id") || '';
     }
 
     set id(id: string) {
@@ -37,7 +37,11 @@ export class Element extends Node implements ElementProps {
     }
 
     getAttribute(name: string) {
-        return this.attribs[name] || null;
+        const value = this.attribs[name];
+        if (typeof value === "string") {
+            return value
+        }
+        return null;
     }
 
     hasAttribute(name: string) {
@@ -45,7 +49,7 @@ export class Element extends Node implements ElementProps {
     }
 
     setAttribute(name: string, value: string) {
-        this.attribs[name] = value;
+        this.attribs[name] = String(value);
         return value;
     }
 
