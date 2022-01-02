@@ -19,6 +19,7 @@ export class Node implements NodeProps {
     nextElementSibling?: Element = null;
     sourceCodeLocation?: string;
     nodeValue: string;
+    nodeName: string;
     private _tagName: string;
     private _ownerDocument: Document;
 
@@ -128,5 +129,5 @@ export class Node implements NodeProps {
 
 for (const nodeType in NodeType) {
     // @ts-ignore
-    Node[nodeType] =Node.prototype[nodeType] = NodeType[nodeType];
+    Node[nodeType] = Node.prototype[nodeType] = NodeType[nodeType];
 }

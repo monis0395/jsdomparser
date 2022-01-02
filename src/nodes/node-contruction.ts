@@ -1,6 +1,6 @@
 // @ts-ignore
 import { serializeContent } from "parse5/lib/common/doctype";
-import { DocumentMode, NodeType } from "./contracts/type";
+import { DocumentMode, NodeName, NodeType } from "./contracts/type";
 import { Node } from "./node";
 import { Document } from "./document";
 import { Element } from "./element";
@@ -14,6 +14,7 @@ export const createDocument = () => {
     return new Document({
         type: 'root',
         nodeType: NodeType.DOCUMENT_NODE,
+        nodeName: NodeName.DOCUMENT_NODE,
         localName: '',
         parentNode: null,
         previousSibling: null,
@@ -28,6 +29,7 @@ export const createDocumentFragment = () => {
     return new Node({
         type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
+        nodeName: NodeName.DOCUMENT_FRAGMENT_NODE,
         localName: '',
         childNodes: [],
         children: [],
@@ -53,6 +55,7 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
         localName: tagName,
+        nodeName: tagName,
         namespaceURI,
         attribs,
         childNodes: [],
@@ -91,6 +94,7 @@ export const createDirectiveNode = (name: string, nodeValue: string, publicId?: 
     return new DocumentType({
         type: 'directive',
         nodeType: NodeType.DOCUMENT_TYPE_NODE,
+        nodeName: name,
         localName: '!doctype',
         parentNode: null,
         previousSibling: null,
@@ -106,6 +110,7 @@ export const createCommentNode = (data: string) => {
     return new Node({
         type: 'comment',
         nodeType: NodeType.COMMENT_NODE,
+        nodeName: NodeName.COMMENT_NODE,
         nodeValue: data,
         parentNode: null,
         previousSibling: null,
@@ -117,6 +122,7 @@ export const createTextNode = (data: string) => {
     return new Node({
         type: 'text',
         nodeType: NodeType.TEXT_NODE,
+        nodeName: NodeName.TEXT_NODE,
         nodeValue: data,
         parentNode: null,
         previousSibling: null,
