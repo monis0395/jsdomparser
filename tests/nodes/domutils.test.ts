@@ -2,16 +2,11 @@ import 'mocha';
 import { assert } from 'chai';
 import { parseDom } from "../../src";
 
-describe('test parse', () => {
+describe('dom querying', () => {
 
     it('getElementsByClassName', () => {
         let document = parseDom(`<div class="text">Hello</div>`);
         assert.equal(document.getElementsByClassName("text").length, 1);
-        assert.equal(document.body.firstElementChild.textContent, "Hello");
-
-        document.body.firstElementChild.className = "text-2";
-        assert.equal(document.body.firstElementChild.className, "text-2", "values should get updated after the change");
-        assert.equal(document.getElementsByClassName("text-2").length, 1);
 
         document = parseDom(`
                 <div id="example">
