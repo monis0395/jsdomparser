@@ -10,7 +10,7 @@
     "lib": [
       "es6"
     ],
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",

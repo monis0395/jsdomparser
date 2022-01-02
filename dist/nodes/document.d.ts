@@ -5,8 +5,10 @@ export declare class Document extends Node implements DocumentProps {
     _baseURI: string;
     mode: DocumentMode;
     constructor(props: DocumentProps);
-    get documentElement(): import("./element").Element;
+    get documentElement(): any;
     get head(): import("./element").Element;
+    get title(): string;
+    set title(newTitle: string);
     get body(): import("./element").Element;
     createElement(lowerName: string): import("./element").Element;
     createTextNode(data: string): Node;

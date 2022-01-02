@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DocumentMode = exports.NodeType = void 0;
+exports.DocumentMode = exports.NodeName = exports.NodeType = void 0;
 var NodeType;
 (function (NodeType) {
     NodeType[NodeType["ELEMENT_NODE"] = 1] = "ELEMENT_NODE";
@@ -10,6 +10,13 @@ var NodeType;
     NodeType[NodeType["DOCUMENT_TYPE_NODE"] = 10] = "DOCUMENT_TYPE_NODE";
     NodeType[NodeType["DOCUMENT_FRAGMENT_NODE"] = 11] = "DOCUMENT_FRAGMENT_NODE";
 })(NodeType = exports.NodeType || (exports.NodeType = {}));
+var NodeName;
+(function (NodeName) {
+    NodeName["TEXT_NODE"] = "#text";
+    NodeName["COMMENT_NODE"] = "#comment";
+    NodeName["DOCUMENT_NODE"] = "#document";
+    NodeName["DOCUMENT_FRAGMENT_NODE"] = "#document-fragment";
+})(NodeName = exports.NodeName || (exports.NodeName = {}));
 var DocumentMode;
 (function (DocumentMode) {
     DocumentMode["NO_QUIRKS"] = "no-quirks";

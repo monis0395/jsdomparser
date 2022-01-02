@@ -20,7 +20,7 @@ function parseDom(rawHTML, options = {}) {
 }
 exports.parseDom = parseDom;
 function parse5(rawHTML, options) {
-    const document = parse5_1.parse(rawHTML, { treeAdapter: jsDomTreeAdapter });
+    const document = (0, parse5_1.parse)(rawHTML, { treeAdapter: jsDomTreeAdapter });
     if (options && options.url) {
         document._documentURI = options.url;
     }
@@ -28,6 +28,6 @@ function parse5(rawHTML, options) {
 }
 exports.parse5 = parse5;
 function serializeDom(node) {
-    return parse5_1.serialize(node, { treeAdapter: jsDomTreeAdapter });
+    return (0, parse5_1.serialize)(node, { treeAdapter: jsDomTreeAdapter });
 }
 exports.serializeDom = serializeDom;

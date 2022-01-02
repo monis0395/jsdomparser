@@ -12,7 +12,7 @@ class Element extends node_1.Node {
         this.style = new style_1.Style(this);
     }
     get attributes() {
-        return tree_traversing_1.getAttrList(this);
+        return (0, tree_traversing_1.getAttrList)(this);
     }
     get className() {
         return this.getAttribute("class") || '';
@@ -21,19 +21,23 @@ class Element extends node_1.Node {
         this.setAttribute("class", classNames);
     }
     get id() {
-        return this.getAttribute("id");
+        return this.getAttribute("id") || '';
     }
     set id(id) {
         this.setAttribute("id", id);
     }
     getAttribute(name) {
-        return this.attribs[name] || null;
+        const value = this.attribs[name];
+        if (typeof value === "string") {
+            return value;
+        }
+        return null;
     }
     hasAttribute(name) {
         return this.getAttribute(name) !== null;
     }
     setAttribute(name, value) {
-        this.attribs[name] = value;
+        this.attribs[name] = String(value);
         return value;
     }
     removeAttribute(name) {
@@ -43,10 +47,10 @@ class Element extends node_1.Node {
         return this.children.length;
     }
     get innerHTML() {
-        return index_1.serializeDom(this);
+        return (0, index_1.serializeDom)(this);
     }
     set innerHTML(htmlString) {
-        const document = index_1.parseDom(htmlString);
+        const document = (0, index_1.parseDom)(htmlString);
         // todo: handle head also
         const node = document.body;
         while (this.childNodes.length) {

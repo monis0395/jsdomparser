@@ -1,30 +1,39 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDocumentMode = exports.setDocumentMode = exports.getDocumentTypeNodeSystemId = exports.getDocumentTypeNodePublicId = exports.getDocumentTypeNodeName = exports.getCommentNodeContent = exports.getTextNodeContent = exports.getNamespaceURI = exports.getTagName = void 0;
-exports.getTagName = (element) => {
+const getTagName = (element) => {
     return element.localName;
 };
-exports.getNamespaceURI = (element) => {
+exports.getTagName = getTagName;
+const getNamespaceURI = (element) => {
     return element.namespaceURI;
 };
-exports.getTextNodeContent = (textNode) => {
+exports.getNamespaceURI = getNamespaceURI;
+const getTextNodeContent = (textNode) => {
     return textNode.nodeValue;
 };
-exports.getCommentNodeContent = (commentNode) => {
+exports.getTextNodeContent = getTextNodeContent;
+const getCommentNodeContent = (commentNode) => {
     return commentNode.nodeValue;
 };
-exports.getDocumentTypeNodeName = (doctypeNode) => {
+exports.getCommentNodeContent = getCommentNodeContent;
+const getDocumentTypeNodeName = (doctypeNode) => {
     return doctypeNode.name;
 };
-exports.getDocumentTypeNodePublicId = (doctypeNode) => {
+exports.getDocumentTypeNodeName = getDocumentTypeNodeName;
+const getDocumentTypeNodePublicId = (doctypeNode) => {
     return doctypeNode.publicId;
 };
-exports.getDocumentTypeNodeSystemId = (doctypeNode) => {
+exports.getDocumentTypeNodePublicId = getDocumentTypeNodePublicId;
+const getDocumentTypeNodeSystemId = (doctypeNode) => {
     return doctypeNode.systemId;
 };
-exports.setDocumentMode = (document, mode) => {
+exports.getDocumentTypeNodeSystemId = getDocumentTypeNodeSystemId;
+const setDocumentMode = (document, mode) => {
     document.mode = mode;
 };
-exports.getDocumentMode = (document) => {
+exports.setDocumentMode = setDocumentMode;
+const getDocumentMode = (document) => {
     return document.mode;
 };
+exports.getDocumentMode = getDocumentMode;

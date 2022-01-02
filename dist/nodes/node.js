@@ -50,8 +50,8 @@ class Node {
         }
         function getText(node) {
             node.childNodes.forEach((child) => {
-                if (node_types_1.isTextNode(child)) {
-                    text.push(html_escaper_1.unescape(child.nodeValue));
+                if ((0, node_types_1.isTextNode)(child)) {
+                    text.push((0, html_escaper_1.unescape)(child.nodeValue));
                 }
                 else {
                     getText(child);
@@ -63,7 +63,7 @@ class Node {
         return text.join("");
     }
     set textContent(data) {
-        if (node_types_1.isTextNode(this)) {
+        if ((0, node_types_1.isTextNode)(this)) {
             this.nodeValue = data;
             return;
         }
@@ -80,11 +80,11 @@ class Node {
         if (this._ownerDocument) {
             return this._ownerDocument;
         }
-        if (node_types_1.isDocument(this)) {
+        if ((0, node_types_1.isDocument)(this)) {
             this._ownerDocument = null;
             return this._ownerDocument;
         }
-        if (node_types_1.isDocument(this.parentNode)) {
+        if ((0, node_types_1.isDocument)(this.parentNode)) {
             this._ownerDocument = this.parentNode;
             return this._ownerDocument;
         }
@@ -93,14 +93,14 @@ class Node {
     setOwnerDocument(node) {
         this._ownerDocument = node;
     }
-    appendChild(newNode) {
-        tree_mutation_1.appendChild(this, newNode);
+    appendChild(newChild) {
+        (0, tree_mutation_1.appendChild)(this, newChild);
     }
-    removeChild(node) {
-        return tree_mutation_1.detachNode(node);
+    removeChild(oldChild) {
+        return (0, tree_mutation_1.detachNode)(oldChild);
     }
-    replaceChild(newNode, oldNode) {
-        return tree_mutation_1.replaceChild(this, oldNode, newNode);
+    replaceChild(newChild, oldChild) {
+        return (0, tree_mutation_1.replaceChild)(this, oldChild, newChild);
     }
 }
 exports.Node = Node;

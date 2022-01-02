@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Style = void 0;
+// todo: support cssText, priority eg: !important
 class Style {
     constructor(node) {
         this.node = node;
     }
-    getStyle(styleName) {
+    getPropertyValue(styleName) {
         const attr = this.node.getAttribute('style');
         if (!attr)
             return undefined;
@@ -17,7 +18,7 @@ class Style {
         }
         return undefined;
     }
-    setStyle(styleName, styleValue) {
+    setProperty(styleName, styleValue) {
         let value = this.node.getAttribute('style') || '';
         let index = 0;
         do {
@@ -227,19 +228,16 @@ const styleMap = {
     'zoom': 'zoom'
 };
 // For each item in styleMap, define a getter and setter on the style property.
-for (const jsName in styleMap) {
-    // @ts-ignore
+Object.keys(styleMap).forEach((jsName) => {
     const cssName = styleMap[jsName];
-    Object.defineProperty(Style, jsName, {
+    Object.defineProperty(Style.prototype, jsName, {
         get() {
-            const style = this;
-            return style.getStyle(cssName);
+            return this.getPropertyValue(cssName);
         },
         set(value) {
-            const style = this;
-            style.setStyle(cssName, value);
+            this.setProperty(cssName, value);
         },
         enumerable: false,
         configurable: true
     });
-}
+});
