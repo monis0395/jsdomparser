@@ -55,7 +55,7 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
         localName: tagName,
-        nodeName: tagName,
+        nodeName: tagName?.toUpperCase(), // todo: add test cases
         namespaceURI,
         attribs,
         childNodes: [],
