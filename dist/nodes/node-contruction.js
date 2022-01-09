@@ -10,7 +10,7 @@ const element_1 = require("./element");
 const node_types_1 = require("./node-types");
 const documentType_1 = require("./documentType");
 const tree_mutation_1 = require("./tree-mutation");
-const createDocument = () => {
+exports.createDocument = () => {
     return new document_1.Document({
         type: 'root',
         nodeType: type_1.NodeType.DOCUMENT_NODE,
@@ -24,8 +24,7 @@ const createDocument = () => {
         mode: type_1.DocumentMode.NO_QUIRKS,
     });
 };
-exports.createDocument = createDocument;
-const createDocumentFragment = () => {
+exports.createDocumentFragment = () => {
     return new node_1.Node({
         type: 'root',
         nodeType: type_1.NodeType.DOCUMENT_FRAGMENT_NODE,
@@ -38,8 +37,7 @@ const createDocumentFragment = () => {
         nextSibling: null,
     });
 };
-exports.createDocumentFragment = createDocumentFragment;
-const createElement = (tagName, namespaceURI, attrs) => {
+exports.createElement = (tagName, namespaceURI, attrs) => {
     let attribs = Object.create(null);
     if (Array.isArray(attrs)) {
         for (const { name, value } of attrs) {
@@ -54,7 +52,7 @@ const createElement = (tagName, namespaceURI, attrs) => {
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: type_1.NodeType.ELEMENT_NODE,
         localName: tagName,
-        nodeName: tagName,
+        nodeName: tagName === null || tagName === void 0 ? void 0 : tagName.toUpperCase(),
         namespaceURI,
         attribs,
         childNodes: [],
@@ -64,12 +62,11 @@ const createElement = (tagName, namespaceURI, attrs) => {
         nextSibling: null,
     });
 };
-exports.createElement = createElement;
-const setDocumentType = (document, name, publicId, systemId) => {
-    const nodeValue = (0, doctype_1.serializeContent)(name, publicId, systemId);
+exports.setDocumentType = (document, name, publicId, systemId) => {
+    const nodeValue = doctype_1.serializeContent(name, publicId, systemId);
     let doctypeNode = null;
     for (const node of document.childNodes) {
-        if ((0, node_types_1.isDocumentTypeNode)(node)) {
+        if (node_types_1.isDocumentTypeNode(node)) {
             doctypeNode = node;
             break;
         }
@@ -81,11 +78,10 @@ const setDocumentType = (document, name, publicId, systemId) => {
         doctypeNode.systemId = systemId;
     }
     else {
-        (0, tree_mutation_1.appendChild)(document, (0, exports.createDirectiveNode)(name, nodeValue, publicId, systemId));
+        tree_mutation_1.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
     }
 };
-exports.setDocumentType = setDocumentType;
-const createDirectiveNode = (name, nodeValue, publicId, systemId) => {
+exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
     return new documentType_1.DocumentType({
         type: 'directive',
         nodeType: type_1.NodeType.DOCUMENT_TYPE_NODE,
@@ -100,8 +96,7 @@ const createDirectiveNode = (name, nodeValue, publicId, systemId) => {
         systemId,
     });
 };
-exports.createDirectiveNode = createDirectiveNode;
-const createCommentNode = (data) => {
+exports.createCommentNode = (data) => {
     return new node_1.Node({
         type: 'comment',
         nodeType: type_1.NodeType.COMMENT_NODE,
@@ -112,8 +107,7 @@ const createCommentNode = (data) => {
         nextSibling: null,
     });
 };
-exports.createCommentNode = createCommentNode;
-const createTextNode = (data) => {
+exports.createTextNode = (data) => {
     return new node_1.Node({
         type: 'text',
         nodeType: type_1.NodeType.TEXT_NODE,
@@ -124,4 +118,3 @@ const createTextNode = (data) => {
         nextSibling: null,
     });
 };
-exports.createTextNode = createTextNode;

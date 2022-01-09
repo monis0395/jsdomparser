@@ -36,12 +36,12 @@ class Document extends node_1.Node {
         return this.getElementsByTagName("body")[0];
     }
     createElement(lowerName) {
-        const element = (0, node_contruction_1.createElement)(lowerName, "", []);
+        const element = node_contruction_1.createElement(lowerName, "", []);
         element.setOwnerDocument(this);
         return element;
     }
     createTextNode(data) {
-        const textNode = (0, node_contruction_1.createTextNode)(data);
+        const textNode = node_contruction_1.createTextNode(data);
         textNode.setOwnerDocument(this);
         return textNode;
     }

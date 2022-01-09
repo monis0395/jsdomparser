@@ -19,7 +19,7 @@ function appendChild(parentNode, newNode) {
     }
     const lastElement = parentNode.lastElementChild;
     newNode.previousElementSibling = lastElement;
-    if ((0, node_types_1.isElementNode)(newNode)) {
+    if (node_types_1.isElementNode(newNode)) {
         parentNode.children.push(newNode);
         if (lastElement) {
             lastElement.nextElementSibling = newNode;
@@ -42,13 +42,13 @@ function insertBefore(parentNode, newNode, referenceNode) {
         prev.nextSibling = newNode;
         newNode.previousSibling = prev;
     }
-    if ((0, node_types_1.isElementNode)(newNode)) {
+    if (node_types_1.isElementNode(newNode)) {
         if (prevElement) {
             prevElement.nextElementSibling = newNode;
             newNode.previousElementSibling = prevElement;
         }
         referenceNode.previousElementSibling = newNode;
-        if ((0, node_types_1.isElementNode)(referenceNode)) {
+        if (node_types_1.isElementNode(referenceNode)) {
             newNode.nextElementSibling = referenceNode;
             const index = parentNode.children.indexOf(referenceNode);
             parentNode.children.splice(index, 0, newNode);
@@ -76,7 +76,7 @@ function detachNode(node) {
     if (next) {
         next.previousSibling = prev;
     }
-    if ((0, node_types_1.isElementNode)(node)) {
+    if (node_types_1.isElementNode(node)) {
         if (prevElement) {
             prevElement.nextElementSibling = nextElement;
         }
@@ -111,7 +111,7 @@ function replaceChild(parentNode, oldNode, newNode) {
     const nextElementSibling = oldNode.nextElementSibling || null;
     newNode.previousElementSibling = previousElementSibling;
     newNode.nextElementSibling = nextElementSibling;
-    if ((0, node_types_1.isElementNode)(newNode)) {
+    if (node_types_1.isElementNode(newNode)) {
         if (previousSibling) {
             previousSibling.nextElementSibling = newNode;
         }
@@ -124,7 +124,7 @@ function replaceChild(parentNode, oldNode, newNode) {
         if (nextElementSibling) {
             nextElementSibling.previousElementSibling = newNode;
         }
-        if ((0, node_types_1.isElementNode)(oldNode)) {
+        if (node_types_1.isElementNode(oldNode)) {
             parentNode.children[parentNode.children.indexOf(oldNode)] = newNode;
         }
         else {
@@ -137,7 +137,7 @@ function replaceChild(parentNode, oldNode, newNode) {
             }
         }
     }
-    if (!(0, node_types_1.isElementNode)(newNode) && (0, node_types_1.isElementNode)(oldNode)) {
+    if (!node_types_1.isElementNode(newNode) && node_types_1.isElementNode(oldNode)) {
         if (previousElementSibling) {
             previousElementSibling.nextElementSibling = nextElementSibling;
         }
@@ -154,21 +154,21 @@ function replaceChild(parentNode, oldNode, newNode) {
 exports.replaceChild = replaceChild;
 function insertText(parentNode, text) {
     const lastChild = parentNode.lastChild;
-    if (lastChild && (0, node_types_1.isTextNode)(lastChild)) {
+    if (lastChild && node_types_1.isTextNode(lastChild)) {
         lastChild.nodeValue += text;
     }
     else {
-        appendChild(parentNode, (0, node_contruction_1.createTextNode)(text));
+        appendChild(parentNode, node_contruction_1.createTextNode(text));
     }
 }
 exports.insertText = insertText;
 function insertTextBefore(parentNode, text, referenceNode) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
-    if (prevNode && (0, node_types_1.isTextNode)(prevNode)) {
+    if (prevNode && node_types_1.isTextNode(prevNode)) {
         prevNode.nodeValue += text;
     }
     else {
-        insertBefore(parentNode, (0, node_contruction_1.createTextNode)(text), referenceNode);
+        insertBefore(parentNode, node_contruction_1.createTextNode(text), referenceNode);
     }
 }
 exports.insertTextBefore = insertTextBefore;

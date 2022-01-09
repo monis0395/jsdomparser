@@ -64,7 +64,7 @@ function findOne(test, nodes, recurse = true) {
     let elem = null;
     for (let i = 0; i < nodes.length && !elem; i++) {
         const checked = nodes[i];
-        if (!(0, node_types_1.isElementNode)(checked)) {
+        if (!node_types_1.isElementNode(checked)) {
             continue;
         }
         else if (test(checked)) {
@@ -84,7 +84,7 @@ exports.findOne = findOne;
  * @param nodes Array of nodes to search.
  */
 function existsOne(test, nodes) {
-    return nodes.some((checked) => (0, node_types_1.isElementNode)(checked) &&
+    return nodes.some((checked) => node_types_1.isElementNode(checked) &&
         (test(checked) ||
             (checked.childNodes.length > 0 &&
                 existsOne(test, checked.childNodes))));

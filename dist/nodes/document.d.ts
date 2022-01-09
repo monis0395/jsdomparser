@@ -5,7 +5,7 @@ export declare class Document extends Node implements DocumentProps {
     _baseURI: string;
     mode: DocumentMode;
     constructor(props: DocumentProps);
-    get documentElement(): any;
+    get documentElement(): import("./element").Element;
     get head(): import("./element").Element;
     get title(): string;
     set title(newTitle: string);

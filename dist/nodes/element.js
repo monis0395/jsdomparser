@@ -12,7 +12,7 @@ class Element extends node_1.Node {
         this.style = new style_1.Style(this);
     }
     get attributes() {
-        return (0, tree_traversing_1.getAttrList)(this);
+        return tree_traversing_1.getAttrList(this);
     }
     get className() {
         return this.getAttribute("class") || '';
@@ -47,10 +47,10 @@ class Element extends node_1.Node {
         return this.children.length;
     }
     get innerHTML() {
-        return (0, index_1.serializeDom)(this);
+        return index_1.serializeDom(this);
     }
     set innerHTML(htmlString) {
-        const document = (0, index_1.parseDom)(htmlString);
+        const document = index_1.parseDom(htmlString);
         // todo: handle head also
         const node = document.body;
         while (this.childNodes.length) {

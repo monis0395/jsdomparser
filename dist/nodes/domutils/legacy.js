@@ -7,30 +7,30 @@ const node_types_1 = require("../node-types");
 const Checks = {
     tag_name(name) {
         if (typeof name === "function") {
-            return (elem) => (0, node_types_1.isElementNode)(elem) && name(elem.localName);
+            return (elem) => node_types_1.isElementNode(elem) && name(elem.localName);
         }
         else if (name === "*") {
             return node_types_1.isElementNode;
         }
         else {
-            return (elem) => (0, node_types_1.isElementNode)(elem) && elem.localName === name;
+            return (elem) => node_types_1.isElementNode(elem) && elem.localName === name;
         }
     },
     tag_contains(data) {
         if (typeof data === "function") {
-            return (elem) => (0, node_types_1.isTextNode)(elem) && data(elem.nodeValue);
+            return (elem) => node_types_1.isTextNode(elem) && data(elem.nodeValue);
         }
         else {
-            return (elem) => (0, node_types_1.isTextNode)(elem) && elem.nodeValue === data;
+            return (elem) => node_types_1.isTextNode(elem) && elem.nodeValue === data;
         }
     },
 };
 function getAttribCheck(attrib, value) {
     if (typeof value === "function") {
-        return (elem) => (0, node_types_1.isElementNode)(elem) && value(elem.attribs[attrib]);
+        return (elem) => node_types_1.isElementNode(elem) && value(elem.attribs[attrib]);
     }
     else {
-        return (elem) => (0, node_types_1.isElementNode)(elem) && elem.attribs[attrib] === value;
+        return (elem) => node_types_1.isElementNode(elem) && elem.attribs[attrib] === value;
     }
 }
 function combineFuncs(a, b) {
@@ -52,17 +52,17 @@ function testElement(options, element) {
 exports.testElement = testElement;
 function getElements(options, element, recurse, limit = Infinity) {
     const test = compileTest(options);
-    return test ? (0, querying_1.filter)(test, element, recurse, limit) : [];
+    return test ? querying_1.filter(test, element, recurse, limit) : [];
 }
 exports.getElements = getElements;
 function getElementById(id, element, recurse = true) {
     if (!Array.isArray(element))
         element = [element];
-    return (0, querying_1.findOne)(getAttribCheck("id", id), element, recurse);
+    return querying_1.findOne(getAttribCheck("id", id), element, recurse);
 }
 exports.getElementById = getElementById;
 function getElementsByClassName(names, element, recurse = true, limit = Infinity) {
-    return (0, querying_1.filter)(getAttribCheck("class", (values) => {
+    return querying_1.filter(getAttribCheck("class", (values) => {
         if (values && names) {
             const valuesArray = values.split(' '); // 10
             const namesArray = names.split(' '); // 2
@@ -81,10 +81,10 @@ function getElementsByClassName(names, element, recurse = true, limit = Infinity
 }
 exports.getElementsByClassName = getElementsByClassName;
 function getElementsByName(name, element, recurse = true, limit = Infinity) {
-    return (0, querying_1.filter)(getAttribCheck("name", name), element, recurse, limit);
+    return querying_1.filter(getAttribCheck("name", name), element, recurse, limit);
 }
 exports.getElementsByName = getElementsByName;
 function getElementsByTagName(name, element, recurse, limit = Infinity) {
-    return (0, querying_1.filter)(Checks.tag_name(name), element, recurse, limit);
+    return querying_1.filter(Checks.tag_name(name), element, recurse, limit);
 }
 exports.getElementsByTagName = getElementsByTagName;

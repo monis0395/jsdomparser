@@ -6,7 +6,7 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
 };
 define("types/types", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -48,19 +48,16 @@ define("nodes/tree-traversing", ["require", "exports"], function (require, expor
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getAttrList = exports.getParentNode = exports.getChildNodes = exports.getFirstChild = void 0;
-    const getFirstChild = (node) => {
+    exports.getFirstChild = (node) => {
         return node.firstChild;
     };
-    exports.getFirstChild = getFirstChild;
-    const getChildNodes = (node) => {
+    exports.getChildNodes = (node) => {
         return node.childNodes;
     };
-    exports.getChildNodes = getChildNodes;
-    const getParentNode = (node) => {
+    exports.getParentNode = (node) => {
         return node.parentNode;
     };
-    exports.getParentNode = getParentNode;
-    const getAttrList = (element) => {
+    exports.getAttrList = (element) => {
         return Object.keys(element.attribs).map((name) => {
             return {
                 name,
@@ -68,7 +65,6 @@ define("nodes/tree-traversing", ["require", "exports"], function (require, expor
             };
         });
     };
-    exports.getAttrList = getAttrList;
 });
 define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contruction", "nodes/domutils/legacy", "url"], function (require, exports, node_1, node_contruction_1, legacy, url_1) {
     "use strict";
@@ -105,12 +101,12 @@ define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contru
             return this.getElementsByTagName("body")[0];
         }
         createElement(lowerName) {
-            const element = (0, node_contruction_1.createElement)(lowerName, "", []);
+            const element = node_contruction_1.createElement(lowerName, "", []);
             element.setOwnerDocument(this);
             return element;
         }
         createTextNode(data) {
-            const textNode = (0, node_contruction_1.createTextNode)(data);
+            const textNode = node_contruction_1.createTextNode(data);
             textNode.setOwnerDocument(this);
             return textNode;
         }
@@ -253,7 +249,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
         let elem = null;
         for (let i = 0; i < nodes.length && !elem; i++) {
             const checked = nodes[i];
-            if (!(0, node_types_1.isElementNode)(checked)) {
+            if (!node_types_1.isElementNode(checked)) {
                 continue;
             }
             else if (test(checked)) {
@@ -273,7 +269,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
      * @param nodes Array of nodes to search.
      */
     function existsOne(test, nodes) {
-        return nodes.some((checked) => (0, node_types_1.isElementNode)(checked) &&
+        return nodes.some((checked) => node_types_1.isElementNode(checked) &&
             (test(checked) ||
                 (checked.childNodes.length > 0 &&
                     existsOne(test, checked.childNodes))));
@@ -313,30 +309,30 @@ define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying"
     const Checks = {
         tag_name(name) {
             if (typeof name === "function") {
-                return (elem) => (0, node_types_2.isElementNode)(elem) && name(elem.localName);
+                return (elem) => node_types_2.isElementNode(elem) && name(elem.localName);
             }
             else if (name === "*") {
                 return node_types_2.isElementNode;
             }
             else {
-                return (elem) => (0, node_types_2.isElementNode)(elem) && elem.localName === name;
+                return (elem) => node_types_2.isElementNode(elem) && elem.localName === name;
             }
         },
         tag_contains(data) {
             if (typeof data === "function") {
-                return (elem) => (0, node_types_2.isTextNode)(elem) && data(elem.nodeValue);
+                return (elem) => node_types_2.isTextNode(elem) && data(elem.nodeValue);
             }
             else {
-                return (elem) => (0, node_types_2.isTextNode)(elem) && elem.nodeValue === data;
+                return (elem) => node_types_2.isTextNode(elem) && elem.nodeValue === data;
             }
         },
     };
     function getAttribCheck(attrib, value) {
         if (typeof value === "function") {
-            return (elem) => (0, node_types_2.isElementNode)(elem) && value(elem.attribs[attrib]);
+            return (elem) => node_types_2.isElementNode(elem) && value(elem.attribs[attrib]);
         }
         else {
-            return (elem) => (0, node_types_2.isElementNode)(elem) && elem.attribs[attrib] === value;
+            return (elem) => node_types_2.isElementNode(elem) && elem.attribs[attrib] === value;
         }
     }
     function combineFuncs(a, b) {
@@ -358,17 +354,17 @@ define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying"
     exports.testElement = testElement;
     function getElements(options, element, recurse, limit = Infinity) {
         const test = compileTest(options);
-        return test ? (0, querying_1.filter)(test, element, recurse, limit) : [];
+        return test ? querying_1.filter(test, element, recurse, limit) : [];
     }
     exports.getElements = getElements;
     function getElementById(id, element, recurse = true) {
         if (!Array.isArray(element))
             element = [element];
-        return (0, querying_1.findOne)(getAttribCheck("id", id), element, recurse);
+        return querying_1.findOne(getAttribCheck("id", id), element, recurse);
     }
     exports.getElementById = getElementById;
     function getElementsByClassName(names, element, recurse = true, limit = Infinity) {
-        return (0, querying_1.filter)(getAttribCheck("class", (values) => {
+        return querying_1.filter(getAttribCheck("class", (values) => {
             if (values && names) {
                 const valuesArray = values.split(' '); // 10
                 const namesArray = names.split(' '); // 2
@@ -387,11 +383,11 @@ define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying"
     }
     exports.getElementsByClassName = getElementsByClassName;
     function getElementsByName(name, element, recurse = true, limit = Infinity) {
-        return (0, querying_1.filter)(getAttribCheck("name", name), element, recurse, limit);
+        return querying_1.filter(getAttribCheck("name", name), element, recurse, limit);
     }
     exports.getElementsByName = getElementsByName;
     function getElementsByTagName(name, element, recurse, limit = Infinity) {
-        return (0, querying_1.filter)(Checks.tag_name(name), element, recurse, limit);
+        return querying_1.filter(Checks.tag_name(name), element, recurse, limit);
     }
     exports.getElementsByTagName = getElementsByTagName;
 });
@@ -650,7 +646,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
             this.style = new style_1.Style(this);
         }
         get attributes() {
-            return (0, tree_traversing_1.getAttrList)(this);
+            return tree_traversing_1.getAttrList(this);
         }
         get className() {
             return this.getAttribute("class") || '';
@@ -685,10 +681,10 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
             return this.children.length;
         }
         get innerHTML() {
-            return (0, index_1.serializeDom)(this);
+            return index_1.serializeDom(this);
         }
         set innerHTML(htmlString) {
-            const document = (0, index_1.parseDom)(htmlString);
+            const document = index_1.parseDom(htmlString);
             // todo: handle head also
             const node = document.body;
             while (this.childNodes.length) {
@@ -738,7 +734,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
         }
         const lastElement = parentNode.lastElementChild;
         newNode.previousElementSibling = lastElement;
-        if ((0, node_types_3.isElementNode)(newNode)) {
+        if (node_types_3.isElementNode(newNode)) {
             parentNode.children.push(newNode);
             if (lastElement) {
                 lastElement.nextElementSibling = newNode;
@@ -761,13 +757,13 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
             prev.nextSibling = newNode;
             newNode.previousSibling = prev;
         }
-        if ((0, node_types_3.isElementNode)(newNode)) {
+        if (node_types_3.isElementNode(newNode)) {
             if (prevElement) {
                 prevElement.nextElementSibling = newNode;
                 newNode.previousElementSibling = prevElement;
             }
             referenceNode.previousElementSibling = newNode;
-            if ((0, node_types_3.isElementNode)(referenceNode)) {
+            if (node_types_3.isElementNode(referenceNode)) {
                 newNode.nextElementSibling = referenceNode;
                 const index = parentNode.children.indexOf(referenceNode);
                 parentNode.children.splice(index, 0, newNode);
@@ -795,7 +791,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
         if (next) {
             next.previousSibling = prev;
         }
-        if ((0, node_types_3.isElementNode)(node)) {
+        if (node_types_3.isElementNode(node)) {
             if (prevElement) {
                 prevElement.nextElementSibling = nextElement;
             }
@@ -830,7 +826,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
         const nextElementSibling = oldNode.nextElementSibling || null;
         newNode.previousElementSibling = previousElementSibling;
         newNode.nextElementSibling = nextElementSibling;
-        if ((0, node_types_3.isElementNode)(newNode)) {
+        if (node_types_3.isElementNode(newNode)) {
             if (previousSibling) {
                 previousSibling.nextElementSibling = newNode;
             }
@@ -843,7 +839,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
             if (nextElementSibling) {
                 nextElementSibling.previousElementSibling = newNode;
             }
-            if ((0, node_types_3.isElementNode)(oldNode)) {
+            if (node_types_3.isElementNode(oldNode)) {
                 parentNode.children[parentNode.children.indexOf(oldNode)] = newNode;
             }
             else {
@@ -856,7 +852,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
                 }
             }
         }
-        if (!(0, node_types_3.isElementNode)(newNode) && (0, node_types_3.isElementNode)(oldNode)) {
+        if (!node_types_3.isElementNode(newNode) && node_types_3.isElementNode(oldNode)) {
             if (previousElementSibling) {
                 previousElementSibling.nextElementSibling = nextElementSibling;
             }
@@ -873,21 +869,21 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
     exports.replaceChild = replaceChild;
     function insertText(parentNode, text) {
         const lastChild = parentNode.lastChild;
-        if (lastChild && (0, node_types_3.isTextNode)(lastChild)) {
+        if (lastChild && node_types_3.isTextNode(lastChild)) {
             lastChild.nodeValue += text;
         }
         else {
-            appendChild(parentNode, (0, node_contruction_2.createTextNode)(text));
+            appendChild(parentNode, node_contruction_2.createTextNode(text));
         }
     }
     exports.insertText = insertText;
     function insertTextBefore(parentNode, text, referenceNode) {
         const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
-        if (prevNode && (0, node_types_3.isTextNode)(prevNode)) {
+        if (prevNode && node_types_3.isTextNode(prevNode)) {
             prevNode.nodeValue += text;
         }
         else {
-            insertBefore(parentNode, (0, node_contruction_2.createTextNode)(text), referenceNode);
+            insertBefore(parentNode, node_contruction_2.createTextNode(text), referenceNode);
         }
     }
     exports.insertTextBefore = insertTextBefore;
@@ -961,8 +957,8 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             }
             function getText(node) {
                 node.childNodes.forEach((child) => {
-                    if ((0, node_types_4.isTextNode)(child)) {
-                        text.push((0, html_escaper_1.unescape)(child.nodeValue));
+                    if (node_types_4.isTextNode(child)) {
+                        text.push(html_escaper_1.unescape(child.nodeValue));
                     }
                     else {
                         getText(child);
@@ -974,7 +970,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             return text.join("");
         }
         set textContent(data) {
-            if ((0, node_types_4.isTextNode)(this)) {
+            if (node_types_4.isTextNode(this)) {
                 this.nodeValue = data;
                 return;
             }
@@ -991,11 +987,11 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             if (this._ownerDocument) {
                 return this._ownerDocument;
             }
-            if ((0, node_types_4.isDocument)(this)) {
+            if (node_types_4.isDocument(this)) {
                 this._ownerDocument = null;
                 return this._ownerDocument;
             }
-            if ((0, node_types_4.isDocument)(this.parentNode)) {
+            if (node_types_4.isDocument(this.parentNode)) {
                 this._ownerDocument = this.parentNode;
                 return this._ownerDocument;
             }
@@ -1005,13 +1001,13 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
             this._ownerDocument = node;
         }
         appendChild(newChild) {
-            (0, tree_mutation_1.appendChild)(this, newChild);
+            tree_mutation_1.appendChild(this, newChild);
         }
         removeChild(oldChild) {
-            return (0, tree_mutation_1.detachNode)(oldChild);
+            return tree_mutation_1.detachNode(oldChild);
         }
         replaceChild(newChild, oldChild) {
-            return (0, tree_mutation_1.replaceChild)(this, oldChild, newChild);
+            return tree_mutation_1.replaceChild(this, oldChild, newChild);
         }
     }
     exports.Node = Node;
@@ -1024,7 +1020,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.createTextNode = exports.createCommentNode = exports.createDirectiveNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
-    const createDocument = () => {
+    exports.createDocument = () => {
         return new document_1.Document({
             type: 'root',
             nodeType: type_3.NodeType.DOCUMENT_NODE,
@@ -1038,8 +1034,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             mode: type_3.DocumentMode.NO_QUIRKS,
         });
     };
-    exports.createDocument = createDocument;
-    const createDocumentFragment = () => {
+    exports.createDocumentFragment = () => {
         return new node_4.Node({
             type: 'root',
             nodeType: type_3.NodeType.DOCUMENT_FRAGMENT_NODE,
@@ -1052,8 +1047,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             nextSibling: null,
         });
     };
-    exports.createDocumentFragment = createDocumentFragment;
-    const createElement = (tagName, namespaceURI, attrs) => {
+    exports.createElement = (tagName, namespaceURI, attrs) => {
         let attribs = Object.create(null);
         if (Array.isArray(attrs)) {
             for (const { name, value } of attrs) {
@@ -1068,7 +1062,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
             nodeType: type_3.NodeType.ELEMENT_NODE,
             localName: tagName,
-            nodeName: tagName,
+            nodeName: tagName === null || tagName === void 0 ? void 0 : tagName.toUpperCase(),
             namespaceURI,
             attribs,
             childNodes: [],
@@ -1078,12 +1072,11 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             nextSibling: null,
         });
     };
-    exports.createElement = createElement;
-    const setDocumentType = (document, name, publicId, systemId) => {
-        const nodeValue = (0, doctype_1.serializeContent)(name, publicId, systemId);
+    exports.setDocumentType = (document, name, publicId, systemId) => {
+        const nodeValue = doctype_1.serializeContent(name, publicId, systemId);
         let doctypeNode = null;
         for (const node of document.childNodes) {
-            if ((0, node_types_5.isDocumentTypeNode)(node)) {
+            if (node_types_5.isDocumentTypeNode(node)) {
                 doctypeNode = node;
                 break;
             }
@@ -1095,11 +1088,10 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             doctypeNode.systemId = systemId;
         }
         else {
-            (0, tree_mutation_2.appendChild)(document, (0, exports.createDirectiveNode)(name, nodeValue, publicId, systemId));
+            tree_mutation_2.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
         }
     };
-    exports.setDocumentType = setDocumentType;
-    const createDirectiveNode = (name, nodeValue, publicId, systemId) => {
+    exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
         return new documentType_1.DocumentType({
             type: 'directive',
             nodeType: type_3.NodeType.DOCUMENT_TYPE_NODE,
@@ -1114,8 +1106,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             systemId,
         });
     };
-    exports.createDirectiveNode = createDirectiveNode;
-    const createCommentNode = (data) => {
+    exports.createCommentNode = (data) => {
         return new node_4.Node({
             type: 'comment',
             nodeType: type_3.NodeType.COMMENT_NODE,
@@ -1126,8 +1117,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             nextSibling: null,
         });
     };
-    exports.createCommentNode = createCommentNode;
-    const createTextNode = (data) => {
+    exports.createTextNode = (data) => {
         return new node_4.Node({
             type: 'text',
             nodeType: type_3.NodeType.TEXT_NODE,
@@ -1138,65 +1128,52 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
             nextSibling: null,
         });
     };
-    exports.createTextNode = createTextNode;
 });
 define("nodes/node-data", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getDocumentMode = exports.setDocumentMode = exports.getDocumentTypeNodeSystemId = exports.getDocumentTypeNodePublicId = exports.getDocumentTypeNodeName = exports.getCommentNodeContent = exports.getTextNodeContent = exports.getNamespaceURI = exports.getTagName = void 0;
-    const getTagName = (element) => {
+    exports.getTagName = (element) => {
         return element.localName;
     };
-    exports.getTagName = getTagName;
-    const getNamespaceURI = (element) => {
+    exports.getNamespaceURI = (element) => {
         return element.namespaceURI;
     };
-    exports.getNamespaceURI = getNamespaceURI;
-    const getTextNodeContent = (textNode) => {
+    exports.getTextNodeContent = (textNode) => {
         return textNode.nodeValue;
     };
-    exports.getTextNodeContent = getTextNodeContent;
-    const getCommentNodeContent = (commentNode) => {
+    exports.getCommentNodeContent = (commentNode) => {
         return commentNode.nodeValue;
     };
-    exports.getCommentNodeContent = getCommentNodeContent;
-    const getDocumentTypeNodeName = (doctypeNode) => {
+    exports.getDocumentTypeNodeName = (doctypeNode) => {
         return doctypeNode.name;
     };
-    exports.getDocumentTypeNodeName = getDocumentTypeNodeName;
-    const getDocumentTypeNodePublicId = (doctypeNode) => {
+    exports.getDocumentTypeNodePublicId = (doctypeNode) => {
         return doctypeNode.publicId;
     };
-    exports.getDocumentTypeNodePublicId = getDocumentTypeNodePublicId;
-    const getDocumentTypeNodeSystemId = (doctypeNode) => {
+    exports.getDocumentTypeNodeSystemId = (doctypeNode) => {
         return doctypeNode.systemId;
     };
-    exports.getDocumentTypeNodeSystemId = getDocumentTypeNodeSystemId;
-    const setDocumentMode = (document, mode) => {
+    exports.setDocumentMode = (document, mode) => {
         document.mode = mode;
     };
-    exports.setDocumentMode = setDocumentMode;
-    const getDocumentMode = (document) => {
+    exports.getDocumentMode = (document) => {
         return document.mode;
     };
-    exports.getDocumentMode = getDocumentMode;
 });
 define("nodes/source-code-location", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.updateNodeSourceCodeLocation = exports.getNodeSourceCodeLocation = exports.setNodeSourceCodeLocation = void 0;
-    const setNodeSourceCodeLocation = (node, location) => {
+    exports.setNodeSourceCodeLocation = (node, location) => {
         node.sourceCodeLocation = location;
     };
-    exports.setNodeSourceCodeLocation = setNodeSourceCodeLocation;
-    const getNodeSourceCodeLocation = (node) => {
+    exports.getNodeSourceCodeLocation = (node) => {
         return node.sourceCodeLocation;
     };
-    exports.getNodeSourceCodeLocation = getNodeSourceCodeLocation;
-    const updateNodeSourceCodeLocation = (node, endLocation) => {
+    exports.updateNodeSourceCodeLocation = (node, endLocation) => {
         node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
     };
-    exports.updateNodeSourceCodeLocation = updateNodeSourceCodeLocation;
 });
 define("adapters/parse5", ["require", "exports", "nodes/node-contruction", "nodes/node-data", "nodes/node-types", "nodes/source-code-location", "nodes/tree-mutation", "nodes/tree-traversing"], function (require, exports, node_contruction_3, node_data_1, node_types_6, source_code_location_1, tree_mutation_3, tree_traversing_2) {
     "use strict";
@@ -1224,7 +1201,7 @@ define("index", ["require", "exports", "parse5", "adapters/parse5", "types/types
     }
     exports.parseDom = parseDom;
     function parse5(rawHTML, options) {
-        const document = (0, parse5_1.parse)(rawHTML, { treeAdapter: jsDomTreeAdapter });
+        const document = parse5_1.parse(rawHTML, { treeAdapter: jsDomTreeAdapter });
         if (options && options.url) {
             document._documentURI = options.url;
         }
@@ -1232,7 +1209,7 @@ define("index", ["require", "exports", "parse5", "adapters/parse5", "types/types
     }
     exports.parse5 = parse5;
     function serializeDom(node) {
-        return (0, parse5_1.serialize)(node, { treeAdapter: jsDomTreeAdapter });
+        return parse5_1.serialize(node, { treeAdapter: jsDomTreeAdapter });
     }
     exports.serializeDom = serializeDom;
 });
