@@ -18,7 +18,7 @@ export function parseDom(rawHTML: string, options: Options = {}) {
     }
 }
 
-export function parse5(rawHTML: string, options?: Options) {
+function parse5(rawHTML: string, options?: Options) {
     const document = parse(rawHTML, { treeAdapter: jsDomTreeAdapter }) as Document;
     if (options && options.url) {
         document._documentURI = options.url;
