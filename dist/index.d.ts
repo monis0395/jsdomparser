@@ -10,5 +10,4 @@ export declare const nodes: {
     Element: typeof Element;
 };
 export declare function parseDom(rawHTML: string, options?: Options): Document;
-export declare function parse5(rawHTML: string, options?: Options): Document;
 export declare function serializeDom(node: Node): string;

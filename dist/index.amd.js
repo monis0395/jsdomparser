@@ -396,37 +396,38 @@ define("nodes/style", ["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Style = void 0;
     // todo: support cssText, priority eg: !important
+    // todo: rename to CSSStyleDeclaration
     class Style {
         constructor(node) {
             this.node = node;
         }
-        getPropertyValue(styleName) {
+        getPropertyValue(property) {
             const attr = this.node.getAttribute('style');
             if (!attr)
-                return undefined;
+                return '';
             const styles = attr.split(';');
             for (const style of styles) {
                 const [name, value] = style.split(':');
-                if (name === styleName)
+                if (name === property)
                     return value.trim();
             }
-            return undefined;
+            return '';
         }
-        setProperty(styleName, styleValue) {
-            let value = this.node.getAttribute('style') || '';
+        setProperty(propertyName, value) {
+            let _value = this.node.getAttribute('style') || '';
             let index = 0;
             do {
-                const next = value.indexOf(';', index) + 1;
+                const next = _value.indexOf(';', index) + 1;
                 const length = next - index - 1;
-                const style = (length > 0 ? value.substr(index, length) : value.substr(index));
-                if (style.substr(0, style.indexOf(':')).trim() === styleName) {
-                    value = value.substr(0, index).trim() + (next ? ' ' + value.substr(next).trim() : '');
+                const style = (length > 0 ? _value.substr(index, length) : _value.substr(index));
+                if (style.substr(0, style.indexOf(':')).trim() === propertyName) {
+                    _value = _value.substr(0, index).trim() + (next ? ' ' + _value.substr(next).trim() : '');
                     break;
                 }
                 index = next;
             } while (index);
-            value += ' ' + styleName + ': ' + styleValue + ';';
-            this.node.setAttribute('style', value.trim());
+            _value += ' ' + propertyName + ': ' + value + ';';
+            this.node.setAttribute('style', _value.trim());
         }
     }
     exports.Style = Style;
@@ -1188,7 +1189,7 @@ define("adapters/parse5", ["require", "exports", "nodes/node-contruction", "node
 define("index", ["require", "exports", "parse5", "adapters/parse5", "types/types", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element"], function (require, exports, parse5_1, jsDomTreeAdapter, types_1, type_4, node_5, document_2, element_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.serializeDom = exports.parse5 = exports.parseDom = exports.nodes = void 0;
+    exports.serializeDom = exports.parseDom = exports.nodes = void 0;
     exports.nodes = {
         Node: node_5.Node, NodeType: type_4.NodeType, Document: document_2.Document, Element: element_2.Element,
     };
@@ -1207,7 +1208,6 @@ define("index", ["require", "exports", "parse5", "adapters/parse5", "types/types
         }
         return document;
     }
-    exports.parse5 = parse5;
     function serializeDom(node) {
         return parse5_1.serialize(node, { treeAdapter: jsDomTreeAdapter });
     }

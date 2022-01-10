@@ -6,6 +6,6 @@ import { Element } from "./element";
 export declare class Style {
     private node;
     constructor(node: Element);
-    getPropertyValue(styleName: string): string | undefined;
-    setProperty(styleName: string, styleValue: string): void;
+    getPropertyValue(property: string): string;
+    setProperty(propertyName: string, value: string): void;
 }

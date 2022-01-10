@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.serializeDom = exports.parse5 = exports.parseDom = exports.nodes = void 0;
+exports.serializeDom = exports.parseDom = exports.nodes = void 0;
 const parse5_1 = require("parse5");
 const jsDomTreeAdapter = require("./adapters/parse5");
 const types_1 = require("./types/types");
@@ -26,7 +26,6 @@ function parse5(rawHTML, options) {
     }
     return document;
 }
-exports.parse5 = parse5;
 function serializeDom(node) {
     return parse5_1.serialize(node, { treeAdapter: jsDomTreeAdapter });
 }

@@ -2,37 +2,38 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Style = void 0;
 // todo: support cssText, priority eg: !important
+// todo: rename to CSSStyleDeclaration
 class Style {
     constructor(node) {
         this.node = node;
     }
-    getPropertyValue(styleName) {
+    getPropertyValue(property) {
         const attr = this.node.getAttribute('style');
         if (!attr)
-            return undefined;
+            return '';
         const styles = attr.split(';');
         for (const style of styles) {
             const [name, value] = style.split(':');
-            if (name === styleName)
+            if (name === property)
                 return value.trim();
         }
-        return undefined;
+        return '';
     }
-    setProperty(styleName, styleValue) {
-        let value = this.node.getAttribute('style') || '';
+    setProperty(propertyName, value) {
+        let _value = this.node.getAttribute('style') || '';
         let index = 0;
         do {
-            const next = value.indexOf(';', index) + 1;
+            const next = _value.indexOf(';', index) + 1;
             const length = next - index - 1;
-            const style = (length > 0 ? value.substr(index, length) : value.substr(index));
-            if (style.substr(0, style.indexOf(':')).trim() === styleName) {
-                value = value.substr(0, index).trim() + (next ? ' ' + value.substr(next).trim() : '');
+            const style = (length > 0 ? _value.substr(index, length) : _value.substr(index));
+            if (style.substr(0, style.indexOf(':')).trim() === propertyName) {
+                _value = _value.substr(0, index).trim() + (next ? ' ' + _value.substr(next).trim() : '');
                 break;
             }
             index = next;
         } while (index);
-        value += ' ' + styleName + ': ' + styleValue + ';';
-        this.node.setAttribute('style', value.trim());
+        _value += ' ' + propertyName + ': ' + value + ';';
+        this.node.setAttribute('style', _value.trim());
     }
 }
 exports.Style = Style;
