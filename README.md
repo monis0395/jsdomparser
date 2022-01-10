@@ -23,7 +23,7 @@ const doc = parseDom(``, {url: "https://example.org/"});
 import { parseDom, serializeDom } from "jsdomparser";
 
 const doc = parseDom(`<!DOCTYPE html><p id="p1">Hello world</p>`);
-console.log(serializeDom(doc)); // <!DOCTYPE html><html><head></head><body><p id="p1">Hello world</p></body></html>
+console.log(serializeDom(doc.body)); // <p id="p1">Hello world</p>
 ```
 
 # APIs
