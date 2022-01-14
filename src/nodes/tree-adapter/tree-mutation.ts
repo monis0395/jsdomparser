@@ -18,24 +18,22 @@ export function appendChild(parentNode: Node, newNode: Node) {
 
     if (lastChild) {
         lastChild.nextSibling = newNode;
-        newNode.previousSibling = lastChild;
     }
-
-    const lastElement = parentNode.lastElementChild;
-    newNode.previousElementSibling = lastElement;
+    newNode.previousSibling = lastChild;
 
     if (isElementNode(newNode)) {
-        parentNode.children.push(newNode);
+        const lastElement = parentNode.lastElementChild;
         if (lastElement) {
             lastElement.nextElementSibling = newNode;
         }
-        if (lastChild) {
-            lastChild.nextElementSibling = newNode;
-        }
+        newNode.previousElementSibling = lastElement;
+        parentNode.children.push(newNode);
     }
 
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
+    // todo: attach to parent element
+    // newNode.parentElement = isElementNode(parentNode) || null;
     newNode.setOwnerDocument(parentNode.ownerDocument);
 }
 
