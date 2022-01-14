@@ -32,6 +32,9 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
     newNode.previousElementSibling = prevElement;
 
     if (isElementNode(newNode)) {
+        if (prev) {
+            prev.nextElementSibling = newNode;
+        }
         if (prevElement) {
             prevElement.nextElementSibling = newNode;
         }
