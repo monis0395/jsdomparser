@@ -1,6 +1,6 @@
 import { createTextNode } from "./node-contruction";
-import { Node } from "./node";
-import { Element } from "./element";
+import { Node } from "../node";
+import { Element } from "../element";
 import { isElementNode, isTextNode } from "./node-types";
 import { Attribute } from "parse5";
 

@@ -1,8 +1,8 @@
 import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
 import { Document } from "./document";
-import { isDocument, isElementNode, isTextNode } from "./node-types";
-import { appendChild, detachNode, replaceChild } from "./tree-mutation";
+import { isDocument, isElementNode, isTextNode } from "./tree-adapter/node-types";
+import { appendChild, detachNode, replaceChild } from "./tree-adapter/tree-mutation";
 // @ts-ignore
 import { unescape } from 'html-escaper';
 

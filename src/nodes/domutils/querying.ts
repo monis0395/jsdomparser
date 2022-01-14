@@ -1,4 +1,4 @@
-import { isElementNode as isTag } from "../node-types";
+import { isElementNode as isTag } from "../tree-adapter/node-types";
 import { Node } from "../node";
 import { Element } from "../element";
 

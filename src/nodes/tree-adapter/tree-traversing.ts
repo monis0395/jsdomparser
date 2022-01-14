@@ -1,5 +1,5 @@
-import { Node } from "./node";
-import { Element } from "./element";
+import { Node } from "../node";
+import { Element } from "../element";
 import { Attribute } from "parse5";
 
 export const getFirstChild = (node: Node) => {

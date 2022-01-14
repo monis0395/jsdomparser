@@ -1,5 +1,5 @@
 import { filter, findOne } from "./querying";
-import { isElementNode as isTag, isTextNode } from "../node-types";
+import { isElementNode as isTag, isTextNode } from "../tree-adapter/node-types";
 import { Node } from "../node";
 import { Element } from "../element";
 

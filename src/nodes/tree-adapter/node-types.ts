@@ -1,8 +1,8 @@
-import { NodeType } from "./contracts/type";
-import { Node } from "./node";
-import { Element } from "./element";
-import { Document } from "./document";
-import { DocumentType } from "./documentType";
+import { NodeType } from "../contracts/type";
+import { Node } from "../node";
+import { Element } from "../element";
+import { Document } from "../document";
+import { DocumentType } from "../documentType";
 
 export function isTextNode(node: Node) {
     return node.nodeType === NodeType.TEXT_NODE;

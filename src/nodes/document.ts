@@ -1,6 +1,6 @@
 import { Node } from "./node";
 import { DocumentMode, DocumentProps } from "./contracts/type";
-import { createElement, createTextNode } from "./node-contruction";
+import { createElement, createTextNode } from "./tree-adapter/node-contruction";
 import * as legacy from "./domutils/legacy";
 import { URL } from "url";
 

@@ -1,6 +1,6 @@
 import { Node } from "./node";
 import { ElementProps } from "./contracts/type";
-import { getAttrList } from "./tree-traversing";
+import { getAttrList } from "./tree-adapter/tree-traversing";
 import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
 import * as legacy from "./domutils/legacy";

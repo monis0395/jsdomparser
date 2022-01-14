@@ -1,14 +1,14 @@
 // @ts-ignore
 import { serializeContent } from "parse5/lib/common/doctype";
-import { DocumentMode, NodeName, NodeType } from "./contracts/type";
-import { Node } from "./node";
-import { Document } from "./document";
-import { Element } from "./element";
+import { DocumentMode, NodeName, NodeType } from "../contracts/type";
+import { Node } from "../node";
+import { Document } from "../document";
+import { Element } from "../element";
 import { isDocumentTypeNode } from "./node-types";
-import { DocumentType } from "./documentType";
+import { DocumentType } from "../documentType";
 import { appendChild } from "./tree-mutation";
 import { Attribute } from "parse5";
-import { GenericObjectType } from "../types/types";
+import { GenericObjectType } from "../../types/types";
 
 export const createDocument = () => {
     return new Document({
