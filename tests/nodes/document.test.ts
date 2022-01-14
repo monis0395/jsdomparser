@@ -4,11 +4,35 @@ import { parseDom } from '../../src';
 
 describe('document', () => {
 
+    it('.firstElementChild', () => {
+        const document = parseDom(`<html><head></head></html>`);
+        assert.isOk(
+          document.firstElementChild,
+          "document should have a element",
+        );
+        assert.equal(
+          document.firstElementChild.tagName,
+          "HTML",
+        );
+    });
+
     it('.head', () => {
         const document = parseDom(`<p>Foo</p><p>Bar</p>`);
         assert.isOk(
           document.head,
           'head should always be created'
+        );
+    });
+
+    it('.lastElementChild', () => {
+        const document = parseDom(`<html><head></head></html>`);
+        assert.isOk(
+          document.lastElementChild,
+          "document should have a element",
+        );
+        assert.equal(
+          document.lastElementChild.tagName,
+          "HTML",
         );
     });
 

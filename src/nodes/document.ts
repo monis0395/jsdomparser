@@ -17,8 +17,17 @@ export class Document extends Node implements DocumentProps {
         return this.firstElementChild;
     }
 
+    get firstElementChild() {
+        return this.children[0] || null;
+    }
+
     get head() {
         return this.getElementsByTagName("head")[0];
+    }
+
+    get lastElementChild() {
+        const children = this.children;
+        return children[children.length - 1] || null;
     }
 
     get title() {

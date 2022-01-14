@@ -46,9 +46,9 @@ export interface Node {
     childNodes: Node[];
     children: Element[]; // todo: move to element & document
     firstChild: Node | null;
-    firstElementChild: Element | null; // todo: move to element & document
+    firstElementChild: Element | null; // todo: move to element
     lastChild: Node | null;
-    lastElementChild: Element | null; // todo: move to element & document
+    lastElementChild: Element | null; // todo: move to element
     localName: string; // todo: move to element
     nextElementSibling?: Element | null; // todo: move to element
     nextSibling: Node | null;
@@ -101,9 +101,9 @@ export interface Document extends Node  {
     children: Element[];
     readonly documentElement: string;
     readonly documentURI: string;
-    firstElementChild: Element | null;
+    readonly firstElementChild: Element | null;
     readonly head: Element;
-    lastElementChild: Element | null;
+    readonly lastElementChild: Element | null;
     title: string;
     
     createElement(lowerName: string): Element;
