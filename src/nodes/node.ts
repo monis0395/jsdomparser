@@ -1,7 +1,7 @@
 import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
 import { Document } from "./document";
-import { isDocument, isElementNode, isTextNode } from "./tree-adapter/node-types";
+import { isCommentNode, isDocument, isElementNode, isTextNode } from "./tree-adapter/node-types";
 import { appendChild, detachNode, insertBefore, replaceChild } from "./tree-adapter/tree-mutation";
 // @ts-ignore
 import { unescape } from 'html-escaper';
@@ -60,13 +60,13 @@ export class Node implements NodeProps {
     }
 
     get textContent() {
-        if (this.nodeType === NodeType.TEXT_NODE) {
+        if (isTextNode(this) || isCommentNode(this)) {
             return this.nodeValue;
         }
 
         function getText(node: Node) {
             node.childNodes.forEach((child) => {
-                if (isTextNode(child)) {
+                if (isTextNode(child) || isCommentNode(child)) {
                     text.push(unescape(child.nodeValue));
                 } else {
                     getText(child);
