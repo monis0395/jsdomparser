@@ -40,11 +40,26 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
         }
         if (next) {
             next.previousElementSibling = newNode;
+            let nextSibling = next.nextSibling;
+            while (nextSibling) {
+                if (nextSibling.previousElementSibling === prevElement) {
+                    nextSibling.previousElementSibling = newNode;
+                    nextSibling = nextSibling.nextSibling;
+                } else {
+                    break;
+                }
+            }
+            let previousSibling = next.previousSibling;
+            while (previousSibling) {
+                if (previousSibling.nextElementSibling === prevElement) {
+                    previousSibling.nextElementSibling = newNode;
+                    previousSibling = previousSibling.previousSibling;
+                } else {
+                    break;
+                }
+            }
         }
 
-        if (isElementNode(next)) {
-            newNode.nextElementSibling = next;
-        }
         const nextElementIdx = isElementNode(next) && parentNode.children.indexOf(next) || -1;
         const insertionElementIdx = nextElementIdx !== -1 ? nextElementIdx : parentNode.children.length
 
@@ -54,6 +69,7 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
     newNode.nextSibling = next;
     if (next) {
         next.previousSibling = newNode;
+        newNode.nextElementSibling = isElementNode(next) ? next : next.nextElementSibling;
     }
 
     // attaching newNode in childNodes before next
