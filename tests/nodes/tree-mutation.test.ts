@@ -29,18 +29,6 @@ describe('appendChild', () => {
 
 describe('insertBefore', () => {
 
-    it('newNode will only have a next sibling', () => {
-        const document = parseDom(`<body><p>p1</p></body>`);
-
-        const p1 = document.body.firstElementChild;
-        const newNode = document.createElement('p');
-        newNode.textContent = "p2";
-        document.body.insertBefore(newNode, p1);
-
-        compareNodesOrder(null, newNode, p1);
-        compareNodesOrder(newNode, p1, null);
-    });
-
     it('as appendChild | newNode will only have a prev sibling', () => {
         const document = parseDom(`<body><p>p1</p></body>`);
 
@@ -59,8 +47,20 @@ describe('insertBefore', () => {
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
-
+        assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
         compareNodesOrder(null, newNode, null);
+    });
+
+    it('newNode will only have a next sibling', () => {
+        const document = parseDom(`<body><p>p1</p></body>`);
+
+        const p1 = document.body.firstElementChild;
+        const newNode = document.createElement('p');
+        newNode.textContent = "p2";
+        document.body.insertBefore(newNode, p1);
+
+        compareNodesOrder(null, newNode, p1);
+        compareNodesOrder(newNode, p1, null);
     });
 
     it('newNode will have a previous & next sibling', () => {

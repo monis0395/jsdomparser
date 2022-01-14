@@ -13,30 +13,7 @@ function resetNode(node: Node) {
 }
 
 export function appendChild(parentNode: Node, newNode: Node) {
-    detachNode(newNode);
-    const prev = parentNode.lastChild;
-    const prevElement = parentNode.lastElementChild;
-
-    if (prev) {
-        prev.nextSibling = newNode;
-    }
-    newNode.previousSibling = prev;
-    // even if newNode is not a elementNode
-    // we will still have to updateElementSibling
-    newNode.previousElementSibling = prevElement;
-
-    if (isElementNode(newNode)) {
-        if (prevElement) {
-            prevElement.nextElementSibling = newNode;
-        }
-        parentNode.children.push(newNode);
-    }
-
-    parentNode.childNodes.push(newNode);
-    newNode.parentNode = parentNode;
-    // todo: attach to parent element
-    // newNode.parentElement = isElementNode(parentNode) || null;
-    newNode.setOwnerDocument(parentNode.ownerDocument);
+    insertBefore(parentNode, newNode, null);
 }
 
 export function insertBefore(parentNode: Node, newNode: Node, next: Node | null) {
