@@ -135,60 +135,32 @@ describe('insertBefore', () => {
     });
 
     it('newNode will have a previous & next sibling element and previous & next sibling', () => {
-        const document = parseDom(`<body><p>p1</p>t2<p>p4</p></body>`);
-        const p3 = document.createTextNode('t3')
-        document.body.insertBefore(p3, document.body.lastElementChild);
+        const document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p></body>`);
         const childNodes = document.body.childNodes;
-        assert.equal(childNodes.length, 4, 'length');
-        assert.deepEqual(
-          childNodes.map(c => c.textContent),
-          ['p1', 't2', 't3', 'p4'],
-          'self',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.previousSibling && c.previousSibling.textContent),
-          [null, 'p1', 't2', 't3'],
-          'previousSibling',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.nextSibling && c.nextSibling.textContent),
-          ['t2', 't3', 'p4', null],
-          'nextSibling',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.previousElementSibling && c.previousElementSibling.textContent),
-          [null, 'p1', 'p1', 'p1'],
-          'previousElementSibling',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.nextElementSibling && c.nextElementSibling.textContent),
-          ['p4', 'p4', 'p4', null],
-          'nextElementSibling',
-        );
 
-        const [p1, p2, , p4] = document.body.childNodes;
+        const [p1, c2, c3, p4] = childNodes;
         const p5 = document.createElement('p');
         p5.textContent = "p5";
-        document.body.insertBefore(p5, p3);
-        assert.equal(childNodes.length, 5, 'length');
+        document.body.insertBefore(p5, c3);
 
-        assert.equal(p5.previousSibling, p2, 'p5.previousSibling, p2');
+        assert.equal(p5.previousSibling, c2, 'p5.previousSibling, p2');
         assert.equal(p5.previousElementSibling, p1, 'p5.previousElementSibling, p1');
-        assert.equal(p5.nextSibling, p3, 'p5.nextSibling, p3');
+        assert.equal(p5.nextSibling, c3, 'p5.nextSibling, p3');
         assert.equal(p5.nextElementSibling, p4, 'p5.nextElementSibling, p4');
+
         assert.deepEqual(
           childNodes.map(c => c.textContent),
-          ['p1', 't2', 'p5', 't3', 'p4'],
+          ['p1', 'c2', 'p5', 'c3', 'p4'],
           'self',
         );
         assert.deepEqual(
           childNodes.map(c => c.previousSibling && c.previousSibling.textContent),
-          [null, 'p1', 't2', 'p5', 't3'],
+          [null, 'p1', 'c2', 'p5', 'c3'],
           'previousSibling',
         );
         assert.deepEqual(
           childNodes.map(c => c.nextSibling && c.nextSibling.textContent),
-          ['t2', 'p5', 't3', 'p4', null],
+          ['c2', 'p5', 'c3', 'p4', null],
           'nextSibling',
         );
         assert.deepEqual(
