@@ -123,8 +123,8 @@ export class Node implements NodeProps {
         return newNode;
     }
 
-    removeChild(oldChild: Node) {
-        return detachNode(oldChild);
+    removeChild(child: Node) {
+        return detachNode(child);
     }
 
     replaceChild(newChild: Node, oldChild: Node) {

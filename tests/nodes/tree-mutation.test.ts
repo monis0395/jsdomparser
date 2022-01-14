@@ -30,16 +30,14 @@ describe('appendChild', () => {
 
 describe('insertBefore', () => {
 
-    it('as appendChild | newNode will only have a prev sibling element', () => {
-        const document = parseDom(`<body><p>p1</p></body>`);
+    it('newNode has no siblings', () => {
+        const document = parseDom(`<body></body>`);
 
-        const p1 = document.body.firstElementChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
-
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, null);
+        assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
+        compareNodesOrder(null, newNode, null);
     });
 
     it('as appendChild | newNode will only have a prev sibling', () => {
@@ -54,26 +52,16 @@ describe('insertBefore', () => {
         compareNodesOrder(p1, newNode, null);
     });
 
-    it('newNode has no siblings', () => {
-        const document = parseDom(`<body></body>`);
+    it('as appendChild | newNode will only have a prev sibling element', () => {
+        const document = parseDom(`<body><p>p1</p></body>`);
 
+        const p1 = document.body.firstElementChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
-        assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
-        compareNodesOrder(null, newNode, null);
-    });
 
-    it('newNode will only have a next sibling element', () => {
-        const document = parseDom(`<body>p1</body>`);
-
-        const p1 = document.body.firstChild;
-        const newNode = document.createElement('p');
-        newNode.textContent = "p2";
-        document.body.insertBefore(newNode, p1);
-
-        compareNodesOrder(null, newNode, p1);
-        compareNodesOrder(newNode, p1, null);
+        compareNodesOrder(null, p1, newNode);
+        compareNodesOrder(p1, newNode, null);
     });
 
     it('newNode will only have a next sibling', () => {
@@ -88,7 +76,19 @@ describe('insertBefore', () => {
         compareNodesOrder(newNode, p1, null);
     });
 
-    it('newNode will have a previous & next sibling', () => {
+    it('newNode will only have a next sibling element', () => {
+        const document = parseDom(`<body>p1</body>`);
+
+        const p1 = document.body.firstChild;
+        const newNode = document.createElement('p');
+        newNode.textContent = "p2";
+        document.body.insertBefore(newNode, p1);
+
+        compareNodesOrder(null, newNode, p1);
+        compareNodesOrder(newNode, p1, null);
+    });
+
+    it('newNode will have a previous & next sibling element', () => {
         const document = parseDom(`<body><p>p1</p><p>p3</p></body>`);
 
         const p1 = document.body.firstElementChild;
