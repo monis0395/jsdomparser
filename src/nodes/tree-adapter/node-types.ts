@@ -16,8 +16,8 @@ export function isDocumentTypeNode(node: Node): node is DocumentType {
     return node.nodeType === NodeType.DOCUMENT_TYPE_NODE;
 }
 
-export function isElementNode(node: Node): node is Element {
-    return node.nodeType === NodeType.ELEMENT_NODE;
+export function isElementNode(node: Node | null): node is Element {
+    return !!node && node.nodeType === NodeType.ELEMENT_NODE;
 }
 
 export function isDocument(node: Node | null): node is Document {

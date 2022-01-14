@@ -29,7 +29,7 @@ describe('appendChild', () => {
 
 describe('insertBefore', () => {
 
-    it('newNode will have a next sibling', () => {
+    it('newNode will only have a next sibling', () => {
         const document = parseDom(`<body><p>p1</p></body>`);
 
         const p1 = document.body.firstElementChild;
@@ -39,6 +39,28 @@ describe('insertBefore', () => {
 
         compareNodesOrder(null, newNode, p1);
         compareNodesOrder(newNode, p1, null);
+    });
+
+    it('as appendChild | newNode will only have a prev sibling', () => {
+        const document = parseDom(`<body><p>p1</p></body>`);
+
+        const p1 = document.body.firstElementChild;
+        const newNode = document.createElement('p');
+        newNode.textContent = "p2";
+        document.body.insertBefore(newNode, null);
+
+        compareNodesOrder(null, p1, newNode);
+        compareNodesOrder(p1, newNode, null);
+    });
+
+    it('newNode has no siblings', () => {
+        const document = parseDom(`<body></body>`);
+
+        const newNode = document.createElement('p');
+        newNode.textContent = "p2";
+        document.body.insertBefore(newNode, null);
+
+        compareNodesOrder(null, newNode, null);
     });
 
     it('newNode will have a previous & next sibling', () => {
@@ -58,18 +80,18 @@ describe('insertBefore', () => {
 
 function compareNodesOrder(n1, n2, n3) {
     if (n1) {
-        assert.equal(n2.previousSibling.textContent, n1.textContent);
-        assert.equal(n2.previousElementSibling.textContent, n1.textContent);
+        assert.equal(n2.previousSibling.textContent, n1.textContent, 'n2.previousSibling == n1');
+        assert.equal(n2.previousElementSibling.textContent, n1.textContent, 'n2.previousElementSibling == n1');
     } else {
-        assert.equal(n2.previousSibling, n1);
-        assert.equal(n2.previousElementSibling, n1);
+        assert.equal(n2.previousSibling, n1, 'n2.previousElementSibling == n1 (null)');
+        assert.equal(n2.previousElementSibling, n1, 'n2.previousElementSibling == n1 (null)');
     }
 
     if (n3) {
-        assert.equal(n2.nextSibling.textContent, n3.textContent);
-        assert.equal(n2.nextElementSibling.textContent, n3.textContent);
+        assert.equal(n2.nextSibling.textContent, n3.textContent, 'n2.nextSibling == n3');
+        assert.equal(n2.nextElementSibling.textContent, n3.textContent, 'n2.nextElementSibling == n3');
     } else {
-        assert.equal(n2.nextSibling, n3);
-        assert.equal(n2.nextElementSibling, n3);
+        assert.equal(n2.nextSibling, n3, 'n2.nextSibling == n3 (null)');
+        assert.equal(n2.nextElementSibling, n3, 'n2.nextElementSibling == n3 (null)');
     }
 }

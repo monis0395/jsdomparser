@@ -39,12 +39,12 @@ export function appendChild(parentNode: Node, newNode: Node) {
     newNode.setOwnerDocument(parentNode.ownerDocument);
 }
 
-export function insertBefore(parentNode: Node, newNode: Node, next: Node) {
+export function insertBefore(parentNode: Node, newNode: Node, next: Node | null) {
     detachNode(newNode);
     const nextIdx = parentNode.childNodes.indexOf(next);
     const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length
-    const prev = next.previousSibling;
-    const prevElement = next.previousElementSibling;
+    const prev = next ? next.previousSibling : parentNode.lastChild;
+    const prevElement = next ? next.previousElementSibling : parentNode.lastElementChild;
 
     if (prev) {
         prev.nextSibling = newNode;
@@ -58,7 +58,9 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node) {
         if (prevElement) {
             prevElement.nextElementSibling = newNode;
         }
-        next.previousElementSibling = newNode;
+        if (next) {
+            next.previousElementSibling = newNode;
+        }
 
         if (isElementNode(next)) {
             newNode.nextElementSibling = next;
@@ -70,7 +72,9 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node) {
     }
 
     newNode.nextSibling = next;
-    next.previousSibling = newNode;
+    if (next) {
+        next.previousSibling = newNode;
+    }
 
     // attaching newNode in childNodes before next
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
