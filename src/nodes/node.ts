@@ -2,7 +2,7 @@ import { NodeProps, NodeType } from "./contracts/type";
 import { Element } from "./element";
 import { Document } from "./document";
 import { isDocument, isElementNode, isTextNode } from "./tree-adapter/node-types";
-import { appendChild, detachNode, replaceChild } from "./tree-adapter/tree-mutation";
+import { appendChild, detachNode, insertBefore, replaceChild } from "./tree-adapter/tree-mutation";
 // @ts-ignore
 import { unescape } from 'html-escaper';
 
@@ -116,6 +116,11 @@ export class Node implements NodeProps {
 
     appendChild(newChild: Node) {
         appendChild(this, newChild);
+    }
+
+    insertBefore(newNode, referenceNode) {
+        insertBefore(this, newNode, referenceNode)
+        return newNode;
     }
 
     removeChild(oldChild: Node) {
