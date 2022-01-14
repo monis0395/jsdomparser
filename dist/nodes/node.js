@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Node = void 0;
 const type_1 = require("./contracts/type");
-const node_types_1 = require("./node-types");
-const tree_mutation_1 = require("./tree-mutation");
+const node_types_1 = require("./tree-adapter/node-types");
+const tree_mutation_1 = require("./tree-adapter/tree-mutation");
 // @ts-ignore
 const html_escaper_1 = require("html-escaper");
 class Node {
@@ -96,8 +96,12 @@ class Node {
     appendChild(newChild) {
         tree_mutation_1.appendChild(this, newChild);
     }
-    removeChild(oldChild) {
-        return tree_mutation_1.detachNode(oldChild);
+    insertBefore(newNode, referenceNode) {
+        tree_mutation_1.insertBefore(this, newNode, referenceNode);
+        return newNode;
+    }
+    removeChild(child) {
+        return tree_mutation_1.detachNode(child);
     }
     replaceChild(newChild, oldChild) {
         return tree_mutation_1.replaceChild(this, oldChild, newChild);

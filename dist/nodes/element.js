@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Element = void 0;
 const node_1 = require("./node");
-const tree_traversing_1 = require("./tree-traversing");
+const tree_traversing_1 = require("./tree-adapter/tree-traversing");
 const index_1 = require("../index");
 const legacy = require("./domutils/legacy");
 const style_1 = require("./style");

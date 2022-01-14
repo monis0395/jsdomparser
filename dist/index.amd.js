@@ -44,7 +44,7 @@ define("nodes/contracts/type", ["require", "exports"], function (require, export
         DocumentMode["LIMITED_QUIRKS"] = "limited-quirks";
     })(DocumentMode = exports.DocumentMode || (exports.DocumentMode = {}));
 });
-define("nodes/tree-traversing", ["require", "exports"], function (require, exports) {
+define("nodes/tree-adapter/tree-traversing", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getAttrList = exports.getParentNode = exports.getChildNodes = exports.getFirstChild = void 0;
@@ -66,7 +66,7 @@ define("nodes/tree-traversing", ["require", "exports"], function (require, expor
         });
     };
 });
-define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contruction", "nodes/domutils/legacy", "url"], function (require, exports, node_1, node_contruction_1, legacy, url_1) {
+define("nodes/document", ["require", "exports", "nodes/node", "nodes/tree-adapter/node-contruction", "nodes/domutils/legacy", "url"], function (require, exports, node_1, node_contruction_1, legacy, url_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Document = void 0;
@@ -77,8 +77,15 @@ define("nodes/document", ["require", "exports", "nodes/node", "nodes/node-contru
         get documentElement() {
             return this.firstElementChild;
         }
+        get firstElementChild() {
+            return this.children[0] || null;
+        }
         get head() {
             return this.getElementsByTagName("head")[0];
+        }
+        get lastElementChild() {
+            const children = this.children;
+            return children[children.length - 1] || null;
         }
         get title() {
             const titleTag = this.getElementsByTagName("title")[0];
@@ -155,7 +162,7 @@ define("nodes/documentType", ["require", "exports", "nodes/node"], function (req
     }
     exports.DocumentType = DocumentType;
 });
-define("nodes/node-types", ["require", "exports", "nodes/contracts/type"], function (require, exports, type_1) {
+define("nodes/tree-adapter/node-types", ["require", "exports", "nodes/contracts/type"], function (require, exports, type_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isDocument = exports.isElementNode = exports.isDocumentTypeNode = exports.isCommentNode = exports.isTextNode = void 0;
@@ -172,7 +179,7 @@ define("nodes/node-types", ["require", "exports", "nodes/contracts/type"], funct
     }
     exports.isDocumentTypeNode = isDocumentTypeNode;
     function isElementNode(node) {
-        return node.nodeType === type_1.NodeType.ELEMENT_NODE;
+        return !!node && node.nodeType === type_1.NodeType.ELEMENT_NODE;
     }
     exports.isElementNode = isElementNode;
     function isDocument(node) {
@@ -183,7 +190,7 @@ define("nodes/node-types", ["require", "exports", "nodes/contracts/type"], funct
     }
     exports.isDocument = isDocument;
 });
-define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], function (require, exports, node_types_1) {
+define("nodes/domutils/querying", ["require", "exports", "nodes/tree-adapter/node-types"], function (require, exports, node_types_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.findAll = exports.existsOne = exports.findOne = exports.findOneChild = exports.find = exports.filter = void 0;
@@ -301,7 +308,7 @@ define("nodes/domutils/querying", ["require", "exports", "nodes/node-types"], fu
     }
     exports.findAll = findAll;
 });
-define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying", "nodes/node-types"], function (require, exports, querying_1, node_types_2) {
+define("nodes/domutils/legacy", ["require", "exports", "nodes/domutils/querying", "nodes/tree-adapter/node-types"], function (require, exports, querying_1, node_types_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getElementsByTagName = exports.getElementsByName = exports.getElementsByClassName = exports.getElementById = exports.getElements = exports.testElement = void 0;
@@ -637,7 +644,7 @@ define("nodes/style", ["require", "exports"], function (require, exports) {
         });
     });
 });
-define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-traversing", "index", "nodes/domutils/legacy", "nodes/style"], function (require, exports, node_3, tree_traversing_1, index_1, legacy, style_1) {
+define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-adapter/tree-traversing", "index", "nodes/domutils/legacy", "nodes/style"], function (require, exports, node_3, tree_traversing_1, index_1, legacy, style_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Element = void 0;
@@ -715,7 +722,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-travers
         });
     });
 });
-define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "nodes/node-types"], function (require, exports, node_contruction_2, node_types_3) {
+define("nodes/tree-adapter/tree-mutation", ["require", "exports", "nodes/tree-adapter/node-contruction", "nodes/tree-adapter/node-types"], function (require, exports, node_contruction_2, node_types_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.adoptAttributes = exports.getTemplateContent = exports.setTemplateContent = exports.insertTextBefore = exports.insertText = exports.replaceChild = exports.detachNode = exports.insertBefore = exports.appendChild = void 0;
@@ -727,53 +734,66 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
         node.parentNode = null;
     }
     function appendChild(parentNode, newNode) {
-        detachNode(newNode);
-        const lastChild = parentNode.lastChild;
-        if (lastChild) {
-            lastChild.nextSibling = newNode;
-            newNode.previousSibling = lastChild;
-        }
-        const lastElement = parentNode.lastElementChild;
-        newNode.previousElementSibling = lastElement;
-        if (node_types_3.isElementNode(newNode)) {
-            parentNode.children.push(newNode);
-            if (lastElement) {
-                lastElement.nextElementSibling = newNode;
-            }
-            if (lastChild) {
-                lastChild.nextElementSibling = newNode;
-            }
-        }
-        parentNode.childNodes.push(newNode);
-        newNode.parentNode = parentNode;
-        newNode.setOwnerDocument(parentNode.ownerDocument);
+        insertBefore(parentNode, newNode, null);
     }
     exports.appendChild = appendChild;
-    function insertBefore(parentNode, newNode, referenceNode) {
+    function insertBefore(parentNode, newNode, next) {
         detachNode(newNode);
-        const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
-        const prev = referenceNode.previousSibling;
-        const prevElement = referenceNode.previousElementSibling || null;
+        const nextIdx = parentNode.childNodes.indexOf(next);
+        const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length;
+        const prev = next ? next.previousSibling : parentNode.lastChild;
+        const prevElement = next ? next.previousElementSibling : parentNode.lastElementChild;
         if (prev) {
             prev.nextSibling = newNode;
-            newNode.previousSibling = prev;
         }
+        newNode.previousSibling = prev;
+        // even if newNode is not a elementNode
+        // we will still have to updateElementSibling
+        newNode.previousElementSibling = prevElement;
         if (node_types_3.isElementNode(newNode)) {
+            if (prev) {
+                prev.nextElementSibling = newNode;
+            }
             if (prevElement) {
                 prevElement.nextElementSibling = newNode;
-                newNode.previousElementSibling = prevElement;
             }
-            referenceNode.previousElementSibling = newNode;
-            if (node_types_3.isElementNode(referenceNode)) {
-                newNode.nextElementSibling = referenceNode;
-                const index = parentNode.children.indexOf(referenceNode);
-                parentNode.children.splice(index, 0, newNode);
+            if (next) {
+                next.previousElementSibling = newNode;
+                let nextSibling = next.nextSibling;
+                while (nextSibling) {
+                    if (nextSibling.previousElementSibling === prevElement) {
+                        nextSibling.previousElementSibling = newNode;
+                        nextSibling = nextSibling.nextSibling;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                let previousSibling = next.previousSibling;
+                while (previousSibling) {
+                    if (previousSibling.nextElementSibling === prevElement) {
+                        previousSibling.nextElementSibling = newNode;
+                        previousSibling = previousSibling.previousSibling;
+                    }
+                    else {
+                        break;
+                    }
+                }
             }
+            const nextElementIdx = node_types_3.isElementNode(next) && parentNode.children.indexOf(next) || -1;
+            const insertionElementIdx = nextElementIdx !== -1 ? nextElementIdx : parentNode.children.length;
+            parentNode.children.splice(insertionElementIdx, 0, newNode); // attaching newNode in children before next
         }
-        referenceNode.previousSibling = newNode;
-        newNode.nextSibling = referenceNode;
+        newNode.nextSibling = next;
+        if (next) {
+            next.previousSibling = newNode;
+            newNode.nextElementSibling = node_types_3.isElementNode(next) ? next : next.nextElementSibling;
+        }
+        // attaching newNode in childNodes before next
         parentNode.childNodes.splice(insertionIdx, 0, newNode);
         newNode.parentNode = parentNode;
+        // todo: attach to parent element
+        // newNode.parentElement = isElementNode(parentNode) || null;
         newNode.setOwnerDocument(parentNode.ownerDocument);
     }
     exports.insertBefore = insertBefore;
@@ -910,7 +930,7 @@ define("nodes/tree-mutation", ["require", "exports", "nodes/node-contruction", "
     }
     exports.adoptAttributes = adoptAttributes;
 });
-define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-types", "nodes/tree-mutation", "html-escaper"], function (require, exports, type_2, node_types_4, tree_mutation_1, html_escaper_1) {
+define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/tree-adapter/node-types", "nodes/tree-adapter/tree-mutation", "html-escaper"], function (require, exports, type_2, node_types_4, tree_mutation_1, html_escaper_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Node = void 0;
@@ -1004,8 +1024,12 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
         appendChild(newChild) {
             tree_mutation_1.appendChild(this, newChild);
         }
-        removeChild(oldChild) {
-            return tree_mutation_1.detachNode(oldChild);
+        insertBefore(newNode, referenceNode) {
+            tree_mutation_1.insertBefore(this, newNode, referenceNode);
+            return newNode;
+        }
+        removeChild(child) {
+            return tree_mutation_1.detachNode(child);
         }
         replaceChild(newChild, oldChild) {
             return tree_mutation_1.replaceChild(this, oldChild, newChild);
@@ -1017,7 +1041,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/node-
         Node[nodeType] = Node.prototype[nodeType] = type_2.NodeType[nodeType];
     }
 });
-define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/doctype", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "nodes/node-types", "nodes/documentType", "nodes/tree-mutation"], function (require, exports, doctype_1, type_3, node_4, document_1, element_1, node_types_5, documentType_1, tree_mutation_2) {
+define("nodes/tree-adapter/node-contruction", ["require", "exports", "parse5/lib/common/doctype", "nodes/contracts/type", "nodes/node", "nodes/document", "nodes/element", "nodes/tree-adapter/node-types", "nodes/documentType", "nodes/tree-adapter/tree-mutation"], function (require, exports, doctype_1, type_3, node_4, document_1, element_1, node_types_5, documentType_1, tree_mutation_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.createTextNode = exports.createCommentNode = exports.createDirectiveNode = exports.setDocumentType = exports.createElement = exports.createDocumentFragment = exports.createDocument = void 0;
@@ -1130,7 +1154,7 @@ define("nodes/node-contruction", ["require", "exports", "parse5/lib/common/docty
         });
     };
 });
-define("nodes/node-data", ["require", "exports"], function (require, exports) {
+define("nodes/tree-adapter/node-data", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getDocumentMode = exports.setDocumentMode = exports.getDocumentTypeNodeSystemId = exports.getDocumentTypeNodePublicId = exports.getDocumentTypeNodeName = exports.getCommentNodeContent = exports.getTextNodeContent = exports.getNamespaceURI = exports.getTagName = void 0;
@@ -1162,7 +1186,7 @@ define("nodes/node-data", ["require", "exports"], function (require, exports) {
         return document.mode;
     };
 });
-define("nodes/source-code-location", ["require", "exports"], function (require, exports) {
+define("nodes/tree-adapter/source-code-location", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.updateNodeSourceCodeLocation = exports.getNodeSourceCodeLocation = exports.setNodeSourceCodeLocation = void 0;
@@ -1176,7 +1200,7 @@ define("nodes/source-code-location", ["require", "exports"], function (require, 
         node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
     };
 });
-define("adapters/parse5", ["require", "exports", "nodes/node-contruction", "nodes/node-data", "nodes/node-types", "nodes/source-code-location", "nodes/tree-mutation", "nodes/tree-traversing"], function (require, exports, node_contruction_3, node_data_1, node_types_6, source_code_location_1, tree_mutation_3, tree_traversing_2) {
+define("adapters/parse5", ["require", "exports", "nodes/tree-adapter/node-contruction", "nodes/tree-adapter/node-data", "nodes/tree-adapter/node-types", "nodes/tree-adapter/source-code-location", "nodes/tree-adapter/tree-mutation", "nodes/tree-adapter/tree-traversing"], function (require, exports, node_contruction_3, node_data_1, node_types_6, source_code_location_1, tree_mutation_3, tree_traversing_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     __exportStar(node_contruction_3, exports);

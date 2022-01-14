@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getElementsByTagName = exports.getElementsByName = exports.getElementsByClassName = exports.getElementById = exports.getElements = exports.testElement = void 0;
 const querying_1 = require("./querying");
-const node_types_1 = require("../node-types");
+const node_types_1 = require("../tree-adapter/node-types");
 /* eslint-disable @typescript-eslint/camelcase */
 const Checks = {
     tag_name(name) {

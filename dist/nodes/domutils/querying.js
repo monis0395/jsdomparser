@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findAll = exports.existsOne = exports.findOne = exports.findOneChild = exports.find = exports.filter = void 0;
-const node_types_1 = require("../node-types");
+const node_types_1 = require("../tree-adapter/node-types");
 /**
  * Search a node and its children for nodes passing a test function.
  *

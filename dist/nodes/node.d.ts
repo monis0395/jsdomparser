@@ -28,6 +28,7 @@ export declare class Node implements NodeProps {
     get ownerDocument(): Document;
     setOwnerDocument(node: Document): void;
     appendChild(newChild: Node): void;
-    removeChild(oldChild: Node): Node;
+    insertBefore(newNode: any, referenceNode: any): any;
+    removeChild(child: Node): Node;
     replaceChild(newChild: Node, oldChild: Node): Node;
 }

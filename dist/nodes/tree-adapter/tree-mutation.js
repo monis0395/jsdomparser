@@ -11,53 +11,66 @@ function resetNode(node) {
     node.parentNode = null;
 }
 function appendChild(parentNode, newNode) {
-    detachNode(newNode);
-    const lastChild = parentNode.lastChild;
-    if (lastChild) {
-        lastChild.nextSibling = newNode;
-        newNode.previousSibling = lastChild;
-    }
-    const lastElement = parentNode.lastElementChild;
-    newNode.previousElementSibling = lastElement;
-    if (node_types_1.isElementNode(newNode)) {
-        parentNode.children.push(newNode);
-        if (lastElement) {
-            lastElement.nextElementSibling = newNode;
-        }
-        if (lastChild) {
-            lastChild.nextElementSibling = newNode;
-        }
-    }
-    parentNode.childNodes.push(newNode);
-    newNode.parentNode = parentNode;
-    newNode.setOwnerDocument(parentNode.ownerDocument);
+    insertBefore(parentNode, newNode, null);
 }
 exports.appendChild = appendChild;
-function insertBefore(parentNode, newNode, referenceNode) {
+function insertBefore(parentNode, newNode, next) {
     detachNode(newNode);
-    const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
-    const prev = referenceNode.previousSibling;
-    const prevElement = referenceNode.previousElementSibling || null;
+    const nextIdx = parentNode.childNodes.indexOf(next);
+    const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length;
+    const prev = next ? next.previousSibling : parentNode.lastChild;
+    const prevElement = next ? next.previousElementSibling : parentNode.lastElementChild;
     if (prev) {
         prev.nextSibling = newNode;
-        newNode.previousSibling = prev;
     }
+    newNode.previousSibling = prev;
+    // even if newNode is not a elementNode
+    // we will still have to updateElementSibling
+    newNode.previousElementSibling = prevElement;
     if (node_types_1.isElementNode(newNode)) {
+        if (prev) {
+            prev.nextElementSibling = newNode;
+        }
         if (prevElement) {
             prevElement.nextElementSibling = newNode;
-            newNode.previousElementSibling = prevElement;
         }
-        referenceNode.previousElementSibling = newNode;
-        if (node_types_1.isElementNode(referenceNode)) {
-            newNode.nextElementSibling = referenceNode;
-            const index = parentNode.children.indexOf(referenceNode);
-            parentNode.children.splice(index, 0, newNode);
+        if (next) {
+            next.previousElementSibling = newNode;
+            let nextSibling = next.nextSibling;
+            while (nextSibling) {
+                if (nextSibling.previousElementSibling === prevElement) {
+                    nextSibling.previousElementSibling = newNode;
+                    nextSibling = nextSibling.nextSibling;
+                }
+                else {
+                    break;
+                }
+            }
+            let previousSibling = next.previousSibling;
+            while (previousSibling) {
+                if (previousSibling.nextElementSibling === prevElement) {
+                    previousSibling.nextElementSibling = newNode;
+                    previousSibling = previousSibling.previousSibling;
+                }
+                else {
+                    break;
+                }
+            }
         }
+        const nextElementIdx = node_types_1.isElementNode(next) && parentNode.children.indexOf(next) || -1;
+        const insertionElementIdx = nextElementIdx !== -1 ? nextElementIdx : parentNode.children.length;
+        parentNode.children.splice(insertionElementIdx, 0, newNode); // attaching newNode in children before next
     }
-    referenceNode.previousSibling = newNode;
-    newNode.nextSibling = referenceNode;
+    newNode.nextSibling = next;
+    if (next) {
+        next.previousSibling = newNode;
+        newNode.nextElementSibling = node_types_1.isElementNode(next) ? next : next.nextElementSibling;
+    }
+    // attaching newNode in childNodes before next
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
+    // todo: attach to parent element
+    // newNode.parentElement = isElementNode(parentNode) || null;
     newNode.setOwnerDocument(parentNode.ownerDocument);
 }
 exports.insertBefore = insertBefore;

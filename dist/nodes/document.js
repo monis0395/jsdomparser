@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Document = void 0;
 const node_1 = require("./node");
-const node_contruction_1 = require("./node-contruction");
+const node_contruction_1 = require("./tree-adapter/node-contruction");
 const legacy = require("./domutils/legacy");
 const url_1 = require("url");
 class Document extends node_1.Node {
@@ -12,8 +12,15 @@ class Document extends node_1.Node {
     get documentElement() {
         return this.firstElementChild;
     }
+    get firstElementChild() {
+        return this.children[0] || null;
+    }
     get head() {
         return this.getElementsByTagName("head")[0];
+    }
+    get lastElementChild() {
+        const children = this.children;
+        return children[children.length - 1] || null;
     }
     get title() {
         const titleTag = this.getElementsByTagName("title")[0];

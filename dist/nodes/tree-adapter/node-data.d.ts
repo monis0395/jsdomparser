@@ -1,8 +1,8 @@
-import { Element } from "./element";
-import { Node } from "./node";
-import { DocumentType } from "./documentType";
-import { Document } from "./document";
-import { DocumentMode } from "./contracts/type";
+import { Element } from "../element";
+import { Node } from "../node";
+import { DocumentType } from "../documentType";
+import { Document } from "../document";
+import { DocumentMode } from "../contracts/type";
 export declare const getTagName: (element: Element) => string;
 export declare const getNamespaceURI: (element: Element) => string;
 export declare const getTextNodeContent: (textNode: Node) => string;
