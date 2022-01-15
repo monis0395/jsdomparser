@@ -4,32 +4,41 @@ import { Element } from "../element";
 import { isElementNode, isTextNode } from "./node-types";
 import { Attribute } from "parse5";
 
-function resetNode(node: Node) {
-    node.previousSibling = null;
-    node.nextSibling = null;
-    node.previousElementSibling = null;
-    node.nextElementSibling = null;
-    node.parentNode = null;
-}
-
 export function appendChild(parentNode: Node, newNode: Node) {
     insertBefore(parentNode, newNode, null);
 }
 
-function updatePreviousElementFor(nextSibling: Node, oldRef: Element, newRef: Element) {
-    while (nextSibling && nextSibling.previousElementSibling === oldRef) {
-        nextSibling.previousElementSibling = newRef;
-        nextSibling = nextSibling.nextSibling;
+export function detachNode(node: Node): Node | null {
+    if (!node.parentNode) {
+        // this can mean that node is not yet attached and is in detach state
+        return null;
     }
-}
+    const idx = node.parentNode.childNodes.indexOf(node);
+    if (idx === -1) {
+        throw new Error('removeChild: node not found');
+    }
+    const prev = node.previousSibling;
+    const next = node.nextSibling;
+    const prevElement = node.previousElementSibling || null;
+    const nextElement = node.nextElementSibling || null;
 
-function updateNextElementSiblingFor(prevSibling: Node, oldRef: Element, newRef: Element) {
-    let firstElementOccurrenceFound = false;
-    while (prevSibling && !firstElementOccurrenceFound) {
-        prevSibling.nextElementSibling = newRef;
-        firstElementOccurrenceFound = isElementNode(prevSibling);
-        prevSibling = prevSibling.previousSibling;
+    if (prev) {
+        prev.nextSibling = next;
     }
+
+    if (next) {
+        next.previousSibling = prev;
+    }
+
+    if (isElementNode(node)) {
+        updatePreviousElementFor(next, node, prevElement)
+        updateNextElementSiblingFor(prev, node, nextElement)
+        node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
+    }
+
+    node.parentNode.childNodes.splice(idx, 1);
+    resetNode(node);
+    return node;
 }
 
 export function insertBefore(parentNode: Node, newNode: Node, next: Node | null) {
@@ -79,37 +88,28 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
     newNode.setOwnerDocument(parentNode.ownerDocument);
 }
 
-export function detachNode(node: Node): Node | null {
-    if (!node.parentNode) {
-        // this can mean that node is not yet attached and is in detach state
-        return null;
-    }
-    const idx = node.parentNode.childNodes.indexOf(node);
-    if (idx === -1) {
-        throw new Error('removeChild: node not found');
-    }
-    const prev = node.previousSibling;
-    const next = node.nextSibling;
-    const prevElement = node.previousElementSibling || null;
-    const nextElement = node.nextElementSibling || null;
+function resetNode(node: Node) {
+    node.previousSibling = null;
+    node.nextSibling = null;
+    node.previousElementSibling = null;
+    node.nextElementSibling = null;
+    node.parentNode = null;
+}
 
-    if (prev) {
-        prev.nextSibling = next;
+function updatePreviousElementFor(nextSibling: Node, oldRef: Element, newRef: Element) {
+    while (nextSibling && nextSibling.previousElementSibling === oldRef) {
+        nextSibling.previousElementSibling = newRef;
+        nextSibling = nextSibling.nextSibling;
     }
+}
 
-    if (next) {
-        next.previousSibling = prev;
+function updateNextElementSiblingFor(prevSibling: Node, oldRef: Element, newRef: Element) {
+    let firstElementOccurrenceFound = false;
+    while (prevSibling && !firstElementOccurrenceFound) {
+        prevSibling.nextElementSibling = newRef;
+        firstElementOccurrenceFound = isElementNode(prevSibling);
+        prevSibling = prevSibling.previousSibling;
     }
-
-    if (isElementNode(node)) {
-        updatePreviousElementFor(next, node, prevElement)
-        updateNextElementSiblingFor(prev, node, nextElement)
-        node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
-    }
-
-    node.parentNode.childNodes.splice(idx, 1);
-    resetNode(node);
-    return node;
 }
 
 export function replaceChild(parentNode: Node, oldNode: Node, newNode: Node): Node | null {
