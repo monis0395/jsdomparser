@@ -13,6 +13,7 @@ describe('appendChild', () => {
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.appendChild(newNode);
+
         assert.equal(newNode.textContent, document.body.lastElementChild.textContent);
         compareSiblings(document);
     });
@@ -23,6 +24,7 @@ describe('appendChild', () => {
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.appendChild(newNode);
+
         assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
         compareSiblings(document);
     });
@@ -36,7 +38,11 @@ describe('insertBefore', () => {
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
-        assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
+
+        assert.equal(newNode.previousSibling, null, 'previousSibling');
+        assert.equal(newNode.nextSibling, null, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -47,6 +53,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
 
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, null, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -57,6 +67,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
 
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, null, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -68,6 +82,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, p1);
 
+        assert.equal(newNode.previousSibling, null, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -79,6 +97,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, c1);
 
+        assert.equal(newNode.previousSibling, null, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -90,6 +112,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, c3);
 
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -101,6 +127,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, c3);
 
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
         compareSiblings(document);
     });
 
@@ -112,10 +142,14 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, p3);
 
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
         compareSiblings(document);
     });
 
-    it('newNode will have a previous & next sibling element and previous & next sibling', () => {
+    it('newNode will have a both  previous & next sibling element|node', () => {
         const document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p></body>`);
 
         const c3 = document.body.childNodes[2];
@@ -123,9 +157,10 @@ describe('insertBefore', () => {
         p5.textContent = "p5";
         document.body.insertBefore(p5, c3);
 
-        assert.equal(p5.nextSibling, c3, 'p5.nextSibling == c3');
         assert.equal(c3.previousSibling, p5, 'c3.previousSibling == p5');
+        assert.equal(p5.nextSibling, c3, 'p5.nextSibling == c3');
         assert.equal(c3.previousElementSibling, p5, 'c3.previousElementSibling == p5');
+        // assert.equal(p5.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
 
         compareSiblings(document);
     });
@@ -137,6 +172,10 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, document.body.lastElementChild);
 
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
         compareSiblings(document);
     });
 })
