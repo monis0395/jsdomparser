@@ -60,7 +60,8 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
             }
         }
 
-        const nextElementIdx = isElementNode(next) && parentNode.children.indexOf(next) || -1;
+        // @ts-ignore
+        const nextElementIdx = parentNode.children.indexOf(next);
         const insertionElementIdx = nextElementIdx !== -1 ? nextElementIdx : parentNode.children.length
 
         parentNode.children.splice(insertionElementIdx, 0, newNode); // attaching newNode in children before next
