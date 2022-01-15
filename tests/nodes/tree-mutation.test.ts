@@ -160,7 +160,7 @@ describe('insertBefore', () => {
         assert.equal(c3.previousSibling, p5, 'c3.previousSibling == p5');
         assert.equal(p5.nextSibling, c3, 'p5.nextSibling == c3');
         assert.equal(c3.previousElementSibling, p5, 'c3.previousElementSibling == p5');
-        // assert.equal(p5.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
+        assert.equal(p5.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
 
         compareSiblings(document);
     });
@@ -187,6 +187,14 @@ function compareSiblings(document: Document) {
         last = el;
     });
     compareNodes(last, null);
+    compareElementsOrder(document);
+}
+
+function compareElementsOrder(document: Document) {
+    const elements = document.body.childNodes.filter(isElementNode);
+    document.body.children.forEach((el, index) => {
+        assert.equal(el, elements[index], `element order should be same as childNodes| index: ${index}`)
+    });
 }
 
 function compareNodes(n1: Node | null, n2: Node | null) {
