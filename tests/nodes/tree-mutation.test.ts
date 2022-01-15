@@ -2,19 +2,19 @@ import 'mocha';
 import { assert } from 'chai';
 import { parseDom } from '../../src';
 import { isElementNode } from "../../src/nodes/tree-adapter/node-types";
+import { Node } from '../../src/nodes/node';
+import { Document } from '../../src/nodes/document';
 
 describe('appendChild', () => {
 
     it('newNode has a previous sibling', () => {
         const document = parseDom(`<body><p>p1</p></body>`);
 
-        const p1 = document.body.firstElementChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.appendChild(newNode);
         assert.equal(newNode.textContent, document.body.lastElementChild.textContent);
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, null);
+        compareSiblings(document);
     });
 
     it('newNode has no siblings', () => {
@@ -24,7 +24,7 @@ describe('appendChild', () => {
         newNode.textContent = "p2";
         document.body.appendChild(newNode);
         assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
-        compareNodesOrder(null, newNode, null);
+        compareSiblings(document);
     });
 });
 
@@ -37,31 +37,27 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
         assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
-        compareNodesOrder(null, newNode, null);
+        compareSiblings(document);
     });
 
     it('as appendChild | newNode will only have a prev sibling', () => {
-        const document = parseDom(`<body>p1</body>`);
+        const document = parseDom(`<body><!--c1--></body>`);
 
-        const p1 = document.body.firstChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
 
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, null);
+        compareSiblings(document);
     });
 
     it('as appendChild | newNode will only have a prev sibling element', () => {
         const document = parseDom(`<body><p>p1</p></body>`);
 
-        const p1 = document.body.firstElementChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, null);
 
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, null);
+        compareSiblings(document);
     });
 
     it('newNode will only have a next sibling', () => {
@@ -72,146 +68,104 @@ describe('insertBefore', () => {
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, p1);
 
-        compareNodesOrder(null, newNode, p1);
-        compareNodesOrder(newNode, p1, null);
+        compareSiblings(document);
     });
 
     it('newNode will only have a next sibling element', () => {
-        const document = parseDom(`<body>p1</body>`);
+        const document = parseDom(`<body><!--c1--></body>`);
 
-        const p1 = document.body.firstChild;
+        const c1 = document.body.firstChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
-        document.body.insertBefore(newNode, p1);
+        document.body.insertBefore(newNode, c1);
 
-        compareNodesOrder(null, newNode, p1);
-        compareNodesOrder(newNode, p1, null);
+        compareSiblings(document);
     });
 
     it('newNode will have a previous & next sibling', () => {
-        const document = parseDom(`<body>p1</body>`);
+        const document = parseDom(`<body><!--c1--><!--c3--></body>`);
 
-        const p1 = document.body.firstChild;
-        const p3 = document.createTextNode('p3');
-        document.body.insertBefore(p3, null);
-
+        const c3 = document.body.lastChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
-        document.body.insertBefore(newNode, p3);
+        document.body.insertBefore(newNode, c3);
 
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, p3);
-        compareNodesOrder(newNode, p3, null);
+        compareSiblings(document);
     });
 
     it('newNode will have a previous sibling element & next sibling', () => {
-        const document = parseDom(`<body><p>p1</p>p3</body>`);
+        const document = parseDom(`<body><p>p1</p><!--c3--></body>`);
 
-        const p1 = document.body.firstChild;
-        const p3 = document.body.lastChild;
-
+        const c3 = document.body.lastChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
-        document.body.insertBefore(newNode, p3);
+        document.body.insertBefore(newNode, c3);
 
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, p3);
-        compareNodesOrder(newNode, p3, null);
+        compareSiblings(document);
     });
 
     it('newNode will have a previous sibling & next sibling element', () => {
-        const document = parseDom(`<body>p1<p>p3</p></body>`);
+        const document = parseDom(`<body><!--c1--><p>p3</p></body>`);
 
-        const p1 = document.body.firstChild;
         const p3 = document.body.lastChild;
-
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
         document.body.insertBefore(newNode, p3);
 
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, p3);
-        compareNodesOrder(newNode, p3, null);
+        compareSiblings(document);
     });
 
     it('newNode will have a previous & next sibling element and previous & next sibling', () => {
         const document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p></body>`);
-        const childNodes = document.body.childNodes;
 
-        const [p1, c2, c3, p4] = childNodes;
+        const c3 = document.body.childNodes[2];
         const p5 = document.createElement('p');
         p5.textContent = "p5";
         document.body.insertBefore(p5, c3);
 
-        assert.equal(p5.previousSibling, c2, 'p5.previousSibling, p2');
-        assert.equal(p5.previousElementSibling, p1, 'p5.previousElementSibling, p1');
-        assert.equal(p5.nextSibling, c3, 'p5.nextSibling, p3');
-        assert.equal(p5.nextElementSibling, p4, 'p5.nextElementSibling, p4');
+        assert.equal(p5.nextSibling, c3, 'p5.nextSibling == c3');
+        assert.equal(c3.previousSibling, p5, 'c3.previousSibling == p5');
+        assert.equal(c3.previousElementSibling, p5, 'c3.previousElementSibling == p5');
 
-        assert.deepEqual(
-          childNodes.map(c => c.textContent),
-          ['p1', 'c2', 'p5', 'c3', 'p4'],
-          'self',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.previousSibling && c.previousSibling.textContent),
-          [null, 'p1', 'c2', 'p5', 'c3'],
-          'previousSibling',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.nextSibling && c.nextSibling.textContent),
-          ['c2', 'p5', 'c3', 'p4', null],
-          'nextSibling',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.previousElementSibling && c.previousElementSibling.textContent),
-          [null, 'p1', 'p1', 'p5', 'p5'],
-          'previousElementSibling',
-        );
-        assert.deepEqual(
-          childNodes.map(c => c.nextElementSibling && c.nextElementSibling.textContent),
-          ['p5', 'p5', 'p4', 'p4', null],
-          'nextElementSibling',
-        );
+        compareSiblings(document);
     });
 
     it('newNode will have a previous & next sibling element', () => {
         const document = parseDom(`<body><p>p1</p><p>p3</p></body>`);
 
-        const p1 = document.body.firstElementChild;
-        const p3 = document.body.lastElementChild;
         const newNode = document.createElement('p');
         newNode.textContent = "p2";
-        document.body.insertBefore(newNode, p3);
+        document.body.insertBefore(newNode, document.body.lastElementChild);
 
-        compareNodesOrder(null, p1, newNode);
-        compareNodesOrder(p1, newNode, p3);
-        compareNodesOrder(newNode, p3, null);
+        compareSiblings(document);
     });
 })
 
-function compareNodesOrder(n1, n2, n3) {
+function compareSiblings(document: Document) {
+    let last = null;
+    document.body.childNodes.forEach((el) => {
+        compareNodes(last, el);
+        last = el;
+    });
+    compareNodes(last, null);
+}
+
+function compareNodes(n1: Node | null, n2: Node | null) {
     if (n1) {
-        assert.equal(n2.previousSibling.textContent, n1.textContent, 'n2.previousSibling == n1');
-        if (isElementNode(n1)) {
-            assert.equal(n2.previousElementSibling.textContent, n1.textContent, 'n2.previousElementSibling == n1');
-        } else {
-            assert.equal(n2.previousElementSibling, null, 'n2.previousElementSibling == null (!isElementNode(n1)');
+        assert.equal(n1.nextSibling, n2, 'n1.nextSibling == n2');
+        if (isElementNode(n2) || n2 === null) {
+            assert.equal(n1.nextElementSibling, n2, 'n1.nextElementSibling == n2');
+        } else if (n2) {
+            assert.equal(n1.nextElementSibling, n2.nextElementSibling, 'n1.nextElementSibling == n2.nextElementSibling');
         }
-    } else {
-        assert.equal(n2.previousSibling, n1, 'n2.previousElementSibling == null (n1)');
-        assert.equal(n2.previousElementSibling, n1, 'n2.previousElementSibling == null (n1)');
     }
 
-    if (n3) {
-        assert.equal(n2.nextSibling.textContent, n3.textContent, 'n2.nextSibling == n3');
-        if (isElementNode(n3)) {
-            assert.equal(n2.nextElementSibling.textContent, n3.textContent, 'n2.nextElementSibling == n3');
-        } else {
-            assert.equal(n2.nextElementSibling, null, 'n2.nextElementSibling == null (!isElementNode(n3)');
+    if (n2) {
+        assert.equal(n2.previousSibling, n1, 'n2.previousSibling, n1');
+        if (isElementNode(n1) || n1 === null) {
+            assert.equal(n2.previousElementSibling, n1, 'n2.previousElementSibling, n1');
+        } else if (n1) {
+            assert.equal(n2.previousElementSibling, n1.previousElementSibling, 'n2.previousElementSibling, n1.previousElementSibling');
         }
-    } else {
-        assert.equal(n2.nextSibling, n3, 'n2.nextSibling == n3 (null)');
-        assert.equal(n2.nextElementSibling, n3, 'n2.nextElementSibling == n3 (null)');
     }
 }
