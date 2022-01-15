@@ -32,7 +32,36 @@ describe('appendChild', () => {
 
 describe('insertBefore', () => {
 
-    it('newNode has no siblings', () => {
+    // because dom creation would use appendChild | inserBefore for it
+    it('element | node creation', () => {
+        let document;
+
+        document = parseDom(`<body><!--c1--></body>`);
+        compareSiblings(document);
+        document = parseDom(`<body><p>p1</p></body>`);
+        compareSiblings(document);
+
+        document = parseDom(`<body><!--c1--><p>p1</p></body>`);
+        compareSiblings(document);
+        document = parseDom(`<body><p>p1</p><!--c1--></body>`);
+        compareSiblings(document);
+
+        document = parseDom(`<body><!--c1--><!--c1--><p>p1</p><p>p1</p></body>`);
+        compareSiblings(document);
+        document = parseDom(`<body><!--c1--><p>p1</p><!--c1--><p>p1</p></body>`);
+        compareSiblings(document);
+        document = parseDom(`<body><!--c1--><p>p1</p><p>p1</p><!--c1--></body>`);
+        compareSiblings(document);
+
+        document = parseDom(`<body><p>p1</p><p>p1</p><!--c1--><!--c1--></body>`);
+        compareSiblings(document);
+        document = parseDom(`<body><p>p1</p><!--c1--><p>p1</p><!--c1--></body>`);
+        compareSiblings(document);
+        document = parseDom(`<body><p>p1</p><!--c1--><!--c1--><p>p1</p></body>`);
+        compareSiblings(document);
+    })
+
+    it('appendChild | newNode has no siblings', () => {
         const document = parseDom(`<body></body>`);
 
         const newNode = document.createElement('p');
@@ -46,7 +75,7 @@ describe('insertBefore', () => {
         compareSiblings(document);
     });
 
-    it('as appendChild | newNode will only have a prev sibling', () => {
+    it('appendChild | newNode will only have a prev sibling', () => {
         const document = parseDom(`<body><!--c1--></body>`);
 
         const newNode = document.createElement('p');
@@ -60,7 +89,7 @@ describe('insertBefore', () => {
         compareSiblings(document);
     });
 
-    it('as appendChild | newNode will only have a prev sibling element', () => {
+    it('appendChild | newNode will only have a prev sibling element', () => {
         const document = parseDom(`<body><p>p1</p></body>`);
 
         const newNode = document.createElement('p');
@@ -160,10 +189,6 @@ describe('insertBefore', () => {
             p5 = document.createElement('p');
             p5.textContent = "p5";
         })
-
-        it('elements are in order', () => {
-            compareSiblings(document);
-        });
 
         it('insert before p1', () => {
 
