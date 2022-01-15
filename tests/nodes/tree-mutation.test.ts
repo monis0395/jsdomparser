@@ -182,6 +182,20 @@ describe('insertBefore', () => {
         checkLinksAndOrder(document);
     });
 
+    it('newNode will have a previous & next sibling element', () => {
+        const document = parseDom(`<body><p>p1</p><p>p3</p></body>`);
+
+        const newNode = document.createElement('p');
+        newNode.textContent = "p2";
+        document.body.insertBefore(newNode, document.body.lastElementChild);
+
+        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
+        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
+        assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
+        assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
+        checkLinksAndOrder(document);
+    });
+
     describe('both previous & next sibling element|node various order', () => {
         let document;
         let p1, c2, c3, p4, p5, p6, c7;
@@ -276,20 +290,6 @@ describe('insertBefore', () => {
 
             checkLinksAndOrder(document);
         })
-    });
-
-    it('newNode will have a previous & next sibling element', () => {
-        const document = parseDom(`<body><p>p1</p><p>p3</p></body>`);
-
-        const newNode = document.createElement('p');
-        newNode.textContent = "p2";
-        document.body.insertBefore(newNode, document.body.lastElementChild);
-
-        assert.equal(newNode.previousSibling, document.body.firstChild, 'previousSibling');
-        assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
-        assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
-        assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
-        checkLinksAndOrder(document);
     });
 })
 
