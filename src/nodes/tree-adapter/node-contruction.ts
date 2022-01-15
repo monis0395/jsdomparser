@@ -12,7 +12,6 @@ import { GenericObjectType } from "../../types/types";
 
 export const createDocument = () => {
     return new Document({
-        type: 'root',
         nodeType: NodeType.DOCUMENT_NODE,
         nodeName: NodeName.DOCUMENT_NODE,
         parentNode: null,
@@ -26,7 +25,6 @@ export const createDocument = () => {
 
 export const createDocumentFragment = () => {
     return new Node({
-        type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
         nodeName: NodeName.DOCUMENT_FRAGMENT_NODE,
         childNodes: [],
@@ -50,7 +48,6 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
     }
 
     return new Element({
-        type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
         _localName: tagName,
         nodeName: tagName?.toUpperCase(), // todo: add test cases
@@ -90,7 +87,6 @@ export const setDocumentType = (document: Document, name: string, publicId: stri
 
 export const createDirectiveNode = (name: string, nodeValue: string, publicId?: string, systemId?: string) => {
     return new DocumentType({
-        type: 'directive',
         nodeType: NodeType.DOCUMENT_TYPE_NODE,
         nodeName: name,
         parentNode: null,
@@ -105,7 +101,6 @@ export const createDirectiveNode = (name: string, nodeValue: string, publicId?: 
 
 export const createCommentNode = (data: string) => {
     return new Node({
-        type: 'comment',
         nodeType: NodeType.COMMENT_NODE,
         nodeName: NodeName.COMMENT_NODE,
         nodeValue: data,
@@ -117,7 +112,6 @@ export const createCommentNode = (data: string) => {
 
 export const createTextNode = (data: string) => {
     return new Node({
-        type: 'text',
         nodeType: NodeType.TEXT_NODE,
         nodeName: NodeName.TEXT_NODE,
         nodeValue: data,

@@ -65,8 +65,6 @@ export interface Node {
 
     ownerDocument: Document | null;
 
-    type: string; // todo: to remove
-
     appendChild(newNode: Node);
     removeChild(node: Node): Node;
     replaceChild(newNode: Node, oldNode: Node): Node;
