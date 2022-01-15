@@ -47,15 +47,19 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
                     break;
                 }
             }
-            let previousSibling = next.previousSibling;
-            while (previousSibling) {
-                if (previousSibling.nextElementSibling === prevElement) {
-                    previousSibling.nextElementSibling = newNode;
-                    previousSibling = previousSibling.previousSibling;
-                } else {
-                    break;
-                }
+        }
+
+        let previousSibling = prev;
+        while (previousSibling) {
+            if (previousSibling.nextElementSibling === prevElement || !isElementNode(previousSibling)) {
+                previousSibling.nextElementSibling = newNode;
+                previousSibling = previousSibling.previousSibling;
+            } else {
+                break;
             }
+        }
+
+        if (next) {
             newNode.nextElementSibling = isElementNode(next) ? next : next.nextElementSibling;
         }
 

@@ -149,22 +149,82 @@ describe('insertBefore', () => {
         compareSiblings(document);
     });
 
-    it('newNode will have a both  previous & next sibling element|node', () => {
-        const document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p></body>`);
 
-        const c3 = document.body.childNodes[2];
-        const p5 = document.createElement('p');
-        p5.textContent = "p5";
-        document.body.insertBefore(p5, c3);
+    describe('both previous & next sibling element|node various order', () => {
+        let document;
+        let p1, c2, c3, p4, p5;
 
-        assert.equal(c3.previousSibling, p5, 'c3.previousSibling == p5');
-        assert.equal(p5.nextSibling, c3, 'p5.nextSibling == c3');
-        assert.equal(c3.previousElementSibling, p5, 'c3.previousElementSibling == p5');
-        assert.equal(p5.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
+        beforeEach(() => {
+            document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p></body>`);
+            [p1, c2, c3, p4] = document.body.childNodes;
+            p5 = document.createElement('p');
+            p5.textContent = "p5";
+        })
 
-        compareSiblings(document);
+        it('elements are in order', () => {
+            compareSiblings(document);
+        });
+
+        it('insert before p1', () => {
+
+            document.body.insertBefore(p5, p1);
+
+            assert.equal(p5.previousSibling, null, 'previousSibling');
+            assert.equal(p5.nextSibling, p1, 'nextSibling');
+            assert.equal(p5.previousElementSibling, null, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, p1, 'nextElementSibling');
+
+            compareSiblings(document);
+        })
+
+        it('insert before c2', () => {
+
+            document.body.insertBefore(p5, c2);
+
+            assert.equal(p5.previousSibling, p1, 'previousSibling');
+            assert.equal(p5.nextSibling, c2, 'nextSibling');
+            assert.equal(p5.previousElementSibling, p1, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, p4, 'nextElementSibling');
+
+            compareSiblings(document);
+        })
+
+        it('insert before c3', () => {
+
+            document.body.insertBefore(p5, c3);
+
+            assert.equal(p5.previousSibling, c2, 'previousSibling');
+            assert.equal(p5.nextSibling, c3, 'nextSibling');
+            assert.equal(p5.previousElementSibling, p1, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, p4, 'nextElementSibling');
+
+            compareSiblings(document);
+        })
+
+        it('insert before p4', () => {
+
+            document.body.insertBefore(p5, p4);
+
+            assert.equal(p5.previousSibling, c3, 'previousSibling');
+            assert.equal(p5.nextSibling, p4, 'nextSibling');
+            assert.equal(p5.previousElementSibling, p1, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, p4, 'nextElementSibling');
+
+            compareSiblings(document);
+        })
+
+        it('insert before null', () => {
+
+            document.body.insertBefore(p5, null);
+
+            assert.equal(p5.previousSibling, p4, 'previousSibling');
+            assert.equal(p5.nextSibling, null, 'nextSibling');
+            assert.equal(p5.previousElementSibling, p4, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, null, 'nextElementSibling');
+
+            compareSiblings(document);
+        })
     });
-
     it('newNode will have a previous & next sibling element', () => {
         const document = parseDom(`<body><p>p1</p><p>p3</p></body>`);
 
