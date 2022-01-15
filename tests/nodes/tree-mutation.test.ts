@@ -4,6 +4,7 @@ import { parseDom } from '../../src';
 import { isElementNode } from "../../src/nodes/tree-adapter/node-types";
 import { Node } from '../../src/nodes/node';
 import { Document } from '../../src/nodes/document';
+import { Element } from '../../src/nodes/element';
 
 describe('appendChild', () => {
 
@@ -15,7 +16,7 @@ describe('appendChild', () => {
         document.body.appendChild(newNode);
 
         assert.equal(newNode.textContent, document.body.lastElementChild.textContent);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('newNode has no siblings', () => {
@@ -26,7 +27,7 @@ describe('appendChild', () => {
         document.body.appendChild(newNode);
 
         assert.equal(newNode.textContent, document.body.firstElementChild.textContent);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 });
 
@@ -37,28 +38,28 @@ describe('insertBefore', () => {
         let document;
 
         document = parseDom(`<body><!--c1--></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
         document = parseDom(`<body><p>p1</p></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
 
         document = parseDom(`<body><!--c1--><p>p1</p></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
         document = parseDom(`<body><p>p1</p><!--c1--></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
 
         document = parseDom(`<body><!--c1--><!--c1--><p>p1</p><p>p1</p></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
         document = parseDom(`<body><!--c1--><p>p1</p><!--c1--><p>p1</p></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
         document = parseDom(`<body><!--c1--><p>p1</p><p>p1</p><!--c1--></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
 
         document = parseDom(`<body><p>p1</p><p>p1</p><!--c1--><!--c1--></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
         document = parseDom(`<body><p>p1</p><!--c1--><p>p1</p><!--c1--></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
         document = parseDom(`<body><p>p1</p><!--c1--><!--c1--><p>p1</p></body>`);
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     })
 
     it('appendChild | newNode has no siblings', () => {
@@ -72,7 +73,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, null, 'nextSibling');
         assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('appendChild | newNode will only have a prev sibling', () => {
@@ -86,7 +87,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, null, 'nextSibling');
         assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('appendChild | newNode will only have a prev sibling element', () => {
@@ -100,7 +101,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, null, 'nextSibling');
         assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('newNode will only have a next sibling', () => {
@@ -115,7 +116,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
         assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('newNode will only have a next sibling element', () => {
@@ -130,7 +131,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
         assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('newNode will have a previous & next sibling', () => {
@@ -145,7 +146,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
         assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('newNode will have a previous sibling element & next sibling', () => {
@@ -160,7 +161,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
         assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, null, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
     it('newNode will have a previous sibling & next sibling element', () => {
@@ -175,7 +176,7 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
         assert.equal(newNode.previousElementSibling, null, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 
 
@@ -199,7 +200,7 @@ describe('insertBefore', () => {
             assert.equal(p5.previousElementSibling, null, 'previousElementSibling');
             assert.equal(p5.nextElementSibling, p1, 'nextElementSibling');
 
-            compareSiblings(document);
+            checkLinksAndOrder(document);
         })
 
         it('insert before c2', () => {
@@ -211,7 +212,7 @@ describe('insertBefore', () => {
             assert.equal(p5.previousElementSibling, p1, 'previousElementSibling');
             assert.equal(p5.nextElementSibling, p4, 'nextElementSibling');
 
-            compareSiblings(document);
+            checkLinksAndOrder(document);
         })
 
         it('insert before c3', () => {
@@ -223,7 +224,7 @@ describe('insertBefore', () => {
             assert.equal(p5.previousElementSibling, p1, 'previousElementSibling');
             assert.equal(p5.nextElementSibling, p4, 'nextElementSibling');
 
-            compareSiblings(document);
+            checkLinksAndOrder(document);
         })
 
         it('insert before p4', () => {
@@ -235,7 +236,7 @@ describe('insertBefore', () => {
             assert.equal(p5.previousElementSibling, p1, 'previousElementSibling');
             assert.equal(p5.nextElementSibling, p4, 'nextElementSibling');
 
-            compareSiblings(document);
+            checkLinksAndOrder(document);
         })
 
         it('insert before null', () => {
@@ -247,7 +248,7 @@ describe('insertBefore', () => {
             assert.equal(p5.previousElementSibling, p4, 'previousElementSibling');
             assert.equal(p5.nextElementSibling, null, 'nextElementSibling');
 
-            compareSiblings(document);
+            checkLinksAndOrder(document);
         })
     });
     it('newNode will have a previous & next sibling element', () => {
@@ -261,28 +262,32 @@ describe('insertBefore', () => {
         assert.equal(newNode.nextSibling, document.body.lastChild, 'nextSibling');
         assert.equal(newNode.previousElementSibling, document.body.firstElementChild, 'previousElementSibling');
         assert.equal(newNode.nextElementSibling, document.body.lastElementChild, 'nextElementSibling');
-        compareSiblings(document);
+        checkLinksAndOrder(document);
     });
 })
 
-function compareSiblings(document: Document) {
+function checkLinksAndOrder(document: Document) {
     let last = null;
     document.body.childNodes.forEach((el) => {
-        compareNodes(last, el);
+        checkNodesLinks(last, el);
         last = el;
     });
-    compareNodes(last, null);
-    compareElementsOrder(document);
+    checkNodesLinks(last, null);
+    compareElementSiblings(document);
 }
 
-function compareElementsOrder(document: Document) {
+function compareElementSiblings(document: Document) {
+    let last = null;
     const elements = document.body.childNodes.filter(isElementNode);
     document.body.children.forEach((el, index) => {
-        assert.equal(el, elements[index], `element order should be same as childNodes| index: ${index}`)
+        assert.equal(el, elements[index], `element order should be same as childNodes| index: ${index}`) // order
+        checkElementLinks(last, el); // relation
+        last = el;
     });
+    checkElementLinks(last, null);
 }
 
-function compareNodes(n1: Node | null, n2: Node | null) {
+function checkNodesLinks(n1: Node | null, n2: Node | null) {
     if (n1) {
         assert.equal(n1.nextSibling, n2, 'n1.nextSibling == n2');
         if (isElementNode(n2) || n2 === null) {
@@ -299,5 +304,15 @@ function compareNodes(n1: Node | null, n2: Node | null) {
         } else if (n1) {
             assert.equal(n2.previousElementSibling, n1.previousElementSibling, 'n2.previousElementSibling, n1.previousElementSibling');
         }
+    }
+}
+
+function checkElementLinks(n1: Element | null, n2: Element | null) {
+    if (n1) {
+        assert.equal(n1.nextElementSibling, n2, 'n1.nextElementSibling == n2');
+    }
+
+    if (n2) {
+        assert.equal(n2.previousElementSibling, n1, 'n2.previousElementSibling, n1');
     }
 }
