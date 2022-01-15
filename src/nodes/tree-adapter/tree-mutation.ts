@@ -117,65 +117,8 @@ export function replaceChild(parentNode: Node, oldNode: Node, newNode: Node): No
     if (childIndex === -1) {
         throw new Error('replaceChild: node not found');
     }
-    detachNode(newNode);
-    parentNode.childNodes[childIndex] = newNode;
-
-    const previousSibling = oldNode.previousSibling || null;
-    const nextSibling = oldNode.nextSibling || null;
-
-    newNode.previousSibling = previousSibling;
-    newNode.nextSibling = nextSibling;
-
-    if (previousSibling) {
-        previousSibling.nextSibling = newNode;
-    }
-    if (nextSibling) {
-        nextSibling.previousSibling = newNode;
-    }
-
-    const previousElementSibling = oldNode.previousElementSibling || null;
-    const nextElementSibling = oldNode.nextElementSibling || null;
-
-    newNode.previousElementSibling = previousElementSibling;
-    newNode.nextElementSibling = nextElementSibling;
-    if (isElementNode(newNode)) {
-        if (previousSibling) {
-            previousSibling.nextElementSibling = newNode;
-        }
-        if (nextSibling) {
-            nextSibling.previousElementSibling = newNode;
-        }
-        if (previousElementSibling) {
-            previousElementSibling.nextElementSibling = newNode;
-        }
-        if (nextElementSibling) {
-            nextElementSibling.previousElementSibling = newNode;
-        }
-        if (isElementNode(oldNode)) {
-            parentNode.children[parentNode.children.indexOf(oldNode)] = newNode;
-        } else {
-            const insertionIdx = parentNode.children.indexOf(newNode.nextElementSibling);
-            if (insertionIdx !== -1) {
-                parentNode.children.splice(insertionIdx, 0, newNode);
-            } else {
-                parentNode.children.push(newNode);
-            }
-        }
-    }
-    if (!isElementNode(newNode) && isElementNode(oldNode)) {
-        if (previousElementSibling) {
-            previousElementSibling.nextElementSibling = nextElementSibling;
-        }
-        if (nextElementSibling) {
-            nextElementSibling.previousElementSibling = previousElementSibling;
-        }
-        oldNode.parentNode.children.splice(oldNode.parentNode.children.indexOf(oldNode), 1);
-    }
-
-    newNode.parentNode = oldNode.parentNode;
-    newNode.setOwnerDocument(parentNode.ownerDocument);
-    resetNode(oldNode);
-    return oldNode;
+    insertBefore(parentNode, newNode, oldNode);
+    return detachNode(oldNode);
 }
 
 export function insertText(parentNode: Node, text: string) {

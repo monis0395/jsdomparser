@@ -33,7 +33,7 @@ describe('appendChild', () => {
 
 describe('insertBefore', () => {
 
-    // because dom creation would use appendChild | inserBefore for it
+    // because dom creation would use appendChild | insertBefore for it
     it('element | node creation', () => {
         let document;
 
@@ -182,7 +182,6 @@ describe('insertBefore', () => {
         checkLinksAndOrder(document);
     });
 
-
     describe('both previous & next sibling element|node various order', () => {
         let document;
         let p1, c2, c3, p4, p5, p6, c7;
@@ -278,6 +277,7 @@ describe('insertBefore', () => {
             checkLinksAndOrder(document);
         })
     });
+
     it('newNode will have a previous & next sibling element', () => {
         const document = parseDom(`<body><p>p1</p><p>p3</p></body>`);
 
@@ -292,7 +292,6 @@ describe('insertBefore', () => {
         checkLinksAndOrder(document);
     });
 })
-
 
 describe('removeChild', () => {
     let document;
@@ -330,6 +329,49 @@ describe('removeChild', () => {
 
     it('remove c6', () => {
         c3.parentNode.removeChild(c6);
+        checkLinksAndOrder(document);
+    })
+});
+
+describe('replaceChild', () => {
+    let document;
+    let p1, c2, c3, p4, p5, c6;
+    let r1
+
+    beforeEach(() => {
+        document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p><p>p5</p><!--c6--></body>`);
+        [p1, c2, c3, p4, p5, c6] = document.body.childNodes;
+        r1 = document.createElement('p');
+        r1.textContent = "r1";
+    })
+
+    it('replace p1', () => {
+        p1.parentNode.replaceChild(r1, p1);
+        checkLinksAndOrder(document);
+    })
+
+    it('replace c2', () => {
+        c2.parentNode.replaceChild(r1, c2);
+        checkLinksAndOrder(document);
+    })
+
+    it('replace c3', () => {
+        c3.parentNode.replaceChild(r1, c3);
+        checkLinksAndOrder(document);
+    })
+
+    it('replace p4', () => {
+        p4.parentNode.replaceChild(r1, p4);
+        checkLinksAndOrder(document);
+    })
+
+    it('replace p5', () => {
+        p5.parentNode.replaceChild(r1, p5);
+        checkLinksAndOrder(document);
+    })
+
+    it('replace c6', () => {
+        c3.parentNode.replaceChild(r1, c6);
         checkLinksAndOrder(document);
     })
 });
