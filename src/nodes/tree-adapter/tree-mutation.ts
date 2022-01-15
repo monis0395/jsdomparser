@@ -34,34 +34,25 @@ function updateNextElementSiblingFor(prevSibling: Node, oldRef: Element, newRef:
 
 export function insertBefore(parentNode: Node, newNode: Node, next: Node | null) {
     detachNode(newNode);
-    const prev = next ? next.previousSibling : parentNode.lastChild;
+    const prevSibling = next ? next.previousSibling : parentNode.lastChild;
     const prevElement = next ? next.previousElementSibling : parentNode.lastElementChild;
 
-    if (prev) {
-        prev.nextSibling = newNode;
+    // updating previous sibling
+    if (prevSibling) {
+        prevSibling.nextSibling = newNode;
     }
-    newNode.previousSibling = prev;
-    // even if newNode is not a elementNode
-    // we will still have to updateElementSibling
+
+    // updating new node
+    newNode.previousSibling = prevSibling;
+    newNode.nextSibling = next;
     newNode.previousElementSibling = prevElement;
+    newNode.nextElementSibling = isElementNode(next) ? next : next && next.nextElementSibling;
 
     if (isElementNode(newNode)) {
-        if (prev) {
-            prev.nextElementSibling = newNode;
-        }
-        if (prevElement) {
-            prevElement.nextElementSibling = newNode;
-        }
         if (next) {
-            next.previousElementSibling = newNode;
             updatePreviousElementFor(next.nextSibling, prevElement, newNode);
         }
-
-        updateNextElementSiblingFor(prev, prevElement, newNode);
-
-        if (next) {
-            newNode.nextElementSibling = isElementNode(next) ? next : next.nextElementSibling;
-        }
+        updateNextElementSiblingFor(prevSibling, prevElement, newNode);
 
         const nextElementIdx = parentNode.children.indexOf(newNode.nextElementSibling);
         const insertionElementIdx = nextElementIdx !== -1 ? nextElementIdx : parentNode.children.length
@@ -69,14 +60,18 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
         parentNode.children.splice(insertionElementIdx, 0, newNode); // attaching newNode in children before next
     }
 
-    newNode.nextSibling = next;
+    // updating next's previous references
     if (next) {
         next.previousSibling = newNode;
+    }
+    if (next && isElementNode(newNode)) {
+        next.previousElementSibling = newNode;
     }
 
     const nextIdx = parentNode.childNodes.indexOf(newNode.nextSibling);
     const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length
-    parentNode.childNodes.splice(insertionIdx, 0, newNode);
+
+    parentNode.childNodes.splice(insertionIdx, 0, newNode); // attaching newNode in children before next
 
     newNode.parentNode = parentNode;
     // todo: attach to parent element
