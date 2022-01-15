@@ -55,8 +55,8 @@ export interface Node {
     previousElementSibling?: Element | null;
     previousSibling: Node | null;
 
-    parentNode: Node | null;
-    parentElement?: Element | null; // todo: to add
+    readonly parentNode: Node | null;
+    readonly parentElement: Element | null;
 
     nodeName: string;
     nodeType: NodeType;

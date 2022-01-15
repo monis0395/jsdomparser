@@ -11,7 +11,7 @@ export class Node implements NodeProps {
     nodeType: NodeType;
     children: Element[] = [];
     childNodes: Node[];
-    parentNode: Node;
+    _parentNode: Node;
     _parentElement: Element;
     previousSibling: Node = null;
     nextSibling: Node = null;
@@ -29,7 +29,7 @@ export class Node implements NodeProps {
         }
         this.childNodes = this.childNodes || [];
         this.children = this.childNodes.filter(isElementNode);
-        this.parentNode = this.parentNode || null;
+        this._parentNode = this._parentNode || null;
         this._parentElement = this._parentElement || null;
     }
 
@@ -39,6 +39,10 @@ export class Node implements NodeProps {
 
     get firstElementChild() {
         return this.children[0] || null;
+    }
+
+    get parentNode() {
+        return this._parentNode;
     }
 
     get parentElement() {
