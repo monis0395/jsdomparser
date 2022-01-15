@@ -293,6 +293,47 @@ describe('insertBefore', () => {
     });
 })
 
+
+describe('removeChild', () => {
+    let document;
+    let p1, c2, c3, p4, p5, c6;
+
+    beforeEach(() => {
+        document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p><p>p5</p><!--c6--></body>`);
+        [p1, c2, c3, p4, p5, c6] = document.body.childNodes;
+    })
+
+    it('remove p1', () => {
+        p1.parentNode.removeChild(p1);
+        checkLinksAndOrder(document);
+    })
+
+    it('remove c2', () => {
+        c2.parentNode.removeChild(c2);
+        checkLinksAndOrder(document);
+    })
+
+    it('remove c3', () => {
+        c3.parentNode.removeChild(c3);
+        checkLinksAndOrder(document);
+    })
+
+    it('remove p4', () => {
+        p4.parentNode.removeChild(p4);
+        checkLinksAndOrder(document);
+    })
+
+    it('remove p5', () => {
+        p5.parentNode.removeChild(p5);
+        checkLinksAndOrder(document);
+    })
+
+    it('remove c6', () => {
+        c3.parentNode.removeChild(c6);
+        checkLinksAndOrder(document);
+    })
+});
+
 function checkLinksAndOrder(document: Document) {
     let last = null;
     document.body.childNodes.forEach((el) => {

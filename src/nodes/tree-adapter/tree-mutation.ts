@@ -16,6 +16,22 @@ export function appendChild(parentNode: Node, newNode: Node) {
     insertBefore(parentNode, newNode, null);
 }
 
+function updatePreviousElementFor(nextSibling: Node, oldRef: Element, newRef: Element) {
+    while (nextSibling && nextSibling.previousElementSibling === oldRef) {
+        nextSibling.previousElementSibling = newRef;
+        nextSibling = nextSibling.nextSibling;
+    }
+}
+
+function updateNextElementSiblingFor(prevSibling: Node, oldRef: Element, newRef: Element) {
+    let firstElementOccurrenceFound = false;
+    while (prevSibling && !firstElementOccurrenceFound) {
+        prevSibling.nextElementSibling = newRef;
+        firstElementOccurrenceFound = isElementNode(prevSibling);
+        prevSibling = prevSibling.previousSibling;
+    }
+}
+
 export function insertBefore(parentNode: Node, newNode: Node, next: Node | null) {
     detachNode(newNode);
     const prev = next ? next.previousSibling : parentNode.lastChild;
@@ -38,26 +54,10 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
         }
         if (next) {
             next.previousElementSibling = newNode;
-            let nextSibling = next.nextSibling;
-            while (nextSibling) {
-                if (nextSibling.previousElementSibling === prevElement) {
-                    nextSibling.previousElementSibling = newNode;
-                    nextSibling = nextSibling.nextSibling;
-                } else {
-                    break;
-                }
-            }
+            updatePreviousElementFor(next.nextSibling, prevElement, newNode);
         }
 
-        let previousSibling = prev;
-        while (previousSibling) {
-            if (previousSibling.nextElementSibling === prevElement || !isElementNode(previousSibling)) {
-                previousSibling.nextElementSibling = newNode;
-                previousSibling = previousSibling.previousSibling;
-            } else {
-                break;
-            }
-        }
+        updateNextElementSiblingFor(prev, prevElement, newNode);
 
         if (next) {
             newNode.nextElementSibling = isElementNode(next) ? next : next.nextElementSibling;
@@ -86,9 +86,13 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
 
 export function detachNode(node: Node): Node | null {
     if (!node.parentNode) {
+        // this can mean that node is not yet attached and is in detach state
         return null;
     }
     const idx = node.parentNode.childNodes.indexOf(node);
+    if (idx === -1) {
+        throw new Error('removeChild: node not found');
+    }
     const prev = node.previousSibling;
     const next = node.nextSibling;
     const prevElement = node.previousElementSibling || null;
@@ -103,12 +107,8 @@ export function detachNode(node: Node): Node | null {
     }
 
     if (isElementNode(node)) {
-        if (prevElement) {
-            prevElement.nextElementSibling = nextElement;
-        }
-        if (nextElement) {
-            nextElement.previousElementSibling = prevElement;
-        }
+        updatePreviousElementFor(next, node, prevElement)
+        updateNextElementSiblingFor(prev, node, nextElement)
         node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
     }
 
