@@ -4,7 +4,6 @@ export interface NodeProps {
     type: string;
     nodeType: NodeType;
     nodeName?: string | NodeName;
-    localName?: string;
     childNodes?: NodeProps[];
     children?: NodeProps[];
     parentNode: NodeProps | null;
@@ -18,6 +17,7 @@ export interface NodeProps {
 export interface ElementProps extends NodeProps {
     namespaceURI: string;
     attribs: GenericObjectType<string>
+    _localName: string;
 }
 
 export interface DocumentProps extends NodeProps {

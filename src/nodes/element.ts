@@ -11,9 +11,14 @@ export class Element extends Node implements ElementProps {
     style: Style;
     attribs: GenericObjectType<string>;
 
+    readonly _localName: string;
+    private readonly _tagName: string;
+
     constructor(props: ElementProps) {
         super(props);
         this.style = new Style(this);
+        this._localName = (this._localName || "").toLowerCase();
+        this._tagName = this._localName.toUpperCase();
     }
 
     get attributes() {
@@ -59,6 +64,14 @@ export class Element extends Node implements ElementProps {
 
     get childElementCount() {
         return this.children.length;
+    }
+
+    get localName() {
+        return this._localName;
+    }
+
+    get tagName() {
+        return this._tagName;
     }
 
     get innerHTML() {

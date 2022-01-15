@@ -15,7 +15,6 @@ export const createDocument = () => {
         type: 'root',
         nodeType: NodeType.DOCUMENT_NODE,
         nodeName: NodeName.DOCUMENT_NODE,
-        localName: '',
         parentNode: null,
         previousSibling: null,
         nextSibling: null,
@@ -30,7 +29,6 @@ export const createDocumentFragment = () => {
         type: 'root',
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
         nodeName: NodeName.DOCUMENT_FRAGMENT_NODE,
-        localName: '',
         childNodes: [],
         children: [],
         parentNode: null,
@@ -54,7 +52,7 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
     return new Element({
         type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: NodeType.ELEMENT_NODE,
-        localName: tagName,
+        _localName: tagName,
         nodeName: tagName?.toUpperCase(), // todo: add test cases
         namespaceURI,
         attribs,
@@ -95,7 +93,6 @@ export const createDirectiveNode = (name: string, nodeValue: string, publicId?: 
         type: 'directive',
         nodeType: NodeType.DOCUMENT_TYPE_NODE,
         nodeName: name,
-        localName: '!doctype',
         parentNode: null,
         previousSibling: null,
         nextSibling: null,

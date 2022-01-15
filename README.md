@@ -65,8 +65,6 @@ export interface Node {
 
     ownerDocument: Document | null;
 
-    localName: string; // todo: move to element
-    tagName: string; // todo: move to element
     type: string; // todo: to remove
 
     appendChild(newNode: Node);
@@ -84,8 +82,8 @@ export interface Element extends Node {
     id: string;
     innerHTML: string;
 
-    localName: string; // todo: move to element
-    tagName: string; // todo: move to element
+    localName: string;
+    tagName: string;
 
     style: CSSStyleDeclaration;
 

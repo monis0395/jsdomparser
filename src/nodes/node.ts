@@ -9,7 +9,6 @@ import { unescape } from 'html-escaper';
 export class Node implements NodeProps {
     type: string;
     nodeType: NodeType;
-    localName: string = '';
     children: Element[] = [];
     childNodes: Node[];
     parentNode: Node = null;
@@ -20,7 +19,6 @@ export class Node implements NodeProps {
     sourceCodeLocation?: string;
     nodeValue: string;
     nodeName: string;
-    private _tagName: string;
     private _ownerDocument: Document;
 
     constructor(props: NodeProps) {
@@ -28,7 +26,6 @@ export class Node implements NodeProps {
             // @ts-ignore
             this[key] = props[key];
         }
-        this.localName = (this.localName || "").toLowerCase();
         this.childNodes = this.childNodes || [];
         this.children = this.childNodes.filter(isElementNode);
     }
@@ -49,14 +46,6 @@ export class Node implements NodeProps {
     get lastElementChild() {
         const children = this.children;
         return children[children.length - 1] || null;
-    }
-
-    get tagName() {
-        if (this._tagName) {
-            return this._tagName;
-        }
-        this._tagName = this.localName.toUpperCase();
-        return this._tagName;
     }
 
     get textContent() {
