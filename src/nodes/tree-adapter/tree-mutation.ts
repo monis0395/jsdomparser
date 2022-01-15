@@ -83,8 +83,7 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
     parentNode.childNodes.splice(insertionIdx, 0, newNode); // attaching newNode in children before next
 
     newNode.parentNode = parentNode;
-    // todo: attach to parent element
-    // newNode.parentElement = isElementNode(parentNode) || null;
+    newNode._parentElement = isElementNode(parentNode) ? parentNode : null;
     newNode.setOwnerDocument(parentNode.ownerDocument);
 }
 
@@ -94,6 +93,7 @@ function resetNode(node: Node) {
     node.previousElementSibling = null;
     node.nextElementSibling = null;
     node.parentNode = null;
+    node._parentElement = null;
 }
 
 function updatePreviousElementFor(nextSibling: Node, oldRef: Element, newRef: Element) {

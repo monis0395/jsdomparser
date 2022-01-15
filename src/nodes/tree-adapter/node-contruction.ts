@@ -14,7 +14,6 @@ export const createDocument = () => {
     return new Document({
         nodeType: NodeType.DOCUMENT_NODE,
         nodeName: NodeName.DOCUMENT_NODE,
-        parentNode: null,
         previousSibling: null,
         nextSibling: null,
         childNodes: [],
@@ -29,7 +28,6 @@ export const createDocumentFragment = () => {
         nodeName: NodeName.DOCUMENT_FRAGMENT_NODE,
         childNodes: [],
         children: [],
-        parentNode: null,
         previousSibling: null,
         nextSibling: null,
     });
@@ -55,7 +53,6 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
         attribs,
         childNodes: [],
         children: [],
-        parentNode: null,
         previousSibling: null,
         nextSibling: null,
     });
@@ -89,7 +86,6 @@ export const createDirectiveNode = (name: string, nodeValue: string, publicId?: 
     return new DocumentType({
         nodeType: NodeType.DOCUMENT_TYPE_NODE,
         nodeName: name,
-        parentNode: null,
         previousSibling: null,
         nextSibling: null,
         nodeValue,
@@ -104,7 +100,6 @@ export const createCommentNode = (data: string) => {
         nodeType: NodeType.COMMENT_NODE,
         nodeName: NodeName.COMMENT_NODE,
         nodeValue: data,
-        parentNode: null,
         previousSibling: null,
         nextSibling: null,
     });
@@ -115,7 +110,6 @@ export const createTextNode = (data: string) => {
         nodeType: NodeType.TEXT_NODE,
         nodeName: NodeName.TEXT_NODE,
         nodeValue: data,
-        parentNode: null,
         previousSibling: null,
         nextSibling: null,
     });

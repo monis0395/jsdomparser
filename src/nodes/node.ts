@@ -11,7 +11,8 @@ export class Node implements NodeProps {
     nodeType: NodeType;
     children: Element[] = [];
     childNodes: Node[];
-    parentNode: Node = null;
+    parentNode: Node;
+    _parentElement: Element;
     previousSibling: Node = null;
     nextSibling: Node = null;
     previousElementSibling?: Element = null;
@@ -28,6 +29,8 @@ export class Node implements NodeProps {
         }
         this.childNodes = this.childNodes || [];
         this.children = this.childNodes.filter(isElementNode);
+        this.parentNode = this.parentNode || null;
+        this._parentElement = this._parentElement || null;
     }
 
     get firstChild() {
@@ -36,6 +39,10 @@ export class Node implements NodeProps {
 
     get firstElementChild() {
         return this.children[0] || null;
+    }
+
+    get parentElement() {
+        return this._parentElement;
     }
 
     get lastChild() {
@@ -75,13 +82,11 @@ export class Node implements NodeProps {
         }
 
         // clear parentNodes for existing children
-        for (let i = this.childNodes.length; --i >= 0;) {
-            this.childNodes[i].parentNode = null;
+        for (let i = this.childNodes.length - 1; i >= 0; i--) {
+            this.removeChild(this.childNodes[i])
         }
         const node = this.ownerDocument.createTextNode(data);
-        this.childNodes = [node];
-        this.children = [];
-        node.parentNode = this;
+        this.appendChild(node)
     }
 
     get ownerDocument(): Document {

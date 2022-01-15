@@ -5,7 +5,6 @@ export interface NodeProps {
     nodeName?: string | NodeName;
     childNodes?: NodeProps[];
     children?: NodeProps[];
-    parentNode: NodeProps | null;
     previousSibling: NodeProps | null;
     nextSibling: NodeProps | null;
     previousElementSibling?: NodeProps | null;
