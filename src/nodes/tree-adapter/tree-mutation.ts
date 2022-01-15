@@ -18,8 +18,6 @@ export function appendChild(parentNode: Node, newNode: Node) {
 
 export function insertBefore(parentNode: Node, newNode: Node, next: Node | null) {
     detachNode(newNode);
-    const nextIdx = parentNode.childNodes.indexOf(next);
-    const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length
     const prev = next ? next.previousSibling : parentNode.lastChild;
     const prevElement = next ? next.previousElementSibling : parentNode.lastElementChild;
 
@@ -58,10 +56,10 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
                     break;
                 }
             }
+            newNode.nextElementSibling = isElementNode(next) ? next : next.nextElementSibling;
         }
 
-        // @ts-ignore
-        const nextElementIdx = parentNode.children.indexOf(next);
+        const nextElementIdx = parentNode.children.indexOf(newNode.nextElementSibling);
         const insertionElementIdx = nextElementIdx !== -1 ? nextElementIdx : parentNode.children.length
 
         parentNode.children.splice(insertionElementIdx, 0, newNode); // attaching newNode in children before next
@@ -70,11 +68,12 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
     newNode.nextSibling = next;
     if (next) {
         next.previousSibling = newNode;
-        newNode.nextElementSibling = isElementNode(next) ? next : next.nextElementSibling;
     }
 
-    // attaching newNode in childNodes before next
+    const nextIdx = parentNode.childNodes.indexOf(newNode.nextSibling);
+    const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
+
     newNode.parentNode = parentNode;
     // todo: attach to parent element
     // newNode.parentElement = isElementNode(parentNode) || null;
