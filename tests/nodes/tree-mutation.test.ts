@@ -60,6 +60,9 @@ describe('insertBefore', () => {
         checkLinksAndOrder(document);
         document = parseDom(`<body><p>p1</p><!--c1--><!--c1--><p>p1</p></body>`);
         checkLinksAndOrder(document);
+
+        document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p><p>p5</p><!--c6--></body>`);
+        checkLinksAndOrder(document);
     })
 
     it('appendChild | newNode has no siblings', () => {
@@ -182,11 +185,11 @@ describe('insertBefore', () => {
 
     describe('both previous & next sibling element|node various order', () => {
         let document;
-        let p1, c2, c3, p4, p5;
+        let p1, c2, c3, p4, p5, p6, c7;
 
         beforeEach(() => {
-            document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p></body>`);
-            [p1, c2, c3, p4] = document.body.childNodes;
+            document = parseDom(`<body><p>p1</p><!--c2--><!--c3--><p>p4</p><p>p6</p><!--c7--></body>`);
+            [p1, c2, c3, p4, p6, c7] = document.body.childNodes;
             p5 = document.createElement('p');
             p5.textContent = "p5";
         })
@@ -239,13 +242,37 @@ describe('insertBefore', () => {
             checkLinksAndOrder(document);
         })
 
+        it('insert before p6', () => {
+
+            document.body.insertBefore(p5, p6);
+
+            assert.equal(p5.previousSibling, p4, 'previousSibling');
+            assert.equal(p5.nextSibling, p6, 'nextSibling');
+            assert.equal(p5.previousElementSibling, p4, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, p6, 'nextElementSibling');
+
+            checkLinksAndOrder(document);
+        })
+
+        it('insert before c7', () => {
+
+            document.body.insertBefore(p5, c7);
+
+            assert.equal(p5.previousSibling, p6, 'previousSibling');
+            assert.equal(p5.nextSibling, c7, 'nextSibling');
+            assert.equal(p5.previousElementSibling, p6, 'previousElementSibling');
+            assert.equal(p5.nextElementSibling, null, 'nextElementSibling');
+
+            checkLinksAndOrder(document);
+        })
+
         it('insert before null', () => {
 
             document.body.insertBefore(p5, null);
 
-            assert.equal(p5.previousSibling, p4, 'previousSibling');
+            assert.equal(p5.previousSibling, c7, 'previousSibling');
             assert.equal(p5.nextSibling, null, 'nextSibling');
-            assert.equal(p5.previousElementSibling, p4, 'previousElementSibling');
+            assert.equal(p5.previousElementSibling, p6, 'previousElementSibling');
             assert.equal(p5.nextElementSibling, null, 'nextElementSibling');
 
             checkLinksAndOrder(document);
