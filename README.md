@@ -43,26 +43,32 @@ export enum Parsers {
 // todo: to make properties read only
 export interface Node {
     baseURI?: string; // todo: to add
-    childNodes: Node[];
-    children: Element[]; // todo: move to element & document
-    firstChild: Node | null;
-    firstElementChild: Element | null; // todo: move to element
-    lastChild: Node | null;
-    lastElementChild: Element | null; // todo: move to element
-    localName: string; // todo: move to element
-    nextElementSibling?: Element | null; // todo: move to element
+    
+    childNodes: Node[]; // todo: make read only
+    children: Element[]; // todo: make read only
+    readonly firstChild: Node | null;
+    readonly firstElementChild: Element | null;
+    readonly lastChild: Node | null;
+    readonly lastElementChild: Element | null;
+    nextElementSibling?: Element | null;
     nextSibling: Node | null;
+    previousElementSibling?: Element | null;
+    previousSibling: Node | null;
+
+    parentNode: Node | null;
+    parentElement?: Element | null; // todo: to add
+
     nodeName: string;
     nodeType: NodeType;
     nodeValue: string;
-    ownerDocument: Document | null;
-    parentNode: Node | null;
-    parentElement?: Element | null; // todo: to add
-    previousElementSibling?: Element | null; // todo: move to element
-    previousSibling: Node | null;
-    tagName: string; // todo: move to element
     textContent: string;
+
+    ownerDocument: Document | null;
+
+    localName: string; // todo: move to element
+    tagName: string; // todo: move to element
     type: string; // todo: to remove
+
     appendChild(newNode: Node);
     removeChild(node: Node): Node;
     replaceChild(newNode: Node, oldNode: Node): Node;
@@ -71,16 +77,16 @@ export interface Node {
 export interface Element extends Node {
     readonly attributes: Attribute[];
     readonly childElementCount: number;
-    children: Element[];
+
     classList?: DOMTokenList; // todo: to add
     className: string;
-    firstElementChild: Element | null;
+
     id: string;
     innerHTML: string;
-    lastElementChild: Element | null; // todo: move to element
+
     localName: string; // todo: move to element
-    nextElementSibling?: Element | null; // todo: move to element
     tagName: string; // todo: move to element
+
     style: CSSStyleDeclaration;
 
     href: string;
@@ -98,12 +104,9 @@ export interface Element extends Node {
 export interface Document extends Node  {
     baseURI: string; // todo: move to Node
     body: Element;
-    children: Element[];
     readonly documentElement: string;
     readonly documentURI: string;
-    readonly firstElementChild: Element | null;
     readonly head: Element;
-    readonly lastElementChild: Element | null;
     title: string;
     
     createElement(lowerName: string): Element;
