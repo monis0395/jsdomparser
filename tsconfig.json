@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "lib": ["WebWorker"],
     "target": "es6",
     "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "declaration": true /* Generates corresponding '.d.ts' file. */,
 
