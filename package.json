@@ -22,7 +22,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "ts:cjs": "tsc -m commonjs",
-    "ts:umd": "tsc -t es6 -m amd -d false --outFile ./dist/index.amd.js",
+    "ts:umd": "tsc -m amd -d false --outFile ./dist/index.amd.js",
     "test": "mocha -r ts-node/register **/*.test.ts ",
     "prebuild": "npm run test",
     "build": "run-s clean ts:cjs ts:umd"
