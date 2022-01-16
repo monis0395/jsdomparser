@@ -53,45 +53,45 @@ export class Node implements NodeProps {
         return _baseURI;
     }
 
-    get firstChild() {
+    get firstChild(): Node | null {
         return this.childNodes[0] || null;
     }
 
-    get firstElementChild() {
+    get firstElementChild(): Element | null {
         return this.children[0] || null;
     }
 
-    get lastChild() {
+    get lastChild(): Node | null {
         const children = this.childNodes;
         return children[children.length - 1] || null;
     }
 
-    get lastElementChild() {
+    get lastElementChild(): Element | null {
         const children = this.children;
         return children[children.length - 1] || null;
     }
 
-    get nextElementSibling() {
+    get nextElementSibling(): Element | null {
         return this._nextElementSibling;
     }
 
-    get nextSibling() {
+    get nextSibling(): Node | null {
         return this._nextSibling;
     }
 
-    get parentElement() {
+    get parentElement(): Element | null {
         return this._parentElement;
     }
 
-    get parentNode() {
+    get parentNode(): Node | null {
         return this._parentNode;
     }
 
-    get previousElementSibling() {
+    get previousElementSibling(): Element | null {
         return this._previousElementSibling;
     }
 
-    get previousSibling() {
+    get previousSibling(): Node | null {
         return this._previousSibling;
     }
 
@@ -129,7 +129,7 @@ export class Node implements NodeProps {
         this.appendChild(node)
     }
 
-    get ownerDocument(): Document {
+    get ownerDocument(): Document | null {
         if (this._ownerDocument) {
             return this._ownerDocument
         }
@@ -152,7 +152,7 @@ export class Node implements NodeProps {
         appendChild(this, newChild);
     }
 
-    insertBefore(newNode, referenceNode) {
+    insertBefore(newNode: Node, referenceNode: Node): Node | null {
         insertBefore(this, newNode, referenceNode)
         return newNode;
     }

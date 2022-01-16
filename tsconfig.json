@@ -1,23 +1,19 @@
 {
-
-  "include": [
-    "./src/"
-  ],
-  "exclude": [
-    "**/*.test.ts"
-  ],
   "compilerOptions": {
     "lib": [
       "es6"
     ],
-    "noImplicitAny": false,
     "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
-    "declaration": true,
-    "types": [
-      "node",
-      "parse5"
-    ]
-  }
+    "declaration": true /* Generates corresponding '.d.ts' file. */,
+
+    "noImplicitAny": false,
+
+    "types": [ "node", "parse5"]
+  },
+  "include": [ "./src/"],
+  "exclude": [
+    "**/*.test.ts"
+  ]
 }
