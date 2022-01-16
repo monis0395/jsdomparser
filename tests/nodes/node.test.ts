@@ -20,5 +20,14 @@ describe('node', () => {
         assert.equal(document.body.firstChild.parentElement, document.body);
         assert.equal(document.body.firstElementChild.parentNode, document.body);
         assert.equal(document.body.firstElementChild.parentElement, document.body);
+
+        assert.throws(() => {
+            // @ts-ignore
+            document.body.firstChild.parentNode = document.body.lastChild;
+        }, /Cannot set property/, 'parentNode should be read Only')
+        assert.throws(() => {
+            // @ts-ignore
+            document.body.firstChild.parentElement = document.body.lastChild;
+        }, /Cannot set property/,'parentElement should be read Only')
     });
 });
