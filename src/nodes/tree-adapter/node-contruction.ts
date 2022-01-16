@@ -14,8 +14,6 @@ export const createDocument = () => {
     return new Document({
         nodeType: NodeType.DOCUMENT_NODE,
         nodeName: NodeName.DOCUMENT_NODE,
-        previousSibling: null,
-        nextSibling: null,
         mode: DocumentMode.NO_QUIRKS,
     });
 };
@@ -24,8 +22,6 @@ export const createDocumentFragment = () => {
     return new Node({
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
         nodeName: NodeName.DOCUMENT_FRAGMENT_NODE,
-        previousSibling: null,
-        nextSibling: null,
     });
 };
 
@@ -47,8 +43,6 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
         nodeName: tagName?.toUpperCase(), // todo: add test cases
         namespaceURI,
         attribs,
-        previousSibling: null,
-        nextSibling: null,
     });
 };
 
@@ -80,8 +74,6 @@ export const createDirectiveNode = (name: string, nodeValue: string, publicId?: 
     return new DocumentType({
         nodeType: NodeType.DOCUMENT_TYPE_NODE,
         nodeName: name,
-        previousSibling: null,
-        nextSibling: null,
         nodeValue,
         name,
         publicId,
@@ -94,8 +86,6 @@ export const createCommentNode = (data: string) => {
         nodeType: NodeType.COMMENT_NODE,
         nodeName: NodeName.COMMENT_NODE,
         nodeValue: data,
-        previousSibling: null,
-        nextSibling: null,
     });
 };
 
@@ -104,7 +94,5 @@ export const createTextNode = (data: string) => {
         nodeType: NodeType.TEXT_NODE,
         nodeName: NodeName.TEXT_NODE,
         nodeValue: data,
-        previousSibling: null,
-        nextSibling: null,
     });
 };

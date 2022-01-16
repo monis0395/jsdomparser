@@ -50,11 +50,10 @@ export interface Node {
     readonly firstElementChild: Element | null;
     readonly lastChild: Node | null;
     readonly lastElementChild: Element | null;
-    nextElementSibling?: Element | null;
-    nextSibling: Node | null;
-    previousElementSibling?: Element | null;
-    previousSibling: Node | null;
-
+    readonly nextElementSibling: Element | null;
+    readonly nextSibling: Node | null;
+    readonly previousElementSibling: Element | null;
+    readonly previousSibling: Node | null;
     readonly parentNode: Node | null;
     readonly parentElement: Element | null;
 

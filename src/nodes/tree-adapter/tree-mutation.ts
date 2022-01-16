@@ -23,11 +23,11 @@ export function detachNode(node: Node): Node | null {
     const nextElement = node.nextElementSibling || null;
 
     if (prev) {
-        prev.nextSibling = next;
+        prev._nextSibling = next;
     }
 
     if (next) {
-        next.previousSibling = prev;
+        next._previousSibling = prev;
     }
 
     if (isElementNode(node)) {
@@ -48,14 +48,14 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
 
     // updating previous sibling
     if (prevSibling) {
-        prevSibling.nextSibling = newNode;
+        prevSibling._nextSibling = newNode;
     }
 
     // updating new node
-    newNode.previousSibling = prevSibling;
-    newNode.nextSibling = next;
-    newNode.previousElementSibling = prevElement;
-    newNode.nextElementSibling = isElementNode(next) ? next : next && next.nextElementSibling;
+    newNode._previousSibling = prevSibling;
+    newNode._nextSibling = next;
+    newNode._previousElementSibling = prevElement;
+    newNode._nextElementSibling = isElementNode(next) ? next : next && next.nextElementSibling;
 
     if (isElementNode(newNode)) {
         if (next) {
@@ -71,10 +71,10 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
 
     // updating next's previous references
     if (next) {
-        next.previousSibling = newNode;
+        next._previousSibling = newNode;
     }
     if (next && isElementNode(newNode)) {
-        next.previousElementSibling = newNode;
+        next._previousElementSibling = newNode;
     }
 
     const nextIdx = parentNode.childNodes.indexOf(newNode.nextSibling);
@@ -88,17 +88,17 @@ export function insertBefore(parentNode: Node, newNode: Node, next: Node | null)
 }
 
 function resetNode(node: Node) {
-    node.previousSibling = null;
-    node.nextSibling = null;
-    node.previousElementSibling = null;
-    node.nextElementSibling = null;
+    node._previousSibling = null;
+    node._nextSibling = null;
+    node._previousElementSibling = null;
+    node._nextElementSibling = null;
     node._parentNode = null;
     node._parentElement = null;
 }
 
 function updatePreviousElementFor(nextSibling: Node, oldRef: Element, newRef: Element) {
     while (nextSibling && nextSibling.previousElementSibling === oldRef) {
-        nextSibling.previousElementSibling = newRef;
+        nextSibling._previousElementSibling = newRef;
         nextSibling = nextSibling.nextSibling;
     }
 }
@@ -106,7 +106,7 @@ function updatePreviousElementFor(nextSibling: Node, oldRef: Element, newRef: El
 function updateNextElementSiblingFor(prevSibling: Node, oldRef: Element, newRef: Element) {
     let firstElementOccurrenceFound = false;
     while (prevSibling && !firstElementOccurrenceFound) {
-        prevSibling.nextElementSibling = newRef;
+        prevSibling._nextElementSibling = newRef;
         firstElementOccurrenceFound = isElementNode(prevSibling);
         prevSibling = prevSibling.previousSibling;
     }

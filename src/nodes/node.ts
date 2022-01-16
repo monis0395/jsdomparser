@@ -13,10 +13,10 @@ export class Node implements NodeProps {
     childNodes: Node[];
     _parentNode: Node;
     _parentElement: Element;
-    previousSibling: Node = null;
-    nextSibling: Node = null;
-    previousElementSibling?: Element = null;
-    nextElementSibling?: Element = null;
+    _previousSibling: Node | null;
+    _nextSibling: Node | null;
+    _previousElementSibling: Element | null;
+    _nextElementSibling: Element | null;
     sourceCodeLocation?: string;
     nodeValue: string;
     nodeName: string;
@@ -31,6 +31,10 @@ export class Node implements NodeProps {
         this.children = this.childNodes.filter(isElementNode);
         this._parentNode = this._parentNode || null;
         this._parentElement = this._parentElement || null;
+        this._previousSibling = this._previousSibling || null;
+        this._nextSibling = this._nextSibling || null;
+        this._previousElementSibling = this._previousElementSibling || null;
+        this._nextElementSibling = this._nextElementSibling || null;
     }
 
     get firstChild() {
@@ -47,6 +51,22 @@ export class Node implements NodeProps {
 
     get parentElement() {
         return this._parentElement;
+    }
+
+    get previousSibling() {
+        return this._previousSibling;
+    }
+
+    get nextSibling() {
+        return this._nextSibling;
+    }
+
+    get previousElementSibling() {
+        return this._previousElementSibling;
+    }
+
+    get nextElementSibling() {
+        return this._nextElementSibling;
     }
 
     get lastChild() {

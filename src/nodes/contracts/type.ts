@@ -3,10 +3,6 @@ import { GenericObjectType } from "../../types/types";
 export interface NodeProps {
     nodeType: NodeType;
     nodeName?: string | NodeName;
-    previousSibling: NodeProps | null;
-    nextSibling: NodeProps | null;
-    previousElementSibling?: NodeProps | null;
-    nextElementSibling?: NodeProps | null;
     nodeValue?: string;
 }
 
