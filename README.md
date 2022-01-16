@@ -42,7 +42,7 @@ export enum Parsers {
 
 // todo: to make properties read only
 export interface Node {
-    baseURI?: string; // todo: to add
+    readonly baseURI: string;
     
     childNodes: Node[]; // todo: make read only
     children: Element[]; // todo: make read only
@@ -97,7 +97,6 @@ export interface Element extends Node {
 }
 
 export interface Document extends Node  {
-    baseURI: string; // todo: move to Node
     body: Element;
     readonly documentElement: string;
     readonly documentURI: string;

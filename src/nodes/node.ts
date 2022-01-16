@@ -5,6 +5,7 @@ import { isCommentNode, isDocument, isElementNode, isTextNode } from "./tree-ada
 import { appendChild, detachNode, insertBefore, replaceChild } from "./tree-adapter/tree-mutation";
 // @ts-ignore
 import { unescape } from 'html-escaper';
+import { URL } from "url";
 
 export class Node implements NodeProps {
     nodeName: string = '';
@@ -36,6 +37,20 @@ export class Node implements NodeProps {
         this._nextSibling = this._nextSibling || null;
         this._previousElementSibling = this._previousElementSibling || null;
         this._nextElementSibling = this._nextElementSibling || null;
+    }
+
+    get baseURI() {
+        const document: Document = isDocument(this) ? this : this.ownerDocument;
+        let _baseURI = document.documentURI;
+        try {
+            const baseElements = document.getElementsByTagName('base');
+            const href = baseElements[0].getAttribute('href');
+            if (href) {
+                _baseURI = (new URL(href, _baseURI)).href;
+            }
+        } catch (ex) {/* Just fall back to documentURI */
+        }
+        return _baseURI;
     }
 
     get firstChild() {

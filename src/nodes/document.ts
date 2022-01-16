@@ -2,32 +2,29 @@ import { Node } from "./node";
 import { DocumentMode, DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./tree-adapter/node-contruction";
 import * as legacy from "./domutils/legacy";
-import { URL } from "url";
 
 export class Document extends Node implements DocumentProps {
     _documentURI: string;
-    _baseURI: string;
     mode: DocumentMode;
 
     constructor(props: DocumentProps) {
         super(props);
     }
 
+    get body() {
+        return this.getElementsByTagName("body")[0];
+    }
+
     get documentElement() {
         return this.firstElementChild;
     }
 
-    get firstElementChild() {
-        return this.children[0] || null;
+    get documentURI() {
+        return this._documentURI;
     }
 
     get head() {
         return this.getElementsByTagName("head")[0];
-    }
-
-    get lastElementChild() {
-        const children = this.children;
-        return children[children.length - 1] || null;
     }
 
     get title() {
@@ -49,10 +46,6 @@ export class Document extends Node implements DocumentProps {
         }
     }
 
-    get body() {
-        return this.getElementsByTagName("body")[0];
-    }
-
     createElement(lowerName: string) {
         const element = createElement(lowerName, "", []);
         element.setOwnerDocument(this);
@@ -63,26 +56,6 @@ export class Document extends Node implements DocumentProps {
         const textNode = createTextNode(data);
         textNode.setOwnerDocument(this);
         return textNode;
-    }
-
-    get documentURI() {
-        return this._documentURI;
-    }
-
-    get baseURI() {
-        if (this._baseURI || this._baseURI === '') {
-            return this._baseURI;
-        }
-        this._baseURI = this.documentURI;
-        try {
-            const baseElements = this.getElementsByTagName('base');
-            const href = baseElements[0].getAttribute('href');
-            if (href) {
-                this._baseURI = (new URL(href, this._baseURI)).href;
-            }
-        } catch (ex) {/* Just fall back to documentURI */
-        }
-        return this._baseURI
     }
 
     getElementById(id: string) {
