@@ -52,10 +52,10 @@ export interface Node {
     readonly lastElementChild: Element | null;
     readonly nextElementSibling: Element | null;
     readonly nextSibling: Node | null;
+    readonly parentElement: Element | null;
+    readonly parentNode: Node | null;
     readonly previousElementSibling: Element | null;
     readonly previousSibling: Node | null;
-    readonly parentNode: Node | null;
-    readonly parentElement: Element | null;
 
     nodeName: string;
     nodeType: NodeType;

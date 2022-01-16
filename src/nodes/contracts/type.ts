@@ -2,7 +2,7 @@ import { GenericObjectType } from "../../types/types";
 
 export interface NodeProps {
     nodeType: NodeType;
-    nodeName?: string | NodeName;
+    nodeName: string | NodeName;
     nodeValue?: string;
 }
 

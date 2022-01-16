@@ -7,8 +7,10 @@ import { appendChild, detachNode, insertBefore, replaceChild } from "./tree-adap
 import { unescape } from 'html-escaper';
 
 export class Node implements NodeProps {
-    type: string;
+    nodeName: string = '';
+    nodeValue: string = '';
     nodeType: NodeType;
+
     children: Element[] = [];
     childNodes: Node[];
     _parentNode: Node;
@@ -18,8 +20,7 @@ export class Node implements NodeProps {
     _previousElementSibling: Element | null;
     _nextElementSibling: Element | null;
     sourceCodeLocation?: string;
-    nodeValue: string;
-    nodeName: string;
+
     private _ownerDocument: Document;
 
     constructor(props: NodeProps) {
@@ -45,30 +46,6 @@ export class Node implements NodeProps {
         return this.children[0] || null;
     }
 
-    get parentNode() {
-        return this._parentNode;
-    }
-
-    get parentElement() {
-        return this._parentElement;
-    }
-
-    get previousSibling() {
-        return this._previousSibling;
-    }
-
-    get nextSibling() {
-        return this._nextSibling;
-    }
-
-    get previousElementSibling() {
-        return this._previousElementSibling;
-    }
-
-    get nextElementSibling() {
-        return this._nextElementSibling;
-    }
-
     get lastChild() {
         const children = this.childNodes;
         return children[children.length - 1] || null;
@@ -77,6 +54,30 @@ export class Node implements NodeProps {
     get lastElementChild() {
         const children = this.children;
         return children[children.length - 1] || null;
+    }
+
+    get nextElementSibling() {
+        return this._nextElementSibling;
+    }
+
+    get nextSibling() {
+        return this._nextSibling;
+    }
+
+    get parentElement() {
+        return this._parentElement;
+    }
+
+    get parentNode() {
+        return this._parentNode;
+    }
+
+    get previousElementSibling() {
+        return this._previousElementSibling;
+    }
+
+    get previousSibling() {
+        return this._previousSibling;
     }
 
     get textContent() {
