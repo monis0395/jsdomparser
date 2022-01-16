@@ -3,7 +3,7 @@ import { DocumentMode, DocumentProps } from "./contracts/type";
 import { createElement, createTextNode } from "./tree-adapter/node-contruction";
 import * as legacy from "./domutils/legacy";
 
-export class Document extends Node implements DocumentProps {
+export class Document extends Node {
     _documentURI: string;
     mode: DocumentMode;
 
@@ -13,6 +13,10 @@ export class Document extends Node implements DocumentProps {
 
     get body() {
         return this.getElementsByTagName("body")[0];
+    }
+
+    get childElementCount() {
+        return this.children.length;
     }
 
     get documentElement() {

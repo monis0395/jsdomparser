@@ -1,17 +1,16 @@
 import { Node } from "./node";
 import { ElementProps } from "./contracts/type";
 import { getAttrList } from "./tree-adapter/tree-traversing";
-import { GenericObjectType } from "../types/types";
 import { parseDom, serializeDom } from "../index";
 import * as legacy from "./domutils/legacy";
 import { Style } from "./style";
 
-export class Element extends Node implements ElementProps {
+export class Element extends Node {
     namespaceURI: string;
     style: Style;
-    attribs: GenericObjectType<string>;
+    attribs: Record<string, string>;
 
-    readonly _localName: string;
+    private readonly _localName: string;
     private readonly _tagName: string;
 
     constructor(props: ElementProps) {
@@ -102,10 +101,10 @@ export class Element extends Node implements ElementProps {
 const elementAttributes = ["href", "src", "srcset"];
 elementAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
-        get () {
+        get() {
             return this.getAttribute(name) || '';
         },
-        set (value: string) {
+        set(value: string) {
             return this.setAttribute(name, value);
         },
     });

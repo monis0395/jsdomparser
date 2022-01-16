@@ -8,7 +8,6 @@ import { isDocumentTypeNode } from "./node-types";
 import { DocumentType } from "../documentType";
 import { appendChild } from "./tree-mutation";
 import { Attribute } from "parse5";
-import { GenericObjectType } from "../../types/types";
 
 export const createDocument = () => {
     return new Document({
@@ -25,7 +24,7 @@ export const createDocumentFragment = () => {
     });
 };
 
-export const createElement = (tagName: string, namespaceURI: string, attrs: Attribute[] | GenericObjectType<string>) => {
+export const createElement = (tagName: string, namespaceURI: string, attrs: Attribute[] | Record<string, string>) => {
     let attribs = Object.create(null);
 
     if (Array.isArray(attrs)) {
@@ -39,9 +38,9 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
 
     return new Element({
         nodeType: NodeType.ELEMENT_NODE,
-        _localName: tagName,
-        nodeName: tagName?.toUpperCase(), // todo: add test cases
+        nodeName: tagName?.toUpperCase(),
         namespaceURI,
+        _localName: tagName,
         attribs,
     });
 };
@@ -64,8 +63,8 @@ export const setDocumentType = (document: Document, name: string, publicId: stri
         doctypeNode.systemId = systemId;
     } else {
         appendChild(
-            document,
-            createDirectiveNode(name, nodeValue, publicId, systemId),
+          document,
+          createDirectiveNode(name, nodeValue, publicId, systemId),
         );
     }
 };

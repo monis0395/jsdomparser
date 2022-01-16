@@ -16,6 +16,15 @@ describe('document', () => {
         );
     });
 
+    it('.childElementCount', () => {
+        const document = parseDom(`<p>Foo</p><p>Bar</p>`);
+        assert.equal(
+          document.childElementCount,
+          1,
+          'head should always be created'
+        );
+    });
+
     it('.head', () => {
         const document = parseDom(`<p>Foo</p><p>Bar</p>`);
         assert.isOk(

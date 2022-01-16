@@ -40,7 +40,6 @@ export enum Parsers {
     parse5 = "parse5"
 }
 
-// todo: to make properties read only
 export interface Node {
     readonly baseURI: string;
     
@@ -57,8 +56,8 @@ export interface Node {
     readonly previousElementSibling: Element | null;
     readonly previousSibling: Node | null;
 
-    nodeName: string;
-    nodeType: NodeType;
+    nodeName: string; // todo: make read only
+    nodeType: NodeType; // todo: make read only
     nodeValue: string;
     textContent: string;
 
@@ -72,16 +71,11 @@ export interface Node {
 export interface Element extends Node {
     readonly attributes: Attribute[];
     readonly childElementCount: number;
-
-    classList?: DOMTokenList; // todo: to add
     className: string;
-
     id: string;
     innerHTML: string;
-
-    localName: string;
-    tagName: string;
-
+    readonly localName: string;
+    readonly tagName: string;
     style: CSSStyleDeclaration;
 
     href: string;
@@ -98,6 +92,7 @@ export interface Element extends Node {
 
 export interface Document extends Node  {
     body: Element;
+    readonly childElementCount: number;
     readonly documentElement: string;
     readonly documentURI: string;
     readonly head: Element;

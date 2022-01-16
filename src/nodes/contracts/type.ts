@@ -1,5 +1,3 @@
-import { GenericObjectType } from "../../types/types";
-
 export interface NodeProps {
     nodeType: NodeType;
     nodeName: string | NodeName;
@@ -7,9 +5,9 @@ export interface NodeProps {
 }
 
 export interface ElementProps extends NodeProps {
-    namespaceURI: string;
-    attribs: GenericObjectType<string>
     _localName: string;
+    attribs: Record<string, string>;
+    namespaceURI: string;
 }
 
 export interface DocumentProps extends NodeProps {
