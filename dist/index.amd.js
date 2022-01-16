@@ -5,6 +5,18 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
 };
@@ -61,6 +73,7 @@ define("nodes/document", ["require", "exports", "nodes/node", "nodes/tree-adapte
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Document = void 0;
+    legacy = __importStar(legacy);
     class Document extends node_1.Node {
         constructor(props) {
             super(props);
@@ -619,6 +632,7 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-adapter
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Element = void 0;
+    legacy = __importStar(legacy);
     class Element extends node_3.Node {
         constructor(props) {
             super(props);
@@ -1132,6 +1146,7 @@ define("index", ["require", "exports", "parse5", "adapters/parse5", "types/types
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.serializeDom = exports.parseDom = exports.nodes = void 0;
+    jsDomTreeAdapter = __importStar(jsDomTreeAdapter);
     exports.nodes = {
         Node: node_5.Node, NodeType: type_4.NodeType, Document: document_2.Document, Element: element_2.Element,
     };
