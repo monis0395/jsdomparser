@@ -1,3 +1,4 @@
+//@ts-nocheck
 import 'mocha';
 import { assert } from 'chai';
 import { parseDom } from '../../src';
@@ -22,12 +23,17 @@ describe('node', () => {
         assert.equal(document.body.firstElementChild.parentElement, document.body);
 
         assert.throws(() => {
-            // @ts-ignore
             document.body.firstChild.parentNode = document.body.lastChild;
-        }, /Cannot set property/, 'parentNode should be read Only')
+        }, /Cannot set property/, 'parentNode should be read Only');
+
         assert.throws(() => {
-            // @ts-ignore
             document.body.firstChild.parentElement = document.body.lastChild;
         }, /Cannot set property/,'parentElement should be read Only')
+    });
+
+    it('.childNodes & .children', () => {
+        const document = parseDom(`<body><!-- c1 --><p1>p1</p1></body>`);
+        assert.equal(document.body.childNodes.length, 2);
+        assert.equal(document.body.children.length, 1);
     });
 });

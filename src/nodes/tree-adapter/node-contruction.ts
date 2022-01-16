@@ -16,8 +16,6 @@ export const createDocument = () => {
         nodeName: NodeName.DOCUMENT_NODE,
         previousSibling: null,
         nextSibling: null,
-        childNodes: [],
-        children: [],
         mode: DocumentMode.NO_QUIRKS,
     });
 };
@@ -26,8 +24,6 @@ export const createDocumentFragment = () => {
     return new Node({
         nodeType: NodeType.DOCUMENT_FRAGMENT_NODE,
         nodeName: NodeName.DOCUMENT_FRAGMENT_NODE,
-        childNodes: [],
-        children: [],
         previousSibling: null,
         nextSibling: null,
     });
@@ -51,8 +47,6 @@ export const createElement = (tagName: string, namespaceURI: string, attrs: Attr
         nodeName: tagName?.toUpperCase(), // todo: add test cases
         namespaceURI,
         attribs,
-        childNodes: [],
-        children: [],
         previousSibling: null,
         nextSibling: null,
     });
