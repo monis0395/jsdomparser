@@ -1,21 +1,12 @@
-import { GenericObjectType } from "../../types/types";
 export interface NodeProps {
-    type: string;
     nodeType: NodeType;
-    nodeName?: string | NodeName;
-    localName?: string;
-    childNodes?: NodeProps[];
-    children?: NodeProps[];
-    parentNode: NodeProps | null;
-    previousSibling: NodeProps | null;
-    nextSibling: NodeProps | null;
-    previousElementSibling?: NodeProps | null;
-    nextElementSibling?: NodeProps | null;
+    nodeName: string | NodeName;
     nodeValue?: string;
 }
 export interface ElementProps extends NodeProps {
+    _localName: string;
+    attribs: Record<string, string>;
     namespaceURI: string;
-    attribs: GenericObjectType<string>;
 }
 export interface DocumentProps extends NodeProps {
     mode: DocumentMode;

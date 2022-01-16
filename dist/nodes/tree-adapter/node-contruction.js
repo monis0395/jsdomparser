@@ -12,29 +12,15 @@ const documentType_1 = require("../documentType");
 const tree_mutation_1 = require("./tree-mutation");
 exports.createDocument = () => {
     return new document_1.Document({
-        type: 'root',
         nodeType: type_1.NodeType.DOCUMENT_NODE,
         nodeName: type_1.NodeName.DOCUMENT_NODE,
-        localName: '',
-        parentNode: null,
-        previousSibling: null,
-        nextSibling: null,
-        childNodes: [],
-        children: [],
         mode: type_1.DocumentMode.NO_QUIRKS,
     });
 };
 exports.createDocumentFragment = () => {
     return new node_1.Node({
-        type: 'root',
         nodeType: type_1.NodeType.DOCUMENT_FRAGMENT_NODE,
         nodeName: type_1.NodeName.DOCUMENT_FRAGMENT_NODE,
-        localName: '',
-        childNodes: [],
-        children: [],
-        parentNode: null,
-        previousSibling: null,
-        nextSibling: null,
     });
 };
 exports.createElement = (tagName, namespaceURI, attrs) => {
@@ -49,17 +35,11 @@ exports.createElement = (tagName, namespaceURI, attrs) => {
         attribs = attrs;
     }
     return new element_1.Element({
-        type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
         nodeType: type_1.NodeType.ELEMENT_NODE,
-        localName: tagName,
         nodeName: tagName === null || tagName === void 0 ? void 0 : tagName.toUpperCase(),
         namespaceURI,
+        _localName: tagName,
         attribs,
-        childNodes: [],
-        children: [],
-        parentNode: null,
-        previousSibling: null,
-        nextSibling: null,
     });
 };
 exports.setDocumentType = (document, name, publicId, systemId) => {
@@ -83,13 +63,8 @@ exports.setDocumentType = (document, name, publicId, systemId) => {
 };
 exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
     return new documentType_1.DocumentType({
-        type: 'directive',
         nodeType: type_1.NodeType.DOCUMENT_TYPE_NODE,
         nodeName: name,
-        localName: '!doctype',
-        parentNode: null,
-        previousSibling: null,
-        nextSibling: null,
         nodeValue,
         name,
         publicId,
@@ -98,23 +73,15 @@ exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
 };
 exports.createCommentNode = (data) => {
     return new node_1.Node({
-        type: 'comment',
         nodeType: type_1.NodeType.COMMENT_NODE,
         nodeName: type_1.NodeName.COMMENT_NODE,
         nodeValue: data,
-        parentNode: null,
-        previousSibling: null,
-        nextSibling: null,
     });
 };
 exports.createTextNode = (data) => {
     return new node_1.Node({
-        type: 'text',
         nodeType: type_1.NodeType.TEXT_NODE,
         nodeName: type_1.NodeName.TEXT_NODE,
         nodeValue: data,
-        parentNode: null,
-        previousSibling: null,
-        nextSibling: null,
     });
 };

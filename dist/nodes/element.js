@@ -10,6 +10,8 @@ class Element extends node_1.Node {
     constructor(props) {
         super(props);
         this.style = new style_1.Style(this);
+        this._localName = (this._localName || "").toLowerCase();
+        this._tagName = this._localName.toUpperCase();
     }
     get attributes() {
         return tree_traversing_1.getAttrList(this);
@@ -45,6 +47,12 @@ class Element extends node_1.Node {
     }
     get childElementCount() {
         return this.children.length;
+    }
+    get localName() {
+        return this._localName;
+    }
+    get tagName() {
+        return this._tagName;
     }
     get innerHTML() {
         return index_1.serializeDom(this);

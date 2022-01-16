@@ -6,22 +6,38 @@ const node_types_1 = require("./tree-adapter/node-types");
 const tree_mutation_1 = require("./tree-adapter/tree-mutation");
 // @ts-ignore
 const html_escaper_1 = require("html-escaper");
+const url_1 = require("url");
 class Node {
     constructor(props) {
-        this.localName = '';
+        this.nodeName = '';
+        this.nodeValue = '';
         this.children = [];
-        this.parentNode = null;
-        this.previousSibling = null;
-        this.nextSibling = null;
-        this.previousElementSibling = null;
-        this.nextElementSibling = null;
         for (const key of Object.keys(props)) {
             // @ts-ignore
             this[key] = props[key];
         }
-        this.localName = (this.localName || "").toLowerCase();
         this.childNodes = this.childNodes || [];
         this.children = this.childNodes.filter(node_types_1.isElementNode);
+        this._parentNode = this._parentNode || null;
+        this._parentElement = this._parentElement || null;
+        this._previousSibling = this._previousSibling || null;
+        this._nextSibling = this._nextSibling || null;
+        this._previousElementSibling = this._previousElementSibling || null;
+        this._nextElementSibling = this._nextElementSibling || null;
+    }
+    get baseURI() {
+        const document = node_types_1.isDocument(this) ? this : this.ownerDocument;
+        let _baseURI = document.documentURI;
+        try {
+            const baseElements = document.getElementsByTagName('base');
+            const href = baseElements[0].getAttribute('href');
+            if (href) {
+                _baseURI = (new url_1.URL(href, _baseURI)).href;
+            }
+        }
+        catch (ex) { /* Just fall back to documentURI */
+        }
+        return _baseURI;
     }
     get firstChild() {
         return this.childNodes[0] || null;
@@ -37,20 +53,31 @@ class Node {
         const children = this.children;
         return children[children.length - 1] || null;
     }
-    get tagName() {
-        if (this._tagName) {
-            return this._tagName;
-        }
-        this._tagName = this.localName.toUpperCase();
-        return this._tagName;
+    get nextElementSibling() {
+        return this._nextElementSibling;
+    }
+    get nextSibling() {
+        return this._nextSibling;
+    }
+    get parentElement() {
+        return this._parentElement;
+    }
+    get parentNode() {
+        return this._parentNode;
+    }
+    get previousElementSibling() {
+        return this._previousElementSibling;
+    }
+    get previousSibling() {
+        return this._previousSibling;
     }
     get textContent() {
-        if (this.nodeType === type_1.NodeType.TEXT_NODE) {
+        if (node_types_1.isTextNode(this) || node_types_1.isCommentNode(this)) {
             return this.nodeValue;
         }
         function getText(node) {
             node.childNodes.forEach((child) => {
-                if (node_types_1.isTextNode(child)) {
+                if (node_types_1.isTextNode(child) || node_types_1.isCommentNode(child)) {
                     text.push(html_escaper_1.unescape(child.nodeValue));
                 }
                 else {
@@ -68,13 +95,11 @@ class Node {
             return;
         }
         // clear parentNodes for existing children
-        for (let i = this.childNodes.length; --i >= 0;) {
-            this.childNodes[i].parentNode = null;
+        for (let i = this.childNodes.length - 1; i >= 0; i--) {
+            this.removeChild(this.childNodes[i]);
         }
         const node = this.ownerDocument.createTextNode(data);
-        this.childNodes = [node];
-        this.children = [];
-        node.parentNode = this;
+        this.appendChild(node);
     }
     get ownerDocument() {
         if (this._ownerDocument) {

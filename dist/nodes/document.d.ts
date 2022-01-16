@@ -1,21 +1,18 @@
 import { Node } from "./node";
 import { DocumentMode, DocumentProps } from "./contracts/type";
-export declare class Document extends Node implements DocumentProps {
+export declare class Document extends Node {
     _documentURI: string;
-    _baseURI: string;
     mode: DocumentMode;
     constructor(props: DocumentProps);
+    get body(): import("./element").Element;
+    get childElementCount(): number;
     get documentElement(): import("./element").Element;
-    get firstElementChild(): import("./element").Element;
+    get documentURI(): string;
     get head(): import("./element").Element;
-    get lastElementChild(): import("./element").Element;
     get title(): string;
     set title(newTitle: string);
-    get body(): import("./element").Element;
     createElement(lowerName: string): import("./element").Element;
     createTextNode(data: string): Node;
-    get documentURI(): string;
-    get baseURI(): string;
     getElementById(id: string): import("./element").Element;
     getElementsByName(name: string): import("./element").Element[];
     getElementsByClassName(names: string): import("./element").Element[];
