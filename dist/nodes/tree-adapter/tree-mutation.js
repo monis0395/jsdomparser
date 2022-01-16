@@ -26,7 +26,7 @@ function detachNode(node) {
     if (next) {
         next._previousSibling = prev;
     }
-    if (node_types_1.isElementNode(node)) {
+    if ((0, node_types_1.isElementNode)(node)) {
         updatePreviousElementFor(next, node, prevElement);
         updateNextElementSiblingFor(prev, node, nextElement);
         node.parentNode.children.splice(node.parentNode.children.indexOf(node), 1);
@@ -48,8 +48,8 @@ function insertBefore(parentNode, newNode, next) {
     newNode._previousSibling = prevSibling;
     newNode._nextSibling = next;
     newNode._previousElementSibling = prevElement;
-    newNode._nextElementSibling = node_types_1.isElementNode(next) ? next : next && next.nextElementSibling;
-    if (node_types_1.isElementNode(newNode)) {
+    newNode._nextElementSibling = (0, node_types_1.isElementNode)(next) ? next : next && next.nextElementSibling;
+    if ((0, node_types_1.isElementNode)(newNode)) {
         if (next) {
             updatePreviousElementFor(next.nextSibling, prevElement, newNode);
         }
@@ -62,14 +62,14 @@ function insertBefore(parentNode, newNode, next) {
     if (next) {
         next._previousSibling = newNode;
     }
-    if (next && node_types_1.isElementNode(newNode)) {
+    if (next && (0, node_types_1.isElementNode)(newNode)) {
         next._previousElementSibling = newNode;
     }
     const nextIdx = parentNode.childNodes.indexOf(newNode.nextSibling);
     const insertionIdx = nextIdx !== -1 ? nextIdx : parentNode.childNodes.length;
     parentNode.childNodes.splice(insertionIdx, 0, newNode); // attaching newNode in children before next
     newNode._parentNode = parentNode;
-    newNode._parentElement = node_types_1.isElementNode(parentNode) ? parentNode : null;
+    newNode._parentElement = (0, node_types_1.isElementNode)(parentNode) ? parentNode : null;
     newNode.setOwnerDocument(parentNode.ownerDocument);
 }
 exports.insertBefore = insertBefore;
@@ -91,7 +91,7 @@ function updateNextElementSiblingFor(prevSibling, oldRef, newRef) {
     let firstElementOccurrenceFound = false;
     while (prevSibling && !firstElementOccurrenceFound) {
         prevSibling._nextElementSibling = newRef;
-        firstElementOccurrenceFound = node_types_1.isElementNode(prevSibling);
+        firstElementOccurrenceFound = (0, node_types_1.isElementNode)(prevSibling);
         prevSibling = prevSibling.previousSibling;
     }
 }
@@ -106,21 +106,21 @@ function replaceChild(parentNode, oldNode, newNode) {
 exports.replaceChild = replaceChild;
 function insertText(parentNode, text) {
     const lastChild = parentNode.lastChild;
-    if (lastChild && node_types_1.isTextNode(lastChild)) {
+    if (lastChild && (0, node_types_1.isTextNode)(lastChild)) {
         lastChild.nodeValue += text;
     }
     else {
-        appendChild(parentNode, node_contruction_1.createTextNode(text));
+        appendChild(parentNode, (0, node_contruction_1.createTextNode)(text));
     }
 }
 exports.insertText = insertText;
 function insertTextBefore(parentNode, text, referenceNode) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
-    if (prevNode && node_types_1.isTextNode(prevNode)) {
+    if (prevNode && (0, node_types_1.isTextNode)(prevNode)) {
         prevNode.nodeValue += text;
     }
     else {
-        insertBefore(parentNode, node_contruction_1.createTextNode(text), referenceNode);
+        insertBefore(parentNode, (0, node_contruction_1.createTextNode)(text), referenceNode);
     }
 }
 exports.insertTextBefore = insertTextBefore;

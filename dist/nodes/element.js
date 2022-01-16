@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -33,7 +33,7 @@ class Element extends node_1.Node {
         this._tagName = this._localName.toUpperCase();
     }
     get attributes() {
-        return tree_traversing_1.getAttrList(this);
+        return (0, tree_traversing_1.getAttrList)(this);
     }
     get className() {
         return this.getAttribute("class") || '';
@@ -74,10 +74,10 @@ class Element extends node_1.Node {
         return this._tagName;
     }
     get innerHTML() {
-        return index_1.serializeDom(this);
+        return (0, index_1.serializeDom)(this);
     }
     set innerHTML(htmlString) {
-        const document = index_1.parseDom(htmlString);
+        const document = (0, index_1.parseDom)(htmlString);
         // todo: handle head also
         const node = document.body;
         while (this.childNodes.length) {

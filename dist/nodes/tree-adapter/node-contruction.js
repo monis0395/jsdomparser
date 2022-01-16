@@ -10,20 +10,22 @@ const element_1 = require("../element");
 const node_types_1 = require("./node-types");
 const documentType_1 = require("../documentType");
 const tree_mutation_1 = require("./tree-mutation");
-exports.createDocument = () => {
+const createDocument = () => {
     return new document_1.Document({
         nodeType: type_1.NodeType.DOCUMENT_NODE,
         nodeName: type_1.NodeName.DOCUMENT_NODE,
         mode: type_1.DocumentMode.NO_QUIRKS,
     });
 };
-exports.createDocumentFragment = () => {
+exports.createDocument = createDocument;
+const createDocumentFragment = () => {
     return new node_1.Node({
         nodeType: type_1.NodeType.DOCUMENT_FRAGMENT_NODE,
         nodeName: type_1.NodeName.DOCUMENT_FRAGMENT_NODE,
     });
 };
-exports.createElement = (tagName, namespaceURI, attrs) => {
+exports.createDocumentFragment = createDocumentFragment;
+const createElement = (tagName, namespaceURI, attrs) => {
     let attribs = Object.create(null);
     if (Array.isArray(attrs)) {
         for (const { name, value } of attrs) {
@@ -42,11 +44,12 @@ exports.createElement = (tagName, namespaceURI, attrs) => {
         attribs,
     });
 };
-exports.setDocumentType = (document, name, publicId, systemId) => {
-    const nodeValue = doctype_1.serializeContent(name, publicId, systemId);
+exports.createElement = createElement;
+const setDocumentType = (document, name, publicId, systemId) => {
+    const nodeValue = (0, doctype_1.serializeContent)(name, publicId, systemId);
     let doctypeNode = null;
     for (const node of document.childNodes) {
-        if (node_types_1.isDocumentTypeNode(node)) {
+        if ((0, node_types_1.isDocumentTypeNode)(node)) {
             doctypeNode = node;
             break;
         }
@@ -58,10 +61,11 @@ exports.setDocumentType = (document, name, publicId, systemId) => {
         doctypeNode.systemId = systemId;
     }
     else {
-        tree_mutation_1.appendChild(document, exports.createDirectiveNode(name, nodeValue, publicId, systemId));
+        (0, tree_mutation_1.appendChild)(document, (0, exports.createDirectiveNode)(name, nodeValue, publicId, systemId));
     }
 };
-exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
+exports.setDocumentType = setDocumentType;
+const createDirectiveNode = (name, nodeValue, publicId, systemId) => {
     return new documentType_1.DocumentType({
         nodeType: type_1.NodeType.DOCUMENT_TYPE_NODE,
         nodeName: name,
@@ -71,17 +75,20 @@ exports.createDirectiveNode = (name, nodeValue, publicId, systemId) => {
         systemId,
     });
 };
-exports.createCommentNode = (data) => {
+exports.createDirectiveNode = createDirectiveNode;
+const createCommentNode = (data) => {
     return new node_1.Node({
         nodeType: type_1.NodeType.COMMENT_NODE,
         nodeName: type_1.NodeName.COMMENT_NODE,
         nodeValue: data,
     });
 };
-exports.createTextNode = (data) => {
+exports.createCommentNode = createCommentNode;
+const createTextNode = (data) => {
     return new node_1.Node({
         nodeType: type_1.NodeType.TEXT_NODE,
         nodeName: type_1.NodeName.TEXT_NODE,
         nodeValue: data,
     });
 };
+exports.createTextNode = createTextNode;

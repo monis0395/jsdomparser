@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -39,13 +39,13 @@ function parseDom(rawHTML, options = {}) {
 }
 exports.parseDom = parseDom;
 function parse5(rawHTML, options) {
-    const document = parse5_1.parse(rawHTML, { treeAdapter: jsDomTreeAdapter });
+    const document = (0, parse5_1.parse)(rawHTML, { treeAdapter: jsDomTreeAdapter });
     if (options && options.url) {
         document._documentURI = options.url;
     }
     return document;
 }
 function serializeDom(node) {
-    return parse5_1.serialize(node, { treeAdapter: jsDomTreeAdapter });
+    return (0, parse5_1.serialize)(node, { treeAdapter: jsDomTreeAdapter });
 }
 exports.serializeDom = serializeDom;

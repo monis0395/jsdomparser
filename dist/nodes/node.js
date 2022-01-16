@@ -26,7 +26,7 @@ class Node {
         this._nextElementSibling = this._nextElementSibling || null;
     }
     get baseURI() {
-        const document = node_types_1.isDocument(this) ? this : this.ownerDocument;
+        const document = (0, node_types_1.isDocument)(this) ? this : this.ownerDocument;
         let _baseURI = document.documentURI;
         try {
             const baseElements = document.getElementsByTagName('base');
@@ -72,13 +72,13 @@ class Node {
         return this._previousSibling;
     }
     get textContent() {
-        if (node_types_1.isTextNode(this) || node_types_1.isCommentNode(this)) {
+        if ((0, node_types_1.isTextNode)(this) || (0, node_types_1.isCommentNode)(this)) {
             return this.nodeValue;
         }
         function getText(node) {
             node.childNodes.forEach((child) => {
-                if (node_types_1.isTextNode(child) || node_types_1.isCommentNode(child)) {
-                    text.push(html_escaper_1.unescape(child.nodeValue));
+                if ((0, node_types_1.isTextNode)(child) || (0, node_types_1.isCommentNode)(child)) {
+                    text.push((0, html_escaper_1.unescape)(child.nodeValue));
                 }
                 else {
                     getText(child);
@@ -90,7 +90,7 @@ class Node {
         return text.join("");
     }
     set textContent(data) {
-        if (node_types_1.isTextNode(this)) {
+        if ((0, node_types_1.isTextNode)(this)) {
             this.nodeValue = data;
             return;
         }
@@ -105,11 +105,11 @@ class Node {
         if (this._ownerDocument) {
             return this._ownerDocument;
         }
-        if (node_types_1.isDocument(this)) {
+        if ((0, node_types_1.isDocument)(this)) {
             this._ownerDocument = null;
             return this._ownerDocument;
         }
-        if (node_types_1.isDocument(this.parentNode)) {
+        if ((0, node_types_1.isDocument)(this.parentNode)) {
             this._ownerDocument = this.parentNode;
             return this._ownerDocument;
         }
@@ -119,17 +119,17 @@ class Node {
         this._ownerDocument = node;
     }
     appendChild(newChild) {
-        tree_mutation_1.appendChild(this, newChild);
+        (0, tree_mutation_1.appendChild)(this, newChild);
     }
     insertBefore(newNode, referenceNode) {
-        tree_mutation_1.insertBefore(this, newNode, referenceNode);
+        (0, tree_mutation_1.insertBefore)(this, newNode, referenceNode);
         return newNode;
     }
     removeChild(child) {
-        return tree_mutation_1.detachNode(child);
+        return (0, tree_mutation_1.detachNode)(child);
     }
     replaceChild(newChild, oldChild) {
-        return tree_mutation_1.replaceChild(this, oldChild, newChild);
+        return (0, tree_mutation_1.replaceChild)(this, oldChild, newChild);
     }
 }
 exports.Node = Node;
