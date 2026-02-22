@@ -38,7 +38,7 @@ class Node {
             if (baseElements.length > 0) {
                 const href = baseElements[0].getAttribute('href');
                 if (href) {
-                    _baseURI = (new URL(href, _baseURI)).href;
+                    _baseURI = _baseURI ? (new URL(href, _baseURI)).href : (new URL(href)).href;
                 }
             }
         }

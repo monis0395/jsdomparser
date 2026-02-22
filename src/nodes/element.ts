@@ -55,11 +55,19 @@ export class Element extends Node {
 
     setAttribute(name: string, value: string) {
         this.attribs[name] = String(value);
+        // Clear baseURI cache if a <base> element's href is updated
+        if (this.localName === 'base' && name === 'href' && this.ownerDocument) {
+            this.ownerDocument._cachedBaseURI = undefined;
+        }
         return value;
     }
 
     removeAttribute(name: string) {
         delete this.attribs[name];
+        // Clear baseURI cache if a <base> element's href is removed
+        if (this.localName === 'base' && name === 'href' && this.ownerDocument) {
+            this.ownerDocument._cachedBaseURI = undefined;
+        }
     }
 
     get childElementCount() {

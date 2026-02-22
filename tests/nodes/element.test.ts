@@ -127,4 +127,78 @@ describe('element', () => {
         // @ts-ignore
         assert.equal(link.href, 'http://example.com/about');
     });
+
+    it('should update baseURI when <base> element href is changed via setAttribute', () => {
+        const document = parseDom(
+            `<html><head><base href="first/"></head><body><a href="about">Link</a></body></html>`,
+            { url: "http://example.com/root/" }
+        );
+        const base = document.head.firstElementChild;
+        const link = document.body.firstElementChild;
+
+        // @ts-ignore
+        assert.equal(link.href, 'http://example.com/root/first/about');
+        assert.equal(document.baseURI, 'http://example.com/root/first/');
+
+        base.setAttribute('href', 'second/');
+        
+        // baseURI cache should be cleared and updated
+        assert.equal(document.baseURI, 'http://example.com/root/second/');
+        // @ts-ignore
+        assert.equal(link.href, 'http://example.com/root/second/about');
+
+        base.removeAttribute('href');
+        // fall back to documentURI when base href is removed
+        assert.equal(document.baseURI, 'http://example.com/root/');
+        // @ts-ignore
+        assert.equal(link.href, 'http://example.com/root/about');
+    });
+
+    it('should update baseURI when <base>.href is changed via property setter', () => {
+        const document = parseDom(
+            `<html><head><base href="first/"></head><body><a href="about">Link</a></body></html>`,
+            { url: "http://example.com/root/" }
+        );
+        const base = document.head.firstElementChild;
+        const link = document.body.firstElementChild;
+
+        assert.equal(document.baseURI, 'http://example.com/root/first/');
+        // @ts-ignore
+        assert.equal(link.href, 'http://example.com/root/first/about');
+
+        // @ts-ignore
+        base.href = 'third/';
+
+        assert.equal(document.baseURI, 'http://example.com/root/third/');
+        // @ts-ignore
+        assert.equal(link.href, 'http://example.com/root/third/about');
+    });
+
+    it('should keep absolute link href unchanged regardless of baseURI', () => {
+        const document = parseDom(
+            `<html><head><base href="http://base.example/"></head><body><a href="https://absolute.example/path">Link</a></body></html>`
+        );
+        const link = document.body.firstElementChild;
+
+        // @ts-ignore
+        assert.equal(link.href, 'https://absolute.example/path');
+    });
+
+    it('should update absolute baseURI values without parse options url', () => {
+        const document = parseDom(
+            `<html><head><base href="https://old.example/base/"></head><body><a href="file.js">Link</a></body></html>`
+        );
+        const base = document.head.firstElementChild;
+        const link = document.body.firstElementChild;
+
+        assert.equal(document.baseURI, 'https://old.example/base/');
+        // @ts-ignore
+        assert.equal(link.href, 'https://old.example/base/file.js');
+
+        base.setAttribute('href', 'https://new.example/assets/');
+
+        assert.equal(document.baseURI, 'https://new.example/assets/');
+        // @ts-ignore
+        assert.equal(link.href, 'https://new.example/assets/file.js');
+    });
 });

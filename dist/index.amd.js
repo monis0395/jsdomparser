@@ -675,10 +675,18 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-adapter
         }
         setAttribute(name, value) {
             this.attribs[name] = String(value);
+            // Clear baseURI cache if a <base> element's href is updated
+            if (this.localName === 'base' && name === 'href' && this.ownerDocument) {
+                this.ownerDocument._cachedBaseURI = undefined;
+            }
             return value;
         }
         removeAttribute(name) {
             delete this.attribs[name];
+            // Clear baseURI cache if a <base> element's href is removed
+            if (this.localName === 'base' && name === 'href' && this.ownerDocument) {
+                this.ownerDocument._cachedBaseURI = undefined;
+            }
         }
         get childElementCount() {
             return this.children.length;
@@ -938,7 +946,7 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/tree-
                 if (baseElements.length > 0) {
                     const href = baseElements[0].getAttribute('href');
                     if (href) {
-                        _baseURI = (new URL(href, _baseURI)).href;
+                        _baseURI = _baseURI ? (new URL(href, _baseURI)).href : (new URL(href)).href;
                     }
                 }
             }
