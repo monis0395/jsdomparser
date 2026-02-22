@@ -6,6 +6,7 @@ import * as legacy from "./domutils/legacy";
 export class Document extends Node {
     _documentURI: string;
     mode: DocumentMode;
+    _cachedBaseURI?: string;
 
     constructor(props: DocumentProps) {
         super(props);

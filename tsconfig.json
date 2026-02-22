@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["WebWorker"],
+    "lib": ["DOM", "ES2015"],
     "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",

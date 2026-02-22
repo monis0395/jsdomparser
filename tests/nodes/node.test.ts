@@ -36,4 +36,10 @@ describe('node', () => {
         assert.equal(document.body.childNodes.length, 2);
         assert.equal(document.body.children.length, 1);
     });
+
+    it('should safely handle baseURI on detached nodes without throwing', () => {
+        const document = parseDom(`<div></div>`);
+        const div = document.createElement('div');
+        assert.equal(div.baseURI, ''); 
+    });
 });

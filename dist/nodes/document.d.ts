@@ -3,6 +3,7 @@ import { DocumentMode, DocumentProps } from "./contracts/type";
 export declare class Document extends Node {
     _documentURI: string;
     mode: DocumentMode;
+    _cachedBaseURI?: string;
     constructor(props: DocumentProps);
     get body(): import("./element").Element;
     get childElementCount(): number;

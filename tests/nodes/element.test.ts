@@ -118,4 +118,13 @@ describe('element', () => {
           'hasAttribute of non existing property should return null'
         )
     });
+
+    it('should resolve absolute URLs using the baseURI', () => {
+        const document = parseDom(`<a href="/about">Link</a>`, { url: "http://example.com" });
+        const link = document.body.firstElementChild;
+
+        assert.equal(link.getAttribute('href'), '/about');
+        // @ts-ignore
+        assert.equal(link.href, 'http://example.com/about');
+    });
 });

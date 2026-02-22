@@ -6,7 +6,6 @@ const node_types_1 = require("./tree-adapter/node-types");
 const tree_mutation_1 = require("./tree-adapter/tree-mutation");
 // @ts-ignore
 const html_escaper_1 = require("html-escaper");
-const url_1 = require("url");
 class Node {
     constructor(props) {
         this.nodeName = '';
@@ -27,16 +26,25 @@ class Node {
     }
     get baseURI() {
         const document = (0, node_types_1.isDocument)(this) ? this : this.ownerDocument;
-        let _baseURI = document.documentURI;
+        if (!document) {
+            return '';
+        }
+        if (document._cachedBaseURI !== undefined) {
+            return document._cachedBaseURI;
+        }
+        let _baseURI = document.documentURI || '';
         try {
             const baseElements = document.getElementsByTagName('base');
-            const href = baseElements[0].getAttribute('href');
-            if (href) {
-                _baseURI = (new url_1.URL(href, _baseURI)).href;
+            if (baseElements.length > 0) {
+                const href = baseElements[0].getAttribute('href');
+                if (href) {
+                    _baseURI = (new URL(href, _baseURI)).href;
+                }
             }
         }
         catch (ex) { /* Just fall back to documentURI */
         }
+        document._cachedBaseURI = _baseURI;
         return _baseURI;
     }
     get firstChild() {

@@ -13,7 +13,7 @@ export declare class Node implements NodeProps {
     _nextSibling: Node | null;
     _previousElementSibling: Element | null;
     _nextElementSibling: Element | null;
-    sourceCodeLocation?: string;
+    sourceCodeLocation?: any;
     private _ownerDocument;
     constructor(props: NodeProps);
     get baseURI(): string;

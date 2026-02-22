@@ -5,6 +5,7 @@ export declare class Element extends Node {
     namespaceURI: string;
     style: Style;
     attribs: Record<string, string>;
+    _urlCache?: Record<string, string>;
     private readonly _localName;
     private readonly _tagName;
     constructor(props: ElementProps);

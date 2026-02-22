@@ -1,6 +1,10 @@
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -707,8 +711,40 @@ define("nodes/element", ["require", "exports", "nodes/node", "nodes/tree-adapter
         }
     }
     exports.Element = Element;
-    const elementAttributes = ["href", "src", "srcset"];
-    elementAttributes.forEach((name) => {
+    const urlAttributes = ["href", "src"];
+    urlAttributes.forEach((name) => {
+        Object.defineProperty(Element.prototype, name, {
+            get() {
+                const val = this.getAttribute(name) || '';
+                if (!val)
+                    return val;
+                const base = this.baseURI;
+                if (!base)
+                    return val;
+                this._urlCache = this._urlCache || {};
+                const cacheKey = `${name}:${val}:${base}`;
+                if (this._urlCache[cacheKey]) {
+                    return this._urlCache[cacheKey];
+                }
+                try {
+                    const resolvedUrl = new URL(val, base).href;
+                    this._urlCache[cacheKey] = resolvedUrl;
+                    return resolvedUrl;
+                }
+                catch (e) {
+                    return val;
+                }
+            },
+            set(value) {
+                if (this._urlCache) {
+                    delete this._urlCache[`${name}:${this.getAttribute(name)}:${this.baseURI}`];
+                }
+                return this.setAttribute(name, value);
+            },
+        });
+    });
+    const stringAttributes = ["srcset"];
+    stringAttributes.forEach((name) => {
         Object.defineProperty(Element.prototype, name, {
             get() {
                 return this.getAttribute(name) || '';
@@ -866,7 +902,7 @@ define("nodes/tree-adapter/tree-mutation", ["require", "exports", "nodes/tree-ad
     }
     exports.adoptAttributes = adoptAttributes;
 });
-define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/tree-adapter/node-types", "nodes/tree-adapter/tree-mutation", "html-escaper", "url"], function (require, exports, type_2, node_types_4, tree_mutation_1, html_escaper_1, url_1) {
+define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/tree-adapter/node-types", "nodes/tree-adapter/tree-mutation", "html-escaper"], function (require, exports, type_2, node_types_4, tree_mutation_1, html_escaper_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Node = void 0;
@@ -890,16 +926,25 @@ define("nodes/node", ["require", "exports", "nodes/contracts/type", "nodes/tree-
         }
         get baseURI() {
             const document = (0, node_types_4.isDocument)(this) ? this : this.ownerDocument;
-            let _baseURI = document.documentURI;
+            if (!document) {
+                return '';
+            }
+            if (document._cachedBaseURI !== undefined) {
+                return document._cachedBaseURI;
+            }
+            let _baseURI = document.documentURI || '';
             try {
                 const baseElements = document.getElementsByTagName('base');
-                const href = baseElements[0].getAttribute('href');
-                if (href) {
-                    _baseURI = (new url_1.URL(href, _baseURI)).href;
+                if (baseElements.length > 0) {
+                    const href = baseElements[0].getAttribute('href');
+                    if (href) {
+                        _baseURI = (new URL(href, _baseURI)).href;
+                    }
                 }
             }
             catch (ex) { /* Just fall back to documentURI */
             }
+            document._cachedBaseURI = _baseURI;
             return _baseURI;
         }
         get firstChild() {

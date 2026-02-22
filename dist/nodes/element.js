@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -95,8 +99,40 @@ class Element extends node_1.Node {
     }
 }
 exports.Element = Element;
-const elementAttributes = ["href", "src", "srcset"];
-elementAttributes.forEach((name) => {
+const urlAttributes = ["href", "src"];
+urlAttributes.forEach((name) => {
+    Object.defineProperty(Element.prototype, name, {
+        get() {
+            const val = this.getAttribute(name) || '';
+            if (!val)
+                return val;
+            const base = this.baseURI;
+            if (!base)
+                return val;
+            this._urlCache = this._urlCache || {};
+            const cacheKey = `${name}:${val}:${base}`;
+            if (this._urlCache[cacheKey]) {
+                return this._urlCache[cacheKey];
+            }
+            try {
+                const resolvedUrl = new URL(val, base).href;
+                this._urlCache[cacheKey] = resolvedUrl;
+                return resolvedUrl;
+            }
+            catch (e) {
+                return val;
+            }
+        },
+        set(value) {
+            if (this._urlCache) {
+                delete this._urlCache[`${name}:${this.getAttribute(name)}:${this.baseURI}`];
+            }
+            return this.setAttribute(name, value);
+        },
+    });
+});
+const stringAttributes = ["srcset"];
+stringAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
         get() {
             return this.getAttribute(name) || '';

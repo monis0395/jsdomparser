@@ -9,6 +9,7 @@ export class Element extends Node {
     namespaceURI: string;
     style: Style;
     attribs: Record<string, string>;
+    _urlCache?: Record<string, string>;
 
     private readonly _localName: string;
     private readonly _tagName: string;
@@ -98,8 +99,42 @@ export class Element extends Node {
     }
 }
 
-const elementAttributes = ["href", "src", "srcset"];
-elementAttributes.forEach((name) => {
+const urlAttributes = ["href", "src"];
+urlAttributes.forEach((name) => {
+    Object.defineProperty(Element.prototype, name, {
+        get() {
+            const val = this.getAttribute(name) || '';
+            if (!val) return val;
+
+            const base = this.baseURI;
+            if (!base) return val;
+
+            this._urlCache = this._urlCache || {};
+            const cacheKey = `${name}:${val}:${base}`;
+
+            if (this._urlCache[cacheKey]) {
+                return this._urlCache[cacheKey];
+            }
+
+            try {
+                const resolvedUrl = new URL(val, base).href;
+                this._urlCache[cacheKey] = resolvedUrl;
+                return resolvedUrl;
+            } catch (e) {
+                return val;
+            }
+        },
+        set(value: string) {
+            if (this._urlCache) {
+                delete this._urlCache[`${name}:${this.getAttribute(name)}:${this.baseURI}`];
+            }
+            return this.setAttribute(name, value);
+        },
+    });
+});
+
+const stringAttributes = ["srcset"];
+stringAttributes.forEach((name) => {
     Object.defineProperty(Element.prototype, name, {
         get() {
             return this.getAttribute(name) || '';
